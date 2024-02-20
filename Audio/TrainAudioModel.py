@@ -9,6 +9,13 @@ from scipy import fftpack, fft
 import soundfile as sf
 import numpy as np
 
+# Used for MFCC analysis
+import librosa
+
+from sklearn.decomposition import PCA
+from sklearn.preprocessing import StandardScaler
+
+NUM_VALUES = 20
 
 # This function is used to calculate the bispectrum of the signals
 def compute_bispectrum(samples):
@@ -50,6 +57,9 @@ def trim_audio(audio, seconds, fs):
     return audio
 
 
+def compute_mfcc(audio, sr):
+    return librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=20)
+
 # Navigate to the generated audio folder and extract the files
 folder_path_generated = ".\\.\\Datasets\\WaveFake_GeneratedAudio\\generated_audio\\common_voices_prompts_from_conformer_fastspeech2_pwg_ljspeech"
 file_list = os.listdir(folder_path_generated)
@@ -60,8 +70,8 @@ folder_path_real = ".\\.\\Datasets\\LJSpeech_RealAudio\\LJSpeech-1.1\\wavs"
 file_list = os.listdir(folder_path_real)
 real_audio_files = [file for file in file_list if file.endswith(".wav") or file.endswith(".mp3")]
 
-generated_samples_20 = generated_audio_files[:2000]
-real_samples_20 = real_audio_files[:2000]
+generated_samples_20 = generated_audio_files[:20]
+real_samples_20 = real_audio_files[:20]
 
 print("Generated Audio Files: ", len(generated_samples_20))  
 print("Real Audio Files: ", len(real_samples_20))
@@ -110,6 +120,36 @@ bicoh_real = calculate_bicoherence(bispectrum_real, amplitude_spectrum_generated
 
 # Print the length of the bicoherence list for generated samples
 print("Bicoherence generated size:" + str(len(bicoh_generated)))
+print("Bicoherence generated shape:" + str(bicoh_generated[0].shape))
 
 # Print the length of the bicoherence list for real samples
 print("Bicoherence real size:" + str(len(bicoh_real)))
+print("Bicoherence real shape:" + str(bicoh_real[0].shape))
+
+# Compute MFCCs for generated samples
+mfcc_generated = [compute_mfcc(audio, fs) for audio in generated_audio_files]
+
+# Compute MFCCs for real samples
+mfcc_real = [compute_mfcc(audio, fs) for audio in real_audio_files]
+
+print("MFCC generated size:" + str(len(mfcc_generated)))
+print("MFCC real size:" + str(len(mfcc_real)))
+print("MFCC generated shape:" + str(mfcc_generated[0][0].shape))
+print("MFCC real shape:" + str(mfcc_real[0].shape))
+
+# Convert complex numbers to real numbers by taking the absolute value
+bicoherence_abs_generated = np.abs(bicoh_generated)
+bicoherence_abs_real = np.abs(bicoh_real)
+
+print("Bicoherence shape:", end="")
+print(bicoherence_abs_generated.shape)
+print(bicoherence_abs_generated)
+
+# ************************************Reduce dimension of data***********************************************
+
+bicoherence_abs_generated = StandardScaler().fit_transform(bicoherence_abs_generated)
+pca  = PCA(n_components=5000, whiten=True)
+X_pca = pca.fit_transform(bicoherence_abs_generated)
+
+print("Original:" + str(bicoherence_abs_generated[0].shape))
+print("PCA:" + str(X_pca.shape))
