@@ -2,9 +2,15 @@ import cv2
 import os
 import numpy as np
 import face_recognition
+from PIL import Image
 
 
 def extract_video_frame(video_path, video_name):
+    print(video_name + "_frames.npy")
+    if os.path.exists(video_name + "_frames.npy"):
+        print(f"Numpy array for this file {video_name} already exists!")
+        return
+
     # Create a VideoCapture object to read the video
     cap = cv2.VideoCapture(video_path)
     # Check if the video was opened successfully
@@ -13,8 +19,15 @@ def extract_video_frame(video_path, video_name):
         return None
 
     # Get video properties
-    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    '''width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    # Create an empty NumPy array to store the frames
+    frames = np.empty((int(cap.get(cv2.CAP_PROP_FRAME_COUNT)), height, width, 3), dtype=np.uint8)
+    '''
+    # Get video properties
+    width = 150
+    height = 150
 
     # Create an empty NumPy array to store the frames
     frames = np.empty((int(cap.get(cv2.CAP_PROP_FRAME_COUNT)), height, width, 3), dtype=np.uint8)
@@ -25,28 +38,26 @@ def extract_video_frame(video_path, video_name):
     while True:
         # Capture frame-by-frame
         ret, frame = cap.read()
+        
         # Check if the frame was read correctly
         if not ret:
             print("No more frames to capture!")
             break
+        
+        # Convert frame to RGB
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+        
+        face_frame = face_detection(frame, width, height)
 
-        '''# Save the frame as an image (optional)
-        frame_name = f'{video_name}_{frame_count:05d}.jpg'
-        cv2.imwrite(frame_name, frame)'''
+        if face_frame.size != 0:
+            #Add the frame to the NumPy array
+            frames[frame_count] = face_frame
+            frame_count += 1
 
-        # Display the frame for debugging (optional)
-        # cv2.imshow('Frame', frame)
-        # if cv2.waitKey(1) & 0xFF == ord('q'):
-        #     break
-
-        #Add the frame to the NumPy array
-        frames[frame_count] = frame
-
-        frame_count += 1
-
+            
     # Release the capture and close all windows
     cap.release()
-    # cv2.destroyAllWindows()  # If you used cv2.imshow()
+
     if video_name:
         print(f"Saving video frame as numpy array as {video_name}_frames.npy")
         np.save(f"{video_name}_frames.npy", frames)
@@ -55,39 +66,53 @@ def extract_video_frame(video_path, video_name):
 
 
 
-def face_detection(image_array):
-    import face_recognition
-from PIL import Image  # Import for PIL image creation
-
-def face_detection(image_array, save_path, frame_count):
-    # Detect faces in the image
+def face_detection(image_array, width, height):
     face_locations = face_recognition.face_locations(image_array)
-
-    if face_locations:  # Check if any faces were detected
-        # Extract the first face location (assuming single face detection)
+    empty_array = np.array([])
+    if face_locations:
         top, right, bottom, left = face_locations[0]
 
         try:
-            # Extract the face image from the original array
-            face_image = image_array[top:bottom, left:right]
+            face_frame = image_array[top:bottom, left:right]
+            resized_face_frame = cv2.resize(face_frame, (width, height), interpolation=cv2.INTER_AREA)
+            return resized_face_frame
 
-            # Create a PIL image from the extracted face array
-            pil_image = Image.fromarray(face_image)
-
-            # Save the extracted face image
-            pil_image.save(f"{save_path}_{frame_count:05d}.jpg")
-
-            return True  # Indicate successful face detection and saving
-
-        except IndexError:  # Handle potential index errors (e.g., out-of-bounds)
+        except IndexError:
             print("Error: Could not extract face due to invalid bounding box coordinates.")
-            return False  # Indicate failure
+            return empty_array  # Indicate failure
 
     else:
         print("No faces detected in the image.")
-        return False  # Indicate no faces found
+        return empty_array  # Indicate no faces found
 
 
+
+def get_video_paths(folder_path):
+  """
+  This function retrieves the full paths of all video files within a directory.
+
+  Args:
+      folder_path (str): The path to the directory containing the videos.
+
+  Returns:
+      list: A list of strings representing the full paths of all video files.
+  """
+
+  video_paths = []
+  for root, _, files in os.walk(folder_path):
+    for file in files:
+      if os.path.splitext(file)[1].lower() in ('.mp4', '.avi', '.mov', '.wmv'):  # Common video extensions
+        video_path = os.path.join(root, file)
+        video_paths.append(video_path)
+  return video_paths
+
+
+def create_folder(folder_path):
+    try:
+        os.makedirs(folder_path, exist_ok=True)
+        print("Folder created successfully!")
+    except OSError as error:
+        print(f"Error creating folder: {error}")
 
 
 
