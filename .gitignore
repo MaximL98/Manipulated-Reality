@@ -1,2 +1,3 @@
 Video preprocessing/Processed_data/
+Video preprocessing/__pycache__/
 *.png
