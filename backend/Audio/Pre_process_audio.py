@@ -15,7 +15,7 @@ import librosa
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
 
-NUM_VALUES = 1000
+NUM_VALUES = 100
 
 # This function is used to calculate the bispectrum of the signals
 def compute_bispectrum(samples):
@@ -62,13 +62,13 @@ def compute_mfcc(audio, sr):
     return librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=100)
 
 # Navigate to the generated audio folder and extract the files
-print("curdir:", os.curdir)
-folder_path_generated = ".\\.\\Datasets\\WaveFake_GeneratedAudio\\generated_audio\\common_voices_prompts_from_conformer_fastspeech2_pwg_ljspeech"
+print("curdir:", os.listdir("."))
+folder_path_generated = "Manipulated-Reality\\Datasets\\WaveFake_dataset\\generated_audio\\common_voices_prompts_from_conformer_fastspeech2_pwg_ljspeech"
 file_list = os.listdir(folder_path_generated)
 generated_audio_files = [file for file in file_list if file.endswith(".wav") or file.endswith(".mp3")]
 
 # Navigate to the real audio folder and extract the files
-folder_path_real = ".\\.\\Datasets\\LJSpeech_RealAudio\\LJSpeech-1.1\\wavs"
+folder_path_real = "Manipulated-Reality\\Datasets\\WaveFake_dataset\\real_audio"
 file_list = os.listdir(folder_path_real)
 real_audio_files = [file for file in file_list if file.endswith(".wav") or file.endswith(".mp3")]
 
