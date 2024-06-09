@@ -1,24 +1,19 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
 
 function App() {
+  const [data, setData] = useState({ members: [] }); 
+
+  useEffect(() => {
+    fetch("/upload")
+      .then(res => res.json())
+      .then(data => setData(data)); // Update entire data state
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <form action='upload' method="post" encType="multipart/form-data">
+        <input type="file" name='video' accept="mp4,mkv,avi" />
+        <button>Upload</button>
+      </form>
   );
 }
 
