@@ -8,12 +8,8 @@ tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.ERROR)
 
 from sklearn.metrics import classification_report # tested with 0.21.2l
 from tensorflow import keras
-from keras.models import Sequential
-from keras.layers import Conv1D, MaxPooling1D, Flatten, Dense, Dropout, Input
-
-from keras.models import Model
-from keras.layers import Dense
-
+from keras import models
+from keras import layers
 
 # Supress deprecation warnings
 import logging
@@ -46,21 +42,21 @@ print(len(labels))
 print("x_train shape:", x_train.shape)
 print("x_val shape:", x_val.shape)
 
-inputs = Input(shape=(x_train.shape[1], 1))
-CNNmodel = Sequential([
+inputs = layers.Input(shape=(x_train.shape[1], 1))
+CNNmodel = models.Sequential([
     inputs,
-    Conv1D(64, kernel_size=3, activation='relu', input_shape=(x_train.shape[1], 1)),
-    MaxPooling1D(pool_size=2),
-    Dropout(0.2),
-    Conv1D(64, kernel_size=3, activation='relu'),
-    MaxPooling1D(),
-    Dropout(0.2),
-    Conv1D(64, kernel_size=3, activation='relu'),
-    Flatten(),
-    Dense(64, activation='relu'),
-    Dropout(0.2),
-    Dense(32, activation='relu'),
-    Dense(24, activation='softmax')
+    layers.Conv1D(64, kernel_size=3, activation='relu', input_shape=(x_train.shape[1], 1)),
+    layers.MaxPooling1D(pool_size=2),
+    layers.Dropout(0.2),
+    layers.Conv1D(64, kernel_size=3, activation='relu'),
+    layers.MaxPooling1D(),
+    layers.Dropout(0.2),
+    layers.Conv1D(64, kernel_size=3, activation='relu'),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dropout(0.2),
+    layers.Dense(32, activation='relu'),
+    layers.Dense(24, activation='softmax')
 ])
 # CNNmodel.add()
 # CNNmodel.add(MaxPooling1D(pool_size=2))
