@@ -1,6 +1,7 @@
 from pathlib import Path
+
 from utils import extract_video_frame, get_video_paths, create_folder
-from data import folder_path_to_datasets
+from data import folder_path_to_datasets, paths_to_folders_after_processing
 
 # Main function
 def main():
@@ -8,8 +9,8 @@ def main():
     folder_paths = [folder_path_to_datasets['celeb_DF_real'], 
                     folder_path_to_datasets['celeb_DF_fake']]
     # List of paths to folders into which after processing the npy files will be saved
-    save_folders = ["Video preprocessing/Processed_data_real/Celeb-DF-v2/Celeb-real"
-                   ,"Video preprocessing/Processed_data_fake/Celeb-DF-v2/Celeb-synthesis"]
+    save_folders = [paths_to_folders_after_processing ['celeb_DF_real'],
+                    paths_to_folders_after_processing['celeb_DF_fake']]
     # For loop, process both real and fake data
     for index in range(len(folder_paths)):
         # Path to folder which contains data
@@ -22,8 +23,8 @@ def main():
             # Get paths of all videos
             video_paths = get_video_paths(folder_path + '/' + type)
             # If such folder does not exist, create it
-            save_folder = save_folder  + '/' + type
-            create_folder(save_folder)
+            tmp_save_folder = save_folder  + '/' + type
+            create_folder(tmp_save_folder)
             # Initialize index to follow how many videos finished processing
             i = 1
             # Iterate each video, extract the frames which include faces 
@@ -31,7 +32,7 @@ def main():
                 print(f"Video {i}/{len(video_paths)}")
                 # Get video name
                 video_name = Path(video_path).stem
-                video_name = save_folder + '/' + video_name
+                video_name = tmp_save_folder + '/' + video_name
                 # Preprocesse the video
                 extract_video_frame(video_path=video_path, video_name=video_name)
                 i+=1

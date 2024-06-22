@@ -2,15 +2,12 @@ import cv2
 import os
 import numpy as np
 import face_recognition
-import keras
 import pandas as pd
 import torchvision.transforms as transforms
 
 from sklearn.model_selection import train_test_split
 # Imports paths from data file
 from data import paths_to_folders_after_normalization
-
-#from keras_vggface.vggface import VGGFace ## Not used, at least for now ...
 
 
 # Function to extract video frames, later face frames and save them as npy files.
@@ -163,17 +160,6 @@ def create_folder(folder_path):
         print("Folder created successfully!")
     except OSError as error:
         print(f"Error creating folder: {error}")
-
-
-# Function that uses pre trained model to preform feature extraction
-def extract_features(video):
-  model = keras.applications.C3D(weights='imagenet', include_top=False)
-  # Preprocess the video for the model (e.g., frame normalization)
-
-  # Extract features from each frame using the pre-trained model
-  frame_features = model.predict(video)
-
-  return frame_features
 
 
 # Function to split the dataset into train, test and, validation
