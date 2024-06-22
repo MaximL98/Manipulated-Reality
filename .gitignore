@@ -1,10 +1,10 @@
-Video preprocessing/Processed_data_fake/
-Video preprocessing/Processed_data_real/
-Video preprocessing/__pycache__/
+video_analysis/video_preprocessing/Processed_data_fake/
+video_analysis/video_preprocessing/Processed_data_real/
+video_analysis/video_preprocessing/__pycache__/
 *.png
-Video preprocessing/tester.py
-Video preprocessing/data.py
-Video preprocessing/normalized_data
-Video preprocessing/tmp.py
+video_analysis/video_preprocessing/tester.py
+video_analysis/video_preprocessing/data.py
+video_analysis/video_preprocessing/normalized_data
+video_analysis/video_preprocessing/tmp.py
 datasets/
 
