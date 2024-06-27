@@ -37,7 +37,11 @@ def extract_video_frame(video_path, video_name):
         while True:
             # Capture frame-by-frame
             ret, frame = cap.read()
-            
+            # Target time interval between frames in milliseconds
+            target_fps = 15
+            subsample_rate = int(1000 / target_fps)  # Convert FPS to milliseconds
+            # Move to the next frame based on the subsample rate
+            cap.set(cv2.CAP_PROP_POS_MSEC, (cap.get(cv2.CAP_PROP_POS_MSEC) + subsample_rate))
             # Check if the frame was read correctly
             if not ret:
                 print("No more frames to capture!")
@@ -52,8 +56,8 @@ def extract_video_frame(video_path, video_name):
                 frames.append(face_frame)
             
             # Can later set higher number of frames
-            if len(frames) == 200:
-                break
+            '''if len(frames) == 400:
+                break'''
 
     finally:   
         # Release the capture and close all windows
@@ -135,8 +139,8 @@ def split_data(folder_path, train_ratio=0.6, test_ratio=0.2, val_ratio=0.2):
 
 
 # Function to move files from one folder to another
-def split_data_v2(splited_folder_path, to_split_folder_path, type):
-    files = os.listdir(splited_folder_path)
+def split_data_v2(splitted_folder_path, to_split_folder_path, type):
+    files = os.listdir(splitted_folder_path)
     
     # Create subdirectories for each set
     os.makedirs(os.path.join(to_split_folder_path, type), exist_ok=True)
@@ -153,7 +157,7 @@ def split_data_v2(splited_folder_path, to_split_folder_path, type):
                 break
 
 
-# Fuction to create folder
+# Function to create folder
 def create_folder(folder_path):
     try:
         os.makedirs(folder_path, exist_ok=True)
@@ -245,7 +249,7 @@ def normalize_frames(video_path):
    
     # Initialize array to save normalized frames
     frames_normalized = []
-    # Iterate each frame, performe normlization based on given mean & std values
+    # Iterate each frame, perform normalization based on given mean & std values
     for frame in frames:
         # Transform the frame
         frame_transform = transform(frame)
@@ -268,7 +272,7 @@ def normalize_frames(video_path):
 
 
 # Function that creates folders into which data will be saved after normalization
-# And returns thier paths
+# And returns their paths
 def create_normalization_folders():
     # Folder paths that will be created
     train_folder = paths_to_folders_after_normalization['train_folder']
