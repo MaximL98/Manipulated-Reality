@@ -4,7 +4,7 @@ from pathlib import Path
 from utils import label_data, normalize_frames, create_folder, create_normalization_folders
 from data import processed_data_folder_paths
 
-# Main function to split and normilize the data
+# Main function to split and normalize the data
 def main():
     
     # Path to fake and real data, after frame extraction and face recognition
@@ -19,14 +19,14 @@ def main():
     train_df, test_df, val_df = label_data(real_train_folder=real_video_folder_train, real_test_folder=real_video_folder_test, real_val_folder=real_video_folder_val, 
               fake_train_folder=fake_video_folder_train, fake_test_folder=fake_video_folder_test, fake_val_folder=fake_video_folder_val)
 
-    # Three arrays to save to the frames after they been normilized
+    # Three arrays to save to the frames after they been normalized
     normalized_frames_train = []
     normalized_frames_test = []
     normalized_frames_val = []
 
     train_folder, test_folder, val_folder = create_normalization_folders()
 
-    # Three for loop to normilize train, test and, validation datasets
+    # Three for loop to normalize train, test and, validation datasets
     for video_path in train_df['video_path']:
         print(f"Starting to normalize {video_path} ...")
         # Get video name

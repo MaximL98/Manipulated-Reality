@@ -9,7 +9,7 @@ from model import model
 ## Visualize the model
 # keras.utils.plot_model(model, expand_nested=True, dpi=60, show_shapes=True)
 ## Train the model
-## Binary classification problems with two classes, the most appropriate loss function is Binary Crossentropy
+## Binary classification problems with two classes, the most appropriate loss function is Binary Cross entropy
 # model.compile(loss = keras.losses.BinaryCrossentropy(from_logits=True), 
 #              optimizer = keras.optimizers.Adam(learning_rate = 0.0001), 
 #             metrics = ['accuracy'])
