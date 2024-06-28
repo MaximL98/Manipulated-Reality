@@ -240,7 +240,12 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
 
 
 # Function to normalize frames
-def normalize_frames(video_path):
+def normalize_frames(video_path, video_name):
+    print(video_name)
+    # Check if file was all ready processed
+    if os.path.exists(video_name + '_normalized.npy'):
+        print(f"This file ({video_name}) already normalized!")
+        return
     # Load frames from video path
     frames = np.load(video_path)
     # Custom transform function
@@ -267,8 +272,8 @@ def normalize_frames(video_path):
         frame_normalized = frame_normalized.transpose(1, 2, 0)
         # Append normalized frame into array
         frames_normalized.append(frame_normalized)
-    # Return normalized frames array
-    return frames_normalized
+
+    np.save(f"{video_name}_normalized.npy", frames_normalized)
 
 
 # Function that creates folders into which data will be saved after normalization
@@ -278,7 +283,7 @@ def create_normalization_folders():
     train_folder = paths_to_folders_after_normalization['train_folder']
     test_folder = paths_to_folders_after_normalization['test_folder']
     val_folder = paths_to_folders_after_normalization['val_folder']
-    # Create folder to save into the normilized data
+    # Create folder to save into the normalized data
     create_folder(train_folder)
     create_folder(test_folder)
     create_folder(val_folder)
