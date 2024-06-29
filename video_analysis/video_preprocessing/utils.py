@@ -7,7 +7,7 @@ import torchvision.transforms as transforms
 
 from sklearn.model_selection import train_test_split
 # Imports paths from data file
-from data import paths_to_folders_after_normalization
+from data import paths_to_folders_after_normalization, paths_to_csv
 
 
 # Function to extract video frames, later face frames and save them as npy files.
@@ -214,7 +214,6 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     fake_test_paths = get_video_paths(fake_test_folder)
     fake_val_paths = get_video_paths(fake_val_folder)
 
-
     # Assign labels (1 for real, 0 for fake)
     real_label = 1
     fake_label = 0
@@ -223,8 +222,7 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     train_df_real = pd.DataFrame({"video_path": real_train_paths, "label": [real_label] * len(real_train_paths)})
     test_df_real = pd.DataFrame({"video_path": real_test_paths, "label": [real_label] * len(real_test_paths)})
     val_df_real = pd.DataFrame({"video_path": real_val_paths, "label": [real_label] * len(real_val_paths)})
-    for video in train_df_real['video_path']:
-        print(f"Train_df = {video}")
+
     # Create DataFrames for fake videos
     train_df_fake = pd.DataFrame({"video_path": fake_train_paths, "label": [fake_label] * len(fake_train_paths)})
     test_df_fake = pd.DataFrame({"video_path": fake_test_paths, "label": [fake_label] * len(fake_test_paths)})
@@ -234,17 +232,27 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     train_df = pd.concat([train_df_real, train_df_fake], ignore_index=True)
     test_df = pd.concat([test_df_real, test_df_fake], ignore_index=True)
     val_df = pd.concat([val_df_real, val_df_fake], ignore_index=True)
-    for video in train_df['video_path']:
-        print(f"Train_df = {video}")
+
+    # Check if DataFrames were converted to csv already, comment does lines if want to update csv's
+    if os.path.exists(paths_to_csv['train_df']) and os.path.exists(paths_to_csv['test_df']) and paths_to_csv['val_df']:
+        print("DataFrames already converted to csv's files...")
+        # Return DataFrames of train, test and valuation
+        return train_df, test_df, val_df
+    
+    # Save DataFrame as csv file
+    train_df.to_csv(paths_to_csv['train_df'], sep=',', index=False, encoding='utf-8')
+    test_df.to_csv(paths_to_csv['test_df'], sep=',', index=False, encoding='utf-8')
+    val_df.to_csv(paths_to_csv['val_df'], sep=',', index=False, encoding='utf-8')
+
+    # Return DataFrames of train, test and valuation
     return train_df, test_df, val_df
 
 
 # Function to normalize frames
 def normalize_frames(video_path, video_name):
-    print(video_name)
     # Check if file was all ready processed
-    if os.path.exists(video_name + '_normalized.npy'):
-        print(f"This file ({video_name}) already normalized!")
+    if os.path.exists(video_name + '.npy'):
+        #print(f"This file ({video_name}) already normalized!")
         return
     # Load frames from video path
     frames = np.load(video_path)
@@ -272,8 +280,8 @@ def normalize_frames(video_path, video_name):
         frame_normalized = frame_normalized.transpose(1, 2, 0)
         # Append normalized frame into array
         frames_normalized.append(frame_normalized)
-
-    np.save(f"{video_name}_normalized.npy", frames_normalized)
+    # Save normalized frames as npy array
+    np.save(f"{video_name}.npy", frames_normalized)
 
 
 # Function that creates folders into which data will be saved after normalization
@@ -283,6 +291,11 @@ def create_normalization_folders():
     train_folder = paths_to_folders_after_normalization['train_folder']
     test_folder = paths_to_folders_after_normalization['test_folder']
     val_folder = paths_to_folders_after_normalization['val_folder']
+
+    if os.path.exists(train_folder) and os.path.exists(test_folder) and os.path.exists(val_folder):
+        print("Normalization folders already exists!")
+        return train_folder, test_folder, val_folder
+
     # Create folder to save into the normalized data
     create_folder(train_folder)
     create_folder(test_folder)

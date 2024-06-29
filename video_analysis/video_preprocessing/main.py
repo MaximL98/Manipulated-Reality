@@ -29,15 +29,14 @@ def main():
     for index in range(3):
         # For-loop to normalize train, test and, validation datasets
         for video_path in dfs[index]['video_path']:
-            start_time = time.time()
-            print(f"Starting to normalize {video_path} ...")
+            #start_time = time.time()
+            #print(f"Starting to normalize {video_path} ...")
             # Get video name
             video_name = Path(video_path).stem
             video_name = folders[index] + '/' + video_name
-            #normalized_frames_train = normalize_frames(video_path)
-            #np.save(f"{video_name}.npy", normalized_frames_train)
+            # Use normalize frames function that normalizes frames and saves in the destination folder
             normalize_frames(video_path, video_name)
-            print("--- %s seconds ---" % (time.time() - start_time))
+            #print("--- %s seconds ---" % (time.time() - start_time))
             
 
 if __name__ == '__main__':
