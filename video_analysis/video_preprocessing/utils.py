@@ -7,7 +7,7 @@ import torchvision.transforms as transforms
 
 from sklearn.model_selection import train_test_split
 # Imports paths from data file
-from data import paths_to_folders_after_normalization
+from data import paths_to_folders_after_normalization, paths_to_csv
 
 
 # Function to extract video frames, later face frames and save them as npy files.
@@ -37,7 +37,11 @@ def extract_video_frame(video_path, video_name):
         while True:
             # Capture frame-by-frame
             ret, frame = cap.read()
-            
+            # Target time interval between frames in milliseconds
+            target_fps = 15
+            subsample_rate = int(1000 / target_fps)  # Convert FPS to milliseconds
+            # Move to the next frame based on the subsample rate
+            cap.set(cv2.CAP_PROP_POS_MSEC, (cap.get(cv2.CAP_PROP_POS_MSEC) + subsample_rate))
             # Check if the frame was read correctly
             if not ret:
                 print("No more frames to capture!")
@@ -52,8 +56,8 @@ def extract_video_frame(video_path, video_name):
                 frames.append(face_frame)
             
             # Can later set higher number of frames
-            if len(frames) == 200:
-                break
+            '''if len(frames) == 300:
+                break'''
 
     finally:   
         # Release the capture and close all windows
@@ -135,8 +139,8 @@ def split_data(folder_path, train_ratio=0.6, test_ratio=0.2, val_ratio=0.2):
 
 
 # Function to move files from one folder to another
-def split_data_v2(splited_folder_path, to_split_folder_path, type):
-    files = os.listdir(splited_folder_path)
+def split_data_v2(splitted_folder_path, to_split_folder_path, type):
+    files = os.listdir(splitted_folder_path)
     
     # Create subdirectories for each set
     os.makedirs(os.path.join(to_split_folder_path, type), exist_ok=True)
@@ -153,7 +157,7 @@ def split_data_v2(splited_folder_path, to_split_folder_path, type):
                 break
 
 
-# Fuction to create folder
+# Function to create folder
 def create_folder(folder_path):
     try:
         os.makedirs(folder_path, exist_ok=True)
@@ -210,7 +214,6 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     fake_test_paths = get_video_paths(fake_test_folder)
     fake_val_paths = get_video_paths(fake_val_folder)
 
-
     # Assign labels (1 for real, 0 for fake)
     real_label = 1
     fake_label = 0
@@ -219,8 +222,7 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     train_df_real = pd.DataFrame({"video_path": real_train_paths, "label": [real_label] * len(real_train_paths)})
     test_df_real = pd.DataFrame({"video_path": real_test_paths, "label": [real_label] * len(real_test_paths)})
     val_df_real = pd.DataFrame({"video_path": real_val_paths, "label": [real_label] * len(real_val_paths)})
-    for video in train_df_real['video_path']:
-        print(f"Train_df = {video}")
+
     # Create DataFrames for fake videos
     train_df_fake = pd.DataFrame({"video_path": fake_train_paths, "label": [fake_label] * len(fake_train_paths)})
     test_df_fake = pd.DataFrame({"video_path": fake_test_paths, "label": [fake_label] * len(fake_test_paths)})
@@ -230,13 +232,28 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     train_df = pd.concat([train_df_real, train_df_fake], ignore_index=True)
     test_df = pd.concat([test_df_real, test_df_fake], ignore_index=True)
     val_df = pd.concat([val_df_real, val_df_fake], ignore_index=True)
-    for video in train_df['video_path']:
-        print(f"Train_df = {video}")
+
+    # Check if DataFrames were converted to csv already, comment does lines if want to update csv's
+    if os.path.exists(paths_to_csv['train_df']+'.csv') and os.path.exists(paths_to_csv['test_df']+'.csv') and os.path.exists(paths_to_csv['val_df']+'.csv'):
+        print("DataFrames already converted to csv's files...")
+        # Return DataFrames of train, test and valuation
+        return train_df, test_df, val_df
+    
+    # Save DataFrame as csv file
+    train_df.to_csv(paths_to_csv['train_df']+'.csv', sep=',', index=False, encoding='utf-8')
+    test_df.to_csv(paths_to_csv['test_df']+'.csv', sep=',', index=False, encoding='utf-8')
+    val_df.to_csv(paths_to_csv['val_df']+'.csv', sep=',', index=False, encoding='utf-8')
+
+    # Return DataFrames of train, test and valuation
     return train_df, test_df, val_df
 
 
 # Function to normalize frames
-def normalize_frames(video_path):
+def normalize_frames(video_path, video_name):
+    # Check if file was all ready processed
+    if os.path.exists(video_name + '.npy'):
+        #print(f"This file ({video_name}) already normalized!")
+        return
     # Load frames from video path
     frames = np.load(video_path)
     # Custom transform function
@@ -245,7 +262,7 @@ def normalize_frames(video_path):
    
     # Initialize array to save normalized frames
     frames_normalized = []
-    # Iterate each frame, performe normlization based on given mean & std values
+    # Iterate each frame, perform normalization based on given mean & std values
     for frame in frames:
         # Transform the frame
         frame_transform = transform(frame)
@@ -263,18 +280,23 @@ def normalize_frames(video_path):
         frame_normalized = frame_normalized.transpose(1, 2, 0)
         # Append normalized frame into array
         frames_normalized.append(frame_normalized)
-    # Return normalized frames array
-    return frames_normalized
+    # Save normalized frames as npy array
+    np.save(f"{video_name}.npy", frames_normalized)
 
 
 # Function that creates folders into which data will be saved after normalization
-# And returns thier paths
+# And returns their paths
 def create_normalization_folders():
     # Folder paths that will be created
     train_folder = paths_to_folders_after_normalization['train_folder']
     test_folder = paths_to_folders_after_normalization['test_folder']
     val_folder = paths_to_folders_after_normalization['val_folder']
-    # Create folder to save into the normilized data
+
+    if os.path.exists(train_folder) and os.path.exists(test_folder) and os.path.exists(val_folder):
+        print("Normalization folders already exists!")
+        return train_folder, test_folder, val_folder
+
+    # Create folder to save into the normalized data
     create_folder(train_folder)
     create_folder(test_folder)
     create_folder(val_folder)

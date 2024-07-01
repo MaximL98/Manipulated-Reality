@@ -17,7 +17,7 @@ def main():
         folder_path = folder_paths[index]
         # Path to folder in which processed data will be saved
         save_folder = save_folders[index]
-        # List of availble types in which the data was split
+        # List of available types in which the data was split
         types = ["train", "test", "val"]
         for type in types:
             # Get paths of all videos
@@ -26,14 +26,21 @@ def main():
             tmp_save_folder = save_folder  + '/' + type
             create_folder(tmp_save_folder)
             # Initialize index to follow how many videos finished processing
-            i = 1
-            # Iterate each video, extract the frames which include faces 
+            i = 0
+            # Get total number of files in a folder
+            num_files = len(video_paths)
+            # For smaller model process only 10-20% of the data, for full model 100%
+            num_to_process = int(num_files*0.1)
+            # Iterate each video, extract the frames which include faces
             for video_path in video_paths:
-                print(f"Video {i}/{len(video_paths)}")
+                if i == num_to_process:
+                    print(f"Reached set limit of {num_to_process} out of {num_files}")
+                    break;
+                print(f"Video {i + 1}/{num_files}")
                 # Get video name
                 video_name = Path(video_path).stem
                 video_name = tmp_save_folder + '/' + video_name
-                # Preprocesse the video
+                # Preprocess the video
                 extract_video_frame(video_path=video_path, video_name=video_name)
                 i+=1
 
