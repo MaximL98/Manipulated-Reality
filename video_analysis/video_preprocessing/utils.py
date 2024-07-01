@@ -56,7 +56,7 @@ def extract_video_frame(video_path, video_name):
                 frames.append(face_frame)
             
             # Can later set higher number of frames
-            '''if len(frames) == 400:
+            '''if len(frames) == 300:
                 break'''
 
     finally:   
@@ -234,15 +234,15 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
     val_df = pd.concat([val_df_real, val_df_fake], ignore_index=True)
 
     # Check if DataFrames were converted to csv already, comment does lines if want to update csv's
-    if os.path.exists(paths_to_csv['train_df']) and os.path.exists(paths_to_csv['test_df']) and paths_to_csv['val_df']:
+    if os.path.exists(paths_to_csv['train_df']+'.csv') and os.path.exists(paths_to_csv['test_df']+'.csv') and os.path.exists(paths_to_csv['val_df']+'.csv'):
         print("DataFrames already converted to csv's files...")
         # Return DataFrames of train, test and valuation
         return train_df, test_df, val_df
     
     # Save DataFrame as csv file
-    train_df.to_csv(paths_to_csv['train_df'], sep=',', index=False, encoding='utf-8')
-    test_df.to_csv(paths_to_csv['test_df'], sep=',', index=False, encoding='utf-8')
-    val_df.to_csv(paths_to_csv['val_df'], sep=',', index=False, encoding='utf-8')
+    train_df.to_csv(paths_to_csv['train_df']+'.csv', sep=',', index=False, encoding='utf-8')
+    test_df.to_csv(paths_to_csv['test_df']+'.csv', sep=',', index=False, encoding='utf-8')
+    val_df.to_csv(paths_to_csv['val_df']+'.csv', sep=',', index=False, encoding='utf-8')
 
     # Return DataFrames of train, test and valuation
     return train_df, test_df, val_df

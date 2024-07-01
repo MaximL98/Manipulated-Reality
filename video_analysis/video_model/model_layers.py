@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 import keras
-from keras import layers, LSTM
+from keras import layers
+#LSTM
 
 
 # Layer that performs a two-step convolution, firstly extracts spatial features from the data 
@@ -32,10 +33,10 @@ class Conv2Plus1D(keras.layers.Layer):
   def call(self, x):
     x = self.seq(x)  # Get output from the convolutional layers
     # Reshape the output to prepare for LSTM
-    x = layers.Reshape((x.shape[1], x.shape[2] * x.shape[3]))(x)
+    #x = layers.Reshape((x.shape[1], x.shape[2] * x.shape[3]))(x)
     # LSTM layer
-    lstm_units = 32 # Can change this number e.g 16,32, 64, 128, 256. Depending on achived results 
-    x = LSTM(units=lstm_units)(x)
+    #lstm_units = 32 # Can change this number e.g 16,32, 64, 128, 256. Depending on achived results 
+    #x = LSTM(units=lstm_units)(x)
     return x
   
 
@@ -63,11 +64,11 @@ class ResidualMain(keras.layers.Layer):
 
   # Performing the computation of the layer 
   def call(self, x):
-    residual = x  # Store original input for skip connection ~~
-    out = self.seq(x) ## ~~
-    out = self.skip_connection([residual, out])  # Add residual connection ~~
-    return out
-    #return self.seq(x)
+    #residual = x  # Store original input for skip connection ~~
+    #out = self.seq(x) ## ~~
+    #out = self.skip_connection([residual, out])  # Add residual connection ~~
+    #return out
+    return self.seq(x)
 
 
 # The Project layer with a Dense layer used to reduce the dimensionality of these features,
