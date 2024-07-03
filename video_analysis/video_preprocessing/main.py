@@ -3,9 +3,9 @@ import time
 
 from pathlib import Path
 
-from utils import label_data, normalize_frames, create_normalization_folders, get_video_paths, create_folder
-from data import processed_data_folder_paths, paths_to_folders_after_processing, paths_to_folders_after_normalization
-
+from utils import label_data, normalize_frames, create_normalization_folders, get_video_paths, create_folder, normalize_frames_V2
+from data import paths_to_folders_after_processing, paths_to_folders_after_normalization
+#processed_data_folder_paths,
 # Main function to split and normalize the data
 def main():
     folder_paths = [paths_to_folders_after_processing ['celeb_DF_real'],
@@ -29,10 +29,10 @@ def main():
                 video_name = Path(video_path).stem
                 video_name = tmp_save_folder + '/' + video_name
                 # Use normalize frames function that normalizes frames and saves in the destination folder
-                normalize_frames(video_path=video_path, video_name=video_name)
+                normalize_frames_V2(video_path=video_path, video_name=video_name)
                 i+=1
 
-    # Path to fake and real data, after frame extraction, face recognition and normalization
+    '''# Path to fake and real data, after frame extraction, face recognition and normalization
     fake_video_folder_train = processed_data_folder_paths['fake_video_folder_train']
     fake_video_folder_test = processed_data_folder_paths['fake_video_folder_test']
     fake_video_folder_val = processed_data_folder_paths['fake_video_folder_val']
@@ -43,7 +43,7 @@ def main():
     # Label the data
     label_data(real_train_folder=real_video_folder_train, real_test_folder=real_video_folder_test, real_val_folder=real_video_folder_val, 
               fake_train_folder=fake_video_folder_train, fake_test_folder=fake_video_folder_test, fake_val_folder=fake_video_folder_val)
-
+    '''
     '''# Create normalization folders, to which the data will be saved
     train_folder, test_folder, val_folder = create_normalization_folders()
     # All DataFrames and folders

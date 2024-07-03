@@ -65,6 +65,7 @@ def extract_video_frame(video_path, video_name):
 
     # Save the processed frames as npy array
     if video_name:
+        frames = np.array(frames, dtype='int32') 
         print(f"Saving video frame as numpy array as {video_name}_processed.npy")
         np.save(f"{video_name}_processed.npy", frames)
 
@@ -255,7 +256,7 @@ def normalize_frames(video_path, video_name):
         #print(f"This file ({video_name}) already normalized!")
         return
     # Load frames from video path
-    frames = np.load(video_path)
+    frames = np.load(video_path).astype('float16')
     # Custom transform function
     transform = transforms.Compose([
         transforms.ToTensor()])
@@ -275,14 +276,33 @@ def normalize_frames(video_path, video_name):
         # Get normalized frame
         frame_normalized = transform_norm(frame)
         # Convert normalized frame back to NumPy array
-        frame_normalized = np.array(frame_normalized)
+        frame_normalized = np.array(frame_normalized, dtype='float16')
         # Transpose from shape of (3,,) to shape of (,,3)
         frame_normalized = frame_normalized.transpose(1, 2, 0)
         # Append normalized frame into array
         frames_normalized.append(frame_normalized)
+    frame_normalized = np.array(frame_normalized, dtype='float16')
     # Save normalized frames as npy array
     np.save(f"{video_name}.npy", frames_normalized)
 
+# Function to normalize frames
+def normalize_frames_V2(video_path, video_name):
+    # Check if file was all ready processed
+    if os.path.exists(video_name + '.npy'):
+        #print(f"This file ({video_name}) already normalized!")
+        return
+    # Load frames from video path
+    frames = np.load(video_path).astype('float16')
+    frames = np.moveaxis(frames, -1, 0)
+    max_val = 255.0 
+    # Initialize array to save normalized frames
+    # Iterate each frame, perform normalization based on given mean & std values
+    normalized_frames  = frames / max_val
+    # Move channel axis back to its original position
+    normalized_frames = np.moveaxis(normalized_frames, 0, -1)
+    normalized_frames = np.array(normalized_frames, dtype='float16')
+    # Save normalized frames as npy array
+    np.save(f"{video_name}.npy", normalized_frames)
 
 # Function that creates folders into which data will be saved after normalization
 # And returns their paths
