@@ -8,10 +8,8 @@ from model_layers import ResidualMain, Project
 
 # Checks if the number of feature maps in the input and the block's output differ
 def add_residual_block(input, filters, kernel_size):
-
   out = ResidualMain(filters, 
                      kernel_size)(input)
-
   res = input
   # Using the Keras functional APIs, project the last dimension of the tensor to
   # match the new filter size
@@ -34,21 +32,22 @@ def batch_generator(csv_file, batch_size, is_training=True):
   if is_training:
     random.shuffle(data_list)
 
+
   for i in range(0, len(data_list), batch_size):
     batch_data = data_list[i:i+batch_size]
-    batch_video_paths, batch_labels = zip(*batch_data)  # Unpack into separate lists
+    # Unpack video paths and labels
+    batch_video_paths = [path for path, _ in batch_data]
+    batch_labels = [label for _, label in batch_data]
     # Load video frames based on paths...
     batch_videos = []
     for path in batch_video_paths:
-      video_frames = np.load(path)
+      video_frames = np.load(path).astype('float16')
       batch_videos.append(video_frames)
      
-        
-    batch_videos = np.array(batch_videos)
-    print(batch_videos.shape)
-
-
-    yield batch_videos, batch_labels
+    batch_videos = np.array(batch_videos, dtype='float16')
+    print(batch_videos)
+    print(batch_videos.dtype)
+    return batch_videos, batch_labels
 
 def load_data_from_csv(csv_path):
   data = pd.read_csv(csv_path)
@@ -58,6 +57,7 @@ def load_data_from_csv(csv_path):
   for path in video_paths:
     video_frame = np.load(path)
     video_frames.append(video_frame)
+  video_frame = np.array(video_frame, dtype='float16')
   return video_frames, labels
 
 
@@ -68,14 +68,12 @@ def pad_data(csv_path):
   video_paths = data['video_path']
   # Set maximum video length, 225 is 15 second of video
   max_len = 225
-  i = 0
   # Iterate though all video paths
-  for video_path in video_paths:
-    i+=1
+  for i, video_path in enumerate(video_paths):
     print(f"Starting to pad: {video_path}...")
     print(f'video number: {i} out of {len(video_paths)}')
     # Load Numpy array, which are the video frames
-    video_frame = np.load(video_path)
+    video_frame = np.load(video_path).astype('float16')
     print(f"original shape: {video_frame.shape}")
     # Calculate by how much the video is longer or shorter then max length
     length = max_len - video_frame.shape[0]
@@ -93,12 +91,14 @@ def pad_data(csv_path):
         length = abs(length)
         for i in range(length):
           padding.pop()
+        padding = np.array(padding, dtype='float16')
         np.save(video_path, padding)
         continue
       # Else, if video too short pad him with zeros (black frames)
       else:
-        tmp_array = np.zeros((1, video_frame.shape[1], video_frame.shape[2], 3))
+        tmp_array = np.zeros((1, video_frame.shape[1], video_frame.shape[2], 3), dtype='float16')
         for i in range(length):
           padding.append(tmp_array[0])
+        padding = np.array(padding, dtype='float16')
         np.save(video_path, padding)
 
