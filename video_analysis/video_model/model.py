@@ -5,7 +5,7 @@ from model_layers import Conv2Plus1D
 from utils import add_residual_block
 
 # Manipulated reality video model architecture 
-def model(HEIGHT = 224, WIDTH = 224):
+def get_model(HEIGHT = 224, WIDTH = 224):
     # Train and evaluate the model using different frame selections (e.g., 10, 50, 100, 200), processed data now is 200 frames.
     input_shape = (None, 225, HEIGHT, WIDTH, 3)
     # Handle videos with different batch sizes.
