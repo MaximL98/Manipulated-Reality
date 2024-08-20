@@ -17,23 +17,59 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
 REAL_START_INDEX = 0
-REAL_END_INDEX = 100
+REAL_END_INDEX = 200000
 GENERATED_START_INDEX = 0
-GENERATED_END_INDEX = 0
+GENERATED_END_INDEX = 200000
 NUM_MFCC = 100
+TARGET_FREQUENCY = 22050
+LENGTH_OF_EACH_SAMPLE = 1
 
 # GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\WaveFake_dataset\\generated_audio\\common_voices_prompts_from_conformer_fastspeech2_pwg_ljspeech"
 # REAL_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\WaveFake_dataset\\real_audio"    
+# DATABASE_NAME = "WaveFake_dataset"
 
-# GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\FAKE"
-# REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\REAL"
 
-GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
-REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
+GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\FAKE"
+REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\REAL"
+DATABASE_NAME = "DeepVoice_dataset"
+
+
+# GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
+# REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
+# DATABASE_NAME = "FluentSpeechCorpus"
+
 useReal = True
-useFalse = False
+useFalse = True
 
-DATABASE_NAME = "FluentSpeechCorpus_dataset"
+# GENERATED_AUDIO_DIRECTORY = "Audio_numpy_files\\test\\real"
+# REAL_AUDIO_DIRECTORY = "Audio_numpy_files\\test\\fake"    
+
+
+# DATABASE_NAME = "DeepVoice_dataset"
+
+# ######################################################################################################
+# ######################################## In-The-Wild dataset #########################################
+# ######################################################################################################
+
+# folder_path_generated = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
+# folder_path_real = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
+
+START_INDEX = 0
+END_INDEX = 1500
+
+# # Read CSV fileclear
+# data = pd.read_csv("InTheWild_Labels.csv")
+# data = data[START_INDEX:END_INDEX if END_INDEX < len(data) else len(data)]
+
+# generated_audio_files = data[(data['label'] == 'spoof')]
+# real_audio_files = data[(data['label'] == 'bona-fide')]
+
+# generated_audio_files = generated_audio_files['file']
+# real_audio_files = real_audio_files['file']
+
+# ######################################################################################################
+# ######################################################################################################
+# ######################################################################################################
 
 
 # This function is used to calculate the bispectrum of the signals
@@ -68,10 +104,11 @@ def calculate_amplitude_spectrum(signals):
 # This function takes an audio file and returns an array with chunks of 1 second
 # If a file is 5.75 seconds, it returns an array of size 6 with the last index padded with 0's
 def trim_audio(audio, fs):
-    chunks = [audio[x:x + 1000] for x in range(0, len(audio), 1000)]
-    if (len(chunks[-1]) > 750):
-        # Pad chunks longer than 750 numbers with 0's
-        chunks[-1] = np.pad(chunks[-1], (0, 1000 - len(chunks[-1])), 'constant')
+    len_of_each_sample = fs * LENGTH_OF_EACH_SAMPLE
+    chunks = [audio[x:x + int(len_of_each_sample)] for x in range(0, len(audio), int(len_of_each_sample))]
+    if (len(chunks[-1]) > fs*0.75):
+        # Pad chunks longer than 75% of a second with 0's
+        chunks[-1] = np.pad(chunks[-1], (0, int(len_of_each_sample) - len(chunks[-1])), 'constant')
     else :
       chunks = chunks[:-1]
    
@@ -99,27 +136,7 @@ if useReal:
 else:
     real_audio_files = []
 
-#######################################################################################################
-######################################### In-The-Wild dataset #########################################
-#######################################################################################################
 
-# folder_path_generated = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
-# folder_path_real = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
-
-
-# # Read CSV fileclear
-# data = pd.read_csv("InTheWild_Labels.csv")
-# data = data[START_INDEX:END_INDEX if END_INDEX < len(data) else len(data)]
-
-# generated_audio_files = data[(data['label'] == 'spoof')]
-# real_audio_files = data[(data['label'] == 'bona-fide')]
-
-# generated_audio_files = generated_audio_files['file']
-# real_audio_files = real_audio_files['file']
-
-#######################################################################################################
-#######################################################################################################
-#######################################################################################################
 
 # Continue with the rest of the code...
 sampleNamesGenerated = generated_audio_files[GENERATED_START_INDEX:(len(generated_audio_files) if GENERATED_END_INDEX > len(generated_audio_files) else GENERATED_END_INDEX)]
@@ -144,10 +161,13 @@ for file in sampleNamesGenerated:
     audio, fs = sf.read(file_path)
     if audio.ndim > 1:
         audio = audio.mean(axis=1)  # Take the average of the channels to convert to mono
+    # Split audio into 1 second chunks
     audio_chunk = trim_audio(audio, fs)
     for audio in audio_chunk:
-      ffts.append(abs(fft.fft(audio)))
-      audio_files.append(audio)
+        ffts.append(abs(fft.fft(audio)))
+        # Resample each audio file to TARGET_FREQUENCY
+        audio = librosa.resample(audio, orig_sr=fs, target_sr=TARGET_FREQUENCY, res_type='soxr_vhq')
+        audio_files.append(audio)
     number_of_generated_samples += len(audio_chunk)
 
 
@@ -158,10 +178,13 @@ for file in sampleNamesReal:
     audio, fs = sf.read(file_path)
     if audio.ndim > 1:
         audio = audio.mean(axis=1)  # Take the average of the channels to convert to mono
+    # Split audio into 1 second chunks    
     audio_chunk = trim_audio(audio, fs)
     for audio in audio_chunk:
-      ffts.append(abs(fft.fft(audio)))
-      audio_files.append(audio)
+        ffts.append(abs(fft.fft(audio)))
+        # Resample each audio file to 44100Hz
+        audio = librosa.resample(audio, orig_sr=fs, target_sr=TARGET_FREQUENCY, res_type='soxr_vhq')
+        audio_files.append(audio)
     number_of_real_samples += len(audio_chunk)
 
 
@@ -195,7 +218,7 @@ print(len(mfcc[0][0]))
 
 
 mfcc = np.array(mfcc)
-mfcc = mfcc.reshape(len(audio_files), NUM_MFCC*2)
+mfcc = mfcc.reshape(len(audio_files), NUM_MFCC*len(mfcc[0][0]))
 
 # Convert complex numbers to real numbers by taking the absolute value
 #bicoherence_abs = np.abs(bicoherence)
@@ -207,10 +230,6 @@ print("mfcc_generated shape:", len(mfcc), len(mfcc[0]))
 # Perform delta cepstral and delta^2 analysis on the mfcc_bicoherence array
 delta_mfcc_bicoherence = librosa.feature.delta(mfcc)
 delta2_mfcc_bicoherence = librosa.feature.delta(mfcc, order=2)
-
-print(delta_mfcc_bicoherence[0][0])
-print(delta2_mfcc_bicoherence[0][0])
-
 
 print("delta_mfcc_bicoherence shape:", len(delta_mfcc_bicoherence))
 print("delta_mfcc_bicoherence shape:", len(delta_mfcc_bicoherence[0]))
@@ -227,8 +246,14 @@ feature_set = np.concatenate((mfcc,delta_mfcc_bicoherence, delta2_mfcc_bicoheren
 print("feature_set shape:", len(feature_set), len(feature_set[0]))
 
 # Save the feature set and labels to a file
-feature_set_name = str(REAL_START_INDEX) + "_to_" + str(len(sampleNamesReal)) + "_(REAL)_" + str(GENERATED_START_INDEX) + "_to_" + str(len(sampleNamesGenerated)) + "_(FAKE)_samples_" + DATABASE_NAME + "_feature_set.npy"
-labels_name = str(REAL_START_INDEX) + "_to_" + str(len(sampleNamesReal)) + "_(REAL)_" + str(GENERATED_START_INDEX) + "_to_" + str(len(sampleNamesGenerated)) + "_(FAKE)_samples_" + DATABASE_NAME + "_labels_set.npy"
+if DATABASE_NAME == "InTheWild_dataset":
+    feature_set_name = str(START_INDEX) + "-" + str(END_INDEX) + "_samples_" +  str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_feature_set.npy"
+    labels_name = str(START_INDEX) + "-" + str(END_INDEX) + "_samples_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_labels_set.npy"
+else :
+    feature_set_name = str(REAL_START_INDEX) + "-" + str(len(sampleNamesReal)) + "_(REAL)_" + str(GENERATED_START_INDEX) + "-" + str(len(sampleNamesGenerated)) + "_(FAKE)_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_feature_set.npy"
+    labels_name = str(REAL_START_INDEX) + "-" + str(len(sampleNamesReal)) + "_(REAL)_" + str(GENERATED_START_INDEX) + "-" + str(len(sampleNamesGenerated)) + "_(FAKE)_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_labels_set.npy"
+ 
+print("Created", feature_set_name)
 
 np.save(os.path.join("Audio_numpy_files\\", feature_set_name), feature_set)
 np.save(os.path.join("Audio_numpy_files\\", labels_name), labels)
