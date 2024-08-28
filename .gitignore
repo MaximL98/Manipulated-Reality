@@ -12,3 +12,5 @@ normalized_data_real/
 video_analysis/video_model/__pycache__
 video_analysis/video_model/tmp.py
 video_analysis/video_model/data.py
+video_analysis/models
+video_analysis/test_videos
