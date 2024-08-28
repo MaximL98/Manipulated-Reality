@@ -1,0 +1,100 @@
+.mainDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    min-height: 100vh;
+    width: 100%;
+    background-color: #db3131;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.mrLogo {
+    width: 110px;
+    height: 110px;
+    max-width: 100%;
+    max-height: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    position: absolute;
+    top: 10px;
+    border-radius: 100%;
+    animation: glow 2s infinite alternate-reverse;
+    background-color: black;
+    overflow: hidden;
+
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mrLogo:before {
+    content:"";
+    background-image: conic-gradient(
+        rgba(191, 191, 194, 0.144) 20deg,
+        rgba(191, 191, 194, 0.438) 360deg
+    );
+    height: 70px;
+    width: 70px;
+    position:absolute;
+    animation: rotate 7s infinite linear;
+    box-shadow: 0px 0px 15px 10px rgb(241, 240, 240);
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.mrLogo:after {
+    content:"";
+    height: 94%;
+    width: 94%;
+    position: absolute;
+    background-color: rgba(236, 236, 236, 0.3);
+    border-radius: 100%;
+    top: 3%;
+    left: 3%;
+    color: #04b0ee;
+    display: grid;
+    place-items: center;
+
+}
+
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px 0px rgba(212, 11, 230, 0.286);
+  }
+  to {
+    box-shadow: 0 0 20px 5px rgba(212, 212, 212, 0.267);
+  }
+}
+
+.innerLogoDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #000000;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.logoImage {
+    z-index: 3;
+    position: absolute;
+    width: 105px;
+    height: 105px;
+    border-radius: 100%;
+    background-color: black;
+    overflow: hidden;
+}

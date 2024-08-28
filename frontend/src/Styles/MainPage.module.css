@@ -1,0 +1,37 @@
+.DetectionTypeChoiceDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    background-color: rgb(48, 48, 48);
+    height: 200px;
+    width: 100%;
+    bottom: 0;
+
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.ChoiceButton {
+    height: 120px;
+    width: 280px;
+    background-color: rgb(32, 32, 32);
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px 2px rgb(0, 0, 0);
+
+    color: white;
+    
+}
