@@ -27,25 +27,27 @@ LENGTH_OF_EACH_SAMPLE = 1
 # GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\WaveFake_dataset\\generated_audio\\common_voices_prompts_from_conformer_fastspeech2_pwg_ljspeech"
 # REAL_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\WaveFake_dataset\\real_audio"    
 # DATABASE_NAME = "WaveFake_dataset"
+# useReal = True
+# useFalse = True
 
 
-GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\FAKE"
-REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\REAL"
-DATABASE_NAME = "DeepVoice_dataset"
+# GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\FAKE"
+# REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\DeepVoice_dataset\REAL"
+# DATABASE_NAME = "DeepVoice_dataset"
+# useReal = True
+# useFalse = True
 
 
-# GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
-# REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
-# DATABASE_NAME = "FluentSpeechCorpus"
-
+GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
+REAL_AUDIO_DIRECTORY = "Manipulated-Reality\Datasets\FluentSpeechCorpus(Trimmed)_dataset"
+DATABASE_NAME = "FluentSpeechCorpus"
 useReal = True
-useFalse = True
+useFalse = False
+
 
 # GENERATED_AUDIO_DIRECTORY = "Audio_numpy_files\\test\\real"
 # REAL_AUDIO_DIRECTORY = "Audio_numpy_files\\test\\fake"    
-
-
-# DATABASE_NAME = "DeepVoice_dataset"
+# DATABASE_NAME = "test_dataset"
 
 # ######################################################################################################
 # ######################################## In-The-Wild dataset #########################################
@@ -53,9 +55,11 @@ useFalse = True
 
 # folder_path_generated = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
 # folder_path_real = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
-
-START_INDEX = 0
-END_INDEX = 1500
+# DATABASE_NAME = "InTheWild_dataset"
+# GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
+# REAL_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
+# useReal = True
+# useFalse = False
 
 # # Read CSV fileclear
 # data = pd.read_csv("InTheWild_Labels.csv")
@@ -247,13 +251,15 @@ print("feature_set shape:", len(feature_set), len(feature_set[0]))
 
 # Save the feature set and labels to a file
 if DATABASE_NAME == "InTheWild_dataset":
-    feature_set_name = str(START_INDEX) + "-" + str(END_INDEX) + "_samples_" +  str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_feature_set.npy"
-    labels_name = str(START_INDEX) + "-" + str(END_INDEX) + "_samples_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_labels_set.npy"
+    feature_set_name = str(REAL_START_INDEX) + "-" + str(len(sampleNamesReal)) + "_samples_" +  str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_feature_set.npy"
+    labels_name = str(REAL_START_INDEX) + "-" + str(len(sampleNamesReal)) + "_samples_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_labels_set.npy"
 else :
     feature_set_name = str(REAL_START_INDEX) + "-" + str(len(sampleNamesReal)) + "_(REAL)_" + str(GENERATED_START_INDEX) + "-" + str(len(sampleNamesGenerated)) + "_(FAKE)_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_feature_set.npy"
     labels_name = str(REAL_START_INDEX) + "-" + str(len(sampleNamesReal)) + "_(REAL)_" + str(GENERATED_START_INDEX) + "-" + str(len(sampleNamesGenerated)) + "_(FAKE)_" + str(int(LENGTH_OF_EACH_SAMPLE*1000)) + "ms_for_sample_" + str(int(TARGET_FREQUENCY)) + "hz_frequency_" + DATABASE_NAME + "_labels_set.npy"
  
-print("Created", feature_set_name)
 
 np.save(os.path.join("Audio_numpy_files\\", feature_set_name), feature_set)
 np.save(os.path.join("Audio_numpy_files\\", labels_name), labels)
+
+print("Created", feature_set_name)
+print("Created", labels_name)

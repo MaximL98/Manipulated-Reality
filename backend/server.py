@@ -1,11 +1,11 @@
 from flask import Flask, request, render_template
 
-ALLOWED_FILETIPES = ['mp4', 'avi', 'mkv', 'mov']
+ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
 app = Flask(__name__)
 
 def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_FILETIPES
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_FILETYPES
 
 # API Route
 @app.route("/")
