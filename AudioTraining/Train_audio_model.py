@@ -28,19 +28,16 @@ class_names = ["fake", "real"]
 # labels = np.load("Audio_numpy_files\\0(REAL)_to_1(REAL)_0(FAKE)_to_1(FAKE)_samples_DeepVoice_dataset_labels_set.npy")
 # labels = labels.astype('int32')
 
-array_of_feature_set_names = ["All_data_1000ms_22050hz\\0_to_8_(REAL)_0_to_16_(FAKE)_samples_DeepVoice_dataset_feature_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_0_(REAL)_17_to_48_(FAKE)_samples_DeepVoice_dataset_feature_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_0_(REAL)_48_to_70_(FAKE)_samples_DeepVoice_dataset_feature_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_31779_samples_InTheWild_dataset_feature_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_30043_(REAL)_0_to_0_(FAKE)_samples_FluentSpeechCorpus_dataset_feature_set.npy"
-                              
+array_of_feature_set_names = ["All_data_1000ms_22050hz\\0-8_(REAL)_0-56_(FAKE)_1000ms_for_sample_22050hz_frequency_DeepVoice_dataset_feature_set.npy",
+                              "All_data_1000ms_22050hz\\0-31779_samples_1000ms_for_sample_22050hz_frequency_InTheWild_dataset_feature_set.npy",
+                              "All_data_1000ms_22050hz\\0-30043_(REAL)_0-0_(FAKE)_1000ms_for_sample_22050hz_frequency_FluentSpeechCorpus_feature_set.npy",
+                              "All_data_1000ms_22050hz\\0-3106_(REAL)_0-16283_(FAKE)_1000ms_for_sample_22050hz_frequency_WaveFake_dataset_feature_set.npy"
 ]
 
-array_of_labels_set_names = [ "All_data_1000ms_22050hz\\0_to_8_(REAL)_0_to_16_(FAKE)_samples_DeepVoice_dataset_labels_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_0_(REAL)_17_to_48_(FAKE)_samples_DeepVoice_dataset_labels_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_0_(REAL)_48_to_70_(FAKE)_samples_DeepVoice_dataset_labels_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_31779_samples_InTheWild_dataset_labels_set.npy",
-                              "All_data_1000ms_22050hz\\0_to_30043_(REAL)_0_to_0_(FAKE)_samples_FluentSpeechCorpus_dataset_labels_set.npy"
+array_of_labels_set_names = [ "All_data_1000ms_22050hz\\0-8_(REAL)_0-56_(FAKE)_1000ms_for_sample_22050hz_frequency_DeepVoice_dataset_labels_set.npy",
+                              "All_data_1000ms_22050hz\\0-31779_samples_1000ms_for_sample_22050hz_frequency_InTheWild_dataset_labels_set.npy",
+                              "All_data_1000ms_22050hz\\0-30043_(REAL)_0-0_(FAKE)_1000ms_for_sample_22050hz_frequency_FluentSpeechCorpus_labels_set.npy",
+                              "All_data_1000ms_22050hz\\0-3106_(REAL)_0-16283_(FAKE)_1000ms_for_sample_22050hz_frequency_WaveFake_dataset_labels_set.npy"
                               
 ]
 
@@ -76,7 +73,7 @@ train_data = []
 for dataset_features_name in array_of_feature_set_names:
     destination_dataset = 'Audio_numpy_files\\' + dataset_features_name
     print(destination_dataset)
-    train_data.append(np.load(destination_dataset))
+    train_data.append((np.load(destination_dataset))[0:5000])
 
 train_data = np.concatenate(train_data, axis=0)
 
@@ -84,7 +81,7 @@ labels = []
 for dataset_labels_name in array_of_labels_set_names:
     destination_dataset = 'Audio_numpy_files\\' + dataset_labels_name
     print(destination_dataset)
-    labels.append(np.load(destination_dataset))
+    labels.append((np.load(destination_dataset))[0:5000])
 
 labels = np.concatenate(labels, axis=0)
 labels = labels.astype('int32')
@@ -110,8 +107,8 @@ for i in range(20):
     print(train_data[-i-10], " label: " , labels[-i-10])
 
 ####################################################### TEST ####################################################################
-test_dataset_one_file = np.load("Audio_numpy_files\\0-1_(REAL)_0-1_(FAKE)_1000ms_for_sample_real_fake_one_feature_set.npy")
-test_dataset_one_file_labels = np.load("Audio_numpy_files\\0-1_(REAL)_0-1_(FAKE)_1000ms_for_sample_real_fake_one_labels_set.npy")
+test_dataset_one_file = np.load("Audio_numpy_files\\All_data_1000ms_22050hz\\0-1_(REAL)_0-1_(FAKE)_1000ms_for_sample_real_fake_one_feature_set.npy")
+test_dataset_one_file_labels = np.load("Audio_numpy_files\\All_data_1000ms_22050hz\\0-1_(REAL)_0-1_(FAKE)_1000ms_for_sample_real_fake_one_labels_set.npy")
 test_dataset_one_file_labels = test_dataset_one_file_labels.astype('int32')
 test_dataset_one_file = scaler.fit_transform(test_dataset_one_file)
 ####################################################### TEST ####################################################################
@@ -196,7 +193,7 @@ CNNmodel.summary()
 CNNmodel.compile(optimizer='adam', loss=keras.losses.BinaryCrossentropy(), metrics=['accuracy', 'precision', 'recall' ])
 
 
-history = CNNmodel.fit(x_train,y_train, batch_size=1024, epochs=5, validation_data= (x_val, y_val))
+history = CNNmodel.fit(x_train,y_train, batch_size=256, epochs=3, validation_data= (x_val, y_val))
 
 CNNmodel.save("2_Audio_model.keras")
 
@@ -228,50 +225,9 @@ print(classification_report(y_test, predicted_classes, target_names=class_names)
 
 from sklearn.metrics import confusion_matrix
 
-
-
 # Calculate the confusion matrix
 cm = confusion_matrix(y_test, predicted_classes)
 
 # Print the confusion matrix
 print("Confusion Matrix:")
 print(cm)
-
-import Feature_Extraction_from_sample as feature_extraction
-
-
-print("****************************************************************")
-print("Fake")
-print("****************************************************************")
-
-prediction = CNNmodel.predict(feature_extraction.audio_file_feature_extractor('audio-file-fake-test.mp3', NUM_MFCC=100, TARGET_FREQUENCY=22050, LENGTH_OF_EACH_SAMPLE=1))
-predicted = (prediction >= threshold).astype("int32")
-for i in range(9):
-    print(prediction[i], " label: fake", f"Precidted: {predicted[i]}")
-
-print("****************************************************************")
-print("Real")
-print("****************************************************************")
-
-prediction = CNNmodel.predict(feature_extraction.audio_file_feature_extractor('audio-file-real-test.mp3', 100, 22050, 1))
-predicted = (prediction >= threshold).astype("int32")
-for i in range(15):
-    print(prediction[i], " label: real", f"Precidted: {predicted[i]}")
-
-print("****************************************************************")
-print("Real_Fake_one_file")
-print("****************************************************************")
-
-prediction = CNNmodel.predict(test_dataset_one_file)
-predicted = (prediction >= threshold).astype("int32")
-for i in range(15):
-    print(prediction[i], " label: " , test_dataset_one_file_labels[i], f"Precidted: {predicted[i]}")
-
-print("****************************************************************")
-print("****************************************************************")
-print("****************************************************************")
-
-prediction = CNNmodel.predict(x_train[0:15])
-predicted = (prediction >= threshold).astype("int32")
-for i in range(15):
-    print(prediction[i], " label: " , test_dataset_one_file_labels[i], f"Precidted: {predicted[i]}")

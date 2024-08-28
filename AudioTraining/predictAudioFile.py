@@ -66,11 +66,11 @@ TARGET_SAMPLE_RATE = 22050
 def predictAudioFile(model, list):
     return model.predict(list)
 
-model = models.load_model('1_Audio_model.keras')
+model = models.load_model('Audio_detection_model_1024_batches_5_epochs.keras')
 
 import pickle
 
-with open('scaler.pkl', 'rb') as file:
+with open('RobustScaler.pkl', 'rb') as file:
     scaler = pickle.load(file)
     
 threshold = 0.5
@@ -80,25 +80,46 @@ print("FAKE")
 print("****************************************************************")
 
 
-test = scaler.fit_transform(feature_extraction.audio_file_feature_extractor('audio-file-fake-test.mp3', 100, 22050, 1))
+test = scaler.transform(feature_extraction.audio_file_feature_extractor('audio-file-fake-test.mp3', 100, 22050, 1))
 test1= test
 prediction = predictAudioFile(model, test)
 predicted = (prediction >= threshold).astype("int32")
 
 counter = 0
 for i in range(len(prediction)):
-    if prediction[i] >= threshold:
+    if prediction[i] <= threshold:
         counter += 1
-print("Data size: ", len(prediction),"Counter = ", counter, )
+print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accuracy: {counter/len(prediction)}" )
 
 for i in range(9):
-    print(prediction[i], " label: fake", f"predicted: {predicted[i]}")
+    print(prediction[i], f" label: 0, predicted: {predicted[i]}")
+    
+print("****************************************************************")
+print("FAKE 2")
+print("****************************************************************")
+
+
+test = scaler.transform(feature_extraction.audio_file_feature_extractor('another_speech_fake.mp3', 100, 22050, 1))
+test1= test
+prediction = predictAudioFile(model, test)
+predicted = (prediction >= threshold).astype("int32")
+
+counter = 0
+for i in range(len(prediction)):
+    if prediction[i] <= threshold:
+        counter += 1
+print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accuracy: {counter/len(prediction)}" )
+
+for i in range(9):
+    print(prediction[i], f" label: 0, predicted: {predicted[i]}")
+     
+
 
 print("****************************************************************")
 print("REAL")
 print("****************************************************************")
 
-test = scaler.fit_transform(feature_extraction.audio_file_feature_extractor('audio-file-real-test.mp3', 100, 22050, 1))
+test = scaler.transform(feature_extraction.audio_file_feature_extractor('audio-file-real-test.mp3', 100, 22050, 1))
 test2= test
 prediction = predictAudioFile(model, test)
 predicted = (prediction >= threshold).astype("int32")
@@ -107,16 +128,16 @@ counter = 0
 for i in range(len(prediction)):
     if prediction[i] >= threshold:
         counter += 1
-print("Data size: ", len(prediction),"Counter = ", counter)
+print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accuracy: {counter/len(prediction)}" )
 
 for i in range(15):
-    print(prediction[i], " label: real", f"predicted: {predicted[i]}")
+    print(prediction[i], f" label: 1,", f"predicted: {predicted[i]}, second: {i}-{i+1}")
 
 print("****************************************************************")
 print("REAL 2")
 print("****************************************************************")
 
-test = scaler.fit_transform(feature_extraction.audio_file_feature_extractor('Dima_recording_real.mp3', 100, SAMPLE_FREQUENCY, 1))
+test = scaler.transform(feature_extraction.audio_file_feature_extractor('Dima_recording_real.mp3', 100, SAMPLE_FREQUENCY, 1))
 test2= test
 prediction = predictAudioFile(model, test)
 predicted = (prediction >= threshold).astype("int32")
@@ -125,36 +146,46 @@ counter = 0
 for i in range(len(prediction)):
     if prediction[i] >= threshold:
         counter += 1
-print("Data size: ", len(prediction),"Counter = ", counter)
+print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accuracy: {counter/len(prediction)}" )
 
 for i in range(3):
-    print(prediction[i], " label: real", f"predicted: {predicted[i]}")
+    print(prediction[i], f" label: 1,", f"predicted: {predicted[i]}")
 
+# print("****************************************************************")
+# print("TEST")
+# print("****************************************************************")
+# prediction = predictAudioFile(model, scaler.transform(x_test))
+# predicted = (prediction >= threshold).astype("int32")
+
+# counter = 0
+# counter_label_correct = 0
+# for i in range(len(prediction)):
+#     if predicted[i] == y_test[i]:
+#         counter_label_correct += 1
+# print(f"Data size: , {len(prediction)}, Correct predictions = {counter_label_correct}" )
+
+# for i in range(15):
+#     print(prediction[i], " label:", y_test[i], f"predicted: {predicted[i]}")
+    
 print("****************************************************************")
-print("TEST")
+print("Real 3")
 print("****************************************************************")
-prediction = predictAudioFile(model, scaler.fit_transform(x_test))
+
+
+test = scaler.transform(feature_extraction.audio_file_feature_extractor('Mila_test_real.mp3', 100, SAMPLE_FREQUENCY, 1))
+test2= test
+prediction = predictAudioFile(model, test)
 predicted = (prediction >= threshold).astype("int32")
 
 counter = 0
-counter_label_correct = 0
 for i in range(len(prediction)):
-    if prediction[i] > threshold and y_test[i] == 0:
+    if prediction[i] >= threshold:
         counter += 1
-    if predicted[i] == y_test[i]:
-        counter_label_correct += 1
-print("Data size: ", len(prediction),"Counter = ", counter, f"Counter label correct: {counter_label_correct}")
+print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accuracy: {counter/len(prediction)}" )
 
-for i in range(15):
-    print(prediction[i], " label:", y_test[i], f"predicted: {predicted[i]}")
-    
-print("****************************************************************")
-print("****************************************************************")
-print("****************************************************************")
-    
-print("****************************************************************")
-print("xtest[0]: ", x_test[0], f"label: {y_test[0]}", f"predicted: {predicted[i]}")
-print("fake:", test1)
-print("real", test2)
+for i in range(6):
+    print(prediction[i], f" label: 1,", f"predicted: {predicted[i]}")
+
+
 
 
