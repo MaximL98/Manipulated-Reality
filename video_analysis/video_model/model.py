@@ -5,15 +5,15 @@ from model_layers import Conv2Plus1D
 from utils import add_residual_block
 
 # Manipulated reality video model architecture 
-def model(HEIGHT = 224, WIDTH = 224):
+def get_model(VIDEO_LENGTH, HEIGHT = 224, WIDTH = 224):
     # Train and evaluate the model using different frame selections (e.g., 10, 50, 100, 200), processed data now is 200 frames.
-    input_shape = (None, 225, HEIGHT, WIDTH, 3)
+    input_shape = (None, VIDEO_LENGTH, HEIGHT, WIDTH, 3)
     # Handle videos with different batch sizes.
     input = layers.Input(shape=(input_shape[1:]))
     x = input
 
     # Experiment with smaller spatial kernel sizes(e.g., 3x3 or 5x5), and not 7x7
-    x = Conv2Plus1D(filters=16, kernel_size=(3, 7, 7), padding='same')(x)
+    x = Conv2Plus1D(filters=16, kernel_size=(3, 3, 3), padding='same')(x)
     x = layers.BatchNormalization()(x)
     x = layers.ReLU()(x)
 

@@ -1,13 +1,14 @@
 import cv2
-import os
 import numpy as np
 import face_recognition
 import pandas as pd
-import torchvision.transforms as transforms
+
+import os
+import random
 
 from sklearn.model_selection import train_test_split
 # Imports paths from data file
-from data import paths_to_folders_after_normalization, paths_to_csv
+# from data import paths_to_csv
 
 
 # Function to extract video frames, later face frames and save them as npy files.
@@ -16,22 +17,19 @@ def extract_video_frame(video_path, video_name):
     if os.path.exists(video_name + "_processed.npy"):
         print(f"Numpy array for this file {video_name} already exists!")
         return
-
     # Create a VideoCapture object to read the video
     cap = cv2.VideoCapture(video_path)
     # Check if the video was opened successfully
     if not cap.isOpened():
         print("Error opening video!")
         return None
-
     # Video properties
     width = 224
     height = 224
-
     # Empty array to store the frames
     frames = []
-
     print(f'Starting to extract {video_name} file...')
+    error_detect = 0
     # Process each frame of the video
     try:
         while True:
@@ -39,6 +37,11 @@ def extract_video_frame(video_path, video_name):
             ret, frame = cap.read()
             # Target time interval between frames in milliseconds
             target_fps = 15
+            # In some of the videos in the real dataset are originally slowed down by x2
+            # To deal with that, x2 fps will be taken
+            if '#' in video_name:
+                target_fps = 30
+
             subsample_rate = int(1000 / target_fps)  # Convert FPS to milliseconds
             # Move to the next frame based on the subsample rate
             cap.set(cv2.CAP_PROP_POS_MSEC, (cap.get(cv2.CAP_PROP_POS_MSEC) + subsample_rate))
@@ -46,27 +49,35 @@ def extract_video_frame(video_path, video_name):
             if not ret:
                 print("No more frames to capture!")
                 break
-            
+
             # Convert frame to RGB
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            
+
             face_frame = face_detection(frame, width, height)
+
+            print(f"Frame {len(frames)} / 200")
+
+            if face_frame.size == 0:
+                error_detect += 1
+                if error_detect > 100:
+                    break
 
             if face_frame.size != 0:
                 frames.append(face_frame)
-            
-            # Can later set higher number of frames
-            '''if len(frames) == 300:
-                break'''
 
-    finally:   
+            # Maximum seq length
+            if len(frames) == 200:
+                break
+
+    finally:
         # Release the capture and close all windows
         cap.release()
 
     # Save the processed frames as npy array
     if video_name:
         print(f"Saving video frame as numpy array as {video_name}_processed.npy")
-        np.save(f"{video_name}_processed.npy", frames)
+        #np.save(f"{video_name}_processed.npy", frames)
+        return frames
 
 
 # Function that implement face recognition in a frame
@@ -95,14 +106,16 @@ def face_detection(image_array, width, height):
 
 # Function that returns array of strings representing the full paths of all video files
 def get_video_paths(folder_path):
-  video_paths = []
-  # Look into all files inside the path and return all the paths of video files
+  video_paths = [] # List to store found video file paths
+  # Recursively traverse the directory tree starting from the given folder_path
   for root, _, files in os.walk(folder_path):
     for file in files:
+      # Check if the file extension is one of the supported video formats
       if os.path.splitext(file)[1].lower() in ('.mp4', '.avi', '.mov', '.wmv', '.npy'):  # Common video extensions and npy
-        video_path = os.path.join(root, file)
-        video_paths.append(video_path)
+        video_path = os.path.join(root, file) # Construct the full path to the video file
+        video_paths.append(video_path) # Add the video path to the list
   return video_paths
+
 
 #!!!# The following two split functions purpose is automation of files handling only #!!!#
 # Function that automates splitting data into train, test, val folders
@@ -112,6 +125,8 @@ def split_data(folder_path, train_ratio=0.6, test_ratio=0.2, val_ratio=0.2):
         raise ValueError("Sum of ratios must equal 1.")
 
     files = os.listdir(folder_path)
+    # Shuffles files so model will be trained on un-seen data only.
+    random.shuffle(files)
 
     train_size = int(len(files) * train_ratio)
     val_size = int(len(files) * val_ratio)
@@ -202,9 +217,9 @@ def split_train_test_data(real_video_folder, fake_video_folder, test_size=0.2, v
 
 # Function to label data, after it was splitted
 # If data splitting was made not using "split_train_test_data" then this function is needed to label data
-def label_data(real_train_folder, real_test_folder, real_val_folder, 
+def label_data(real_train_folder, real_test_folder, real_val_folder,
               fake_train_folder, fake_test_folder, fake_val_folder):
-    
+
     # Lists to store file paths and labels
     real_train_paths = get_video_paths(real_train_folder)
     real_test_paths = get_video_paths(real_test_folder)
@@ -238,7 +253,7 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
         print("DataFrames already converted to csv's files...")
         # Return DataFrames of train, test and valuation
         return train_df, test_df, val_df
-    
+
     # Save DataFrame as csv file
     train_df.to_csv(paths_to_csv['train_df']+'.csv', sep=',', index=False, encoding='utf-8')
     test_df.to_csv(paths_to_csv['test_df']+'.csv', sep=',', index=False, encoding='utf-8')
@@ -246,59 +261,3 @@ def label_data(real_train_folder, real_test_folder, real_val_folder,
 
     # Return DataFrames of train, test and valuation
     return train_df, test_df, val_df
-
-
-# Function to normalize frames
-def normalize_frames(video_path, video_name):
-    # Check if file was all ready processed
-    if os.path.exists(video_name + '.npy'):
-        #print(f"This file ({video_name}) already normalized!")
-        return
-    # Load frames from video path
-    frames = np.load(video_path)
-    # Custom transform function
-    transform = transforms.Compose([
-        transforms.ToTensor()])
-   
-    # Initialize array to save normalized frames
-    frames_normalized = []
-    # Iterate each frame, perform normalization based on given mean & std values
-    for frame in frames:
-        # Transform the frame
-        frame_transform = transform(frame)
-        # Calculate mean and std
-        mean, std = frame_transform.mean([1,2]), frame_transform.std([1,2])
-        # Define custom transform, to calculate mean & std
-        transform_norm = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize(mean, std)])
-        # Get normalized frame
-        frame_normalized = transform_norm(frame)
-        # Convert normalized frame back to NumPy array
-        frame_normalized = np.array(frame_normalized)
-        # Transpose from shape of (3,,) to shape of (,,3)
-        frame_normalized = frame_normalized.transpose(1, 2, 0)
-        # Append normalized frame into array
-        frames_normalized.append(frame_normalized)
-    # Save normalized frames as npy array
-    np.save(f"{video_name}.npy", frames_normalized)
-
-
-# Function that creates folders into which data will be saved after normalization
-# And returns their paths
-def create_normalization_folders():
-    # Folder paths that will be created
-    train_folder = paths_to_folders_after_normalization['train_folder']
-    test_folder = paths_to_folders_after_normalization['test_folder']
-    val_folder = paths_to_folders_after_normalization['val_folder']
-
-    if os.path.exists(train_folder) and os.path.exists(test_folder) and os.path.exists(val_folder):
-        print("Normalization folders already exists!")
-        return train_folder, test_folder, val_folder
-
-    # Create folder to save into the normalized data
-    create_folder(train_folder)
-    create_folder(test_folder)
-    create_folder(val_folder)
-    # Return paths
-    return train_folder, test_folder, val_folder

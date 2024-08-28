@@ -31,13 +31,8 @@ class Conv2Plus1D(keras.layers.Layer):
         ])
   # Responsible for performing the actual computation of the layer
   def call(self, x):
-    x = self.seq(x)  # Get output from the convolutional layers
-    # Reshape the output to prepare for LSTM
-    #x = layers.Reshape((x.shape[1], x.shape[2] * x.shape[3]))(x)
-    # LSTM layer
-    #lstm_units = 32 # Can change this number e.g 16,32, 64, 128, 256. Depending on achived results 
-    #x = LSTM(units=lstm_units)(x)
-    return x
+    # Get output from the convolutional layers
+    return self.seq(x) 
   
 
 # Residual layer of the model with convolution, layer normalization, and activation function, ReLU.
@@ -60,14 +55,9 @@ class ResidualMain(keras.layers.Layer):
         # Normalization across all channels of the feature maps extracted by the previous convolution
         layers.LayerNormalization()
     ])
-    self.skip_connection = layers.Add()  # Add layer for skip connection ~~
 
   # Performing the computation of the layer 
   def call(self, x):
-    #residual = x  # Store original input for skip connection ~~
-    #out = self.seq(x) ## ~~
-    #out = self.skip_connection([residual, out])  # Add residual connection ~~
-    #return out
     return self.seq(x)
 
 
@@ -87,7 +77,7 @@ class Project(keras.layers.Layer):
     return self.seq(x)
   
 # The ResizeVideo layer leverages the einops library for efficient video resizing within a Keras model
-class ResizeVideo(keras.layers.Layer):
+'''class ResizeVideo(keras.layers.Layer):
   def __init__(self, height, width):
     super().__init__()
     self.height = height
@@ -98,7 +88,7 @@ class ResizeVideo(keras.layers.Layer):
     # b stands for batch size, t stands for time, h stands for height, 
     # w stands for width, and c stands for the number of channels.
     # Batch size (b), number of frames (t), height (h), width (w), and number of channels (c)
-    '''old_shape = einops.parse_shape(video, 'b t h w c')
+    old_shape = einops.parse_shape(video, 'b t h w c')
     images = einops.rearrange(video, 'b t h w c -> (b t) h w c')
     images = self.resizing_layer(images)
     videos = einops.rearrange(
