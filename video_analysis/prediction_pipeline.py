@@ -1,8 +1,7 @@
-import numpy as np
 from keras.models import load_model
 from pathlib import Path
 
-from video_preprocessing.utils import extract_video_frame
+from video_preprocessing.single_video_preprocessing import extract_video_frame
 from video_model.feature_extractor import feature_extraction
 
 # This main function runs the prediction pipeline, 
@@ -20,7 +19,11 @@ def predict(video_path):
     video_frames = extract_video_frame(video_path=video_path, video_name= "video_analysis/test_videos/" + video_name)
     # Extracting features from each frame, using pre-trained model.
     print("Extracting video features...")
-    frames_features = feature_extraction(video_frames)
+    if video_frames:
+        frames_features = feature_extraction(video_frames)
+    else:
+        print("Could not extract video frames. Bad video input.")
+        return None
     # Loading already trained model (MAYA)
     print("Loading MAYA")
     maya_model = load_model("video_analysis/models/maya_model.h5")
@@ -28,5 +31,8 @@ def predict(video_path):
     prediction = maya_model.predict(frames_features)
     # The model returns the probability of the video been REAL
     # Meaning if the prediction is higher then 50% (0.5) we label as REAL else FAKE
+    print(prediction)
     print("Real") if prediction > 0.5 else print("Fake")
     return prediction
+
+predict("DeepFake_video_and_audio.mp4")

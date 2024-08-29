@@ -25,10 +25,11 @@ def extract_video_frame(video_path, video_name):
             ret, frame = cap.read()
             # Target time interval between frames in milliseconds
             target_fps = 15
-            # In some of the videos in the real dataset are originally slowed down by x2
-            # To deal with that, x2 fps will be taken
-            if '#' in video_name:
-                target_fps = 30
+            
+            # # In some of the videos in the real dataset are originally slowed down by x2
+            # # To deal with that, x2 fps will be taken
+            # if '#' in video_name:
+            #     target_fps = 30
 
             subsample_rate = int(1000 / target_fps)  # Convert FPS to milliseconds
             # Move to the next frame based on the subsample rate

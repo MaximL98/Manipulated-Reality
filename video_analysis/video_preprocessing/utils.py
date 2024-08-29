@@ -76,7 +76,7 @@ def extract_video_frame(video_path, video_name):
     # Save the processed frames as npy array
     if video_name:
         print(f"Saving video frame as numpy array as {video_name}_processed.npy")
-        #np.save(f"{video_name}_processed.npy", frames)
+        # np.save(f"{video_name}_processed.npy", frames)
         return frames
 
 

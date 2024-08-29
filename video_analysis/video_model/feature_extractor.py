@@ -31,6 +31,7 @@ def feature_extraction(video_frames):
 
     feature_extractor = build_feature_extractor(fine_tuned_model)
     # Load video frames
+    video_frames = np.array(video_frames)
     frames = video_frames[None, ...] # Add batch dimension
 
     # Initialize an array to store extracted features
