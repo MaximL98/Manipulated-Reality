@@ -17,10 +17,10 @@ def App():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    if 'video' not in request.files:
+    if 'uploaded_file' not in request.files:
         print(request.files)
         return "No video file found"
-    video = request.files['video']
+    video = request.files['uploaded_file']
     if video.filename == '':
         return "No selected file"
     if video and allowed_file(video.filename):
