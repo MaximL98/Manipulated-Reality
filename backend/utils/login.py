@@ -1,11 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for
 import sqlite3
 import hashlib
 
-
-app = Flask(__name__)
-
-DB_PATH = "backend/database.db"
+DB_PATH = "database.db"
 
 
 def get_user_by_username(username):
@@ -14,7 +10,7 @@ def get_user_by_username(username):
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
+    cursor.execute("SELECT password FROM user_data WHERE username = ?", (username,))
     result = cursor.fetchone()
 
     conn.close()
@@ -28,28 +24,12 @@ def hash_func(password):
 
 
 def check_password(input_pass, db_pass):
-    return hash_func(input_pass) == db_pass
+    return hash_func(input_pass) == db_pass[0]
 
 
 def authenticate_user(username, password):
     # Check if user exists and password matches
-    user = get_user_by_username(username)
-    if user and check_password(password, user[1]):
+    db_password = get_user_by_username(username)
+    if db_password and check_password(password, db_password):
         return True
     return False
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        if authenticate_user(username, password):
-            # Redirect to protected area or home page
-            return redirect(url_for('protected_area'))
-        else:
-            # Handle login failure (e.g., incorrect credentials)
-            return render_template('login.html', error="Invalid username or password")
-
-    return render_template('login.html')
