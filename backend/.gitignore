@@ -1,3 +1,4 @@
 venv/
 static/
 utils/db_control.py
+utils/__pycache__
