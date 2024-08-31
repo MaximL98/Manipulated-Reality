@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template
+from utils import utils
 
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
@@ -16,13 +17,18 @@ def App():
 
 @app.route("/upload", methods=["POST"])
 def upload():
-    if 'video' not in request.files:
+    if 'uploaded_file' not in request.files:
+        print(request.files)
         return "No video file found"
-    video = request.files['video']
+    video = request.files['uploaded_file']
     if video.filename == '':
         return "No selected file"
     if video and allowed_file(video.filename):
-        video.save("./static/videos/" + video.filename)
+        video_path = "./static/videos/" + video.filename.split('.')[0] + ".mp4"
+        audio_path = "./static/audio/" + video.filename.split('.')[0]
+        video.save(video_path)
+        video_path, audio_path = utils.extract_audio(video_path, audio_path)
+        print(video_path, audio_path)
         # return render_template("frontend/src/test.js", video_name=video.filename)
         return "Uploaded succesfuly"
     return "Invalid file type"
