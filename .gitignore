@@ -14,3 +14,6 @@ video_analysis/video_model/tmp.py
 video_analysis/video_model/data.py
 video_analysis/models
 video_analysis/test_videos
+video_analysis/video_preprocessing/frames
+video_analysis/video_preprocessing/images
+video_analysis/video_preprocessing/images_extraction.py
