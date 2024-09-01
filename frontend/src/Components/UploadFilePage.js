@@ -13,8 +13,8 @@ import { Link } from 'react-router-dom';
 const ACCEPTED_FILE_TYPES = ["mp4", "mkv", "avi", "mov", "wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
 
 function UploadFilePage() {
+
   let currentButton = "videoAudio";
-  const [data, setData] = useState({ members: [] });
   const labelRef = useRef(null);
   const imageDivRef = useRef(null);
   const upload_span_ref = useRef(null);
@@ -37,28 +37,21 @@ function UploadFilePage() {
     console.log(event.target.files[0]);
     console.log(imageDivRef);
 
-    for (let i = 0; i < ACCEPTED_FILE_TYPES.length; i++) {
-      if (event.target.files[0].name.includes(ACCEPTED_FILE_TYPES[i])) {
-        console.log("Accepted file type " + event.target.files[0].name);
-        setShowCheckmark(true);
-        setShowError(false);
-        if (event.target.files[0].name.length >= 40) {
-          let name = event.target.files[0].name;
-          imageDivRef.current.children[1].innerText = name.slice(0, 40) + "...";
-          event.target.files[0].name = name.slice(0, 60);
-        }
-        else {
-          imageDivRef.current.children[1].innerText = event.target.files[0].name;
-        }
-        imageDivRef.current.children[2].innerText = "File selected.";
-        return;
-      }
-    }
+    let filename = event.target.files[0].name;
 
-    setShowError(true);
-    setShowCheckmark(false);
-    imageDivRef.current.children[1].innerText = "Error: Invalid file type.";
-    imageDivRef.current.children[2].innerText = "Please select a valid file type.";
+    if (ACCEPTED_FILE_TYPES.includes(filename.split('.').pop())) {
+      console.log("Accepted file type " + filename);
+      setShowCheckmark(true);
+      setShowError(false);
+      imageDivRef.current.children[1].innerText = filename.slice(0, 40) + "..."; // Truncate filename
+      imageDivRef.current.children[2].innerText = "File selected.";
+    }
+    else {
+      setShowError(true);
+      setShowCheckmark(false);
+      imageDivRef.current.children[1].innerText = "Error: Invalid file type.";
+      imageDivRef.current.children[2].innerText = "Please select a valid file type.";
+    }
   }
 
   const fileUpload = () => {
@@ -67,14 +60,8 @@ function UploadFilePage() {
       upload_p_ref.current.innerText = inputFileRef.current.files[0].name;
       upload_span_ref.current.innerText = "File selected.";
     }
-
   }
 
-  useEffect(() => {
-    fetch("/upload")
-      .then(res => res.json())
-      .then(data => setData(data)); // Update entire data state
-  }, []);
 
 
 
@@ -151,31 +138,29 @@ function UploadFilePage() {
 
         </div>
 
-        <form action='upload' method="post" encType="multipart/form-data">
+        <form action='/api/upload' method="post" encType="multipart/form-data">
           <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov" className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} />
           <button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button>
         </form>
-        <label className={MainPage.dropArea} useRef={labelRef}>
-          <form action='upload' method="post" encType="multipart/form-data" >
-            <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov,wav" className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} hidden />
-            <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
-              {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} ref={CheckmarkIconRef} />}
-              {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} ref={CheckmarkIconRef} />}
-              {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} ref={cloudIconRef} />}
+        <form action='upload' method="post" encType="multipart/form-data" className={MainPage.dropArea} useRef={labelRef}>
+          <input type="file" name='uploaded_file' className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} hidden />
+          <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
+            {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} ref={CheckmarkIconRef} />}
+            {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} ref={CheckmarkIconRef} />}
+            {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} ref={cloudIconRef} />}
 
 
 
-              <div>
-                <p ref={upload_p_ref}>Click or drop a file here.</p>
-              </div>
-              <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
-
+            <div>
+              <p ref={upload_p_ref}>Click or drop a file here.</p>
             </div>
+            <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
 
-            {showCheckmark && <Link to="/upload"><button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button></Link>}
+          </div>
 
-          </form>
-        </label>
+          {showCheckmark && <Link to="/Components/Results.js"> <button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button></Link>}
+
+        </form>
 
 
 
