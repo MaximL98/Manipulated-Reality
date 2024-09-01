@@ -43,7 +43,9 @@ function UploadFilePage() {
         setShowCheckmark(true);
         setShowError(false);
         if (event.target.files[0].name.length >= 40) {
-          imageDivRef.current.children[1].innerText = event.target.files[0].name.slice(0, 40) + "...";
+          let name = event.target.files[0].name;
+          imageDivRef.current.children[1].innerText = name.slice(0, 40) + "...";
+          event.target.files[0].name = name.slice(0, 60);
         }
         else {
           imageDivRef.current.children[1].innerText = event.target.files[0].name;
@@ -65,8 +67,8 @@ function UploadFilePage() {
       upload_p_ref.current.innerText = inputFileRef.current.files[0].name;
       upload_span_ref.current.innerText = "File selected.";
     }
-  }
 
+  }
 
   useEffect(() => {
     fetch("/upload")
@@ -74,31 +76,34 @@ function UploadFilePage() {
       .then(data => setData(data)); // Update entire data state
   }, []);
 
+
+
+
   function buttonClicked(type) {
     switch (type) {
       case "videoAudio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButtonActive;
         videoButtonRef.current.className = MainPage.ChoiceButton;
         audioButtonRef.current.className = MainPage.ChoiceButton;
-        iconChoiceDivVideoAudioRef.current.style.borderRight = "2px solid #000000";
-        iconChoiceDivVideoRef.current.style.borderRight = "2px solid #ffffff";
-        iconChoiceDivAudioRef.current.style.borderRight = "2px solid #ffffff";
+        iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #000000";
+        iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
+        iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         break;
       case "video":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
         videoButtonRef.current.className = MainPage.ChoiceButtonActive;
         audioButtonRef.current.className = MainPage.ChoiceButton;
-        iconChoiceDivVideoAudioRef.current.style.borderRight = "2px solid #ffffff";
-        iconChoiceDivVideoRef.current.style.borderRight = "2px solid #000000";
-        iconChoiceDivAudioRef.current.style.borderRight = "2px solid #ffffff";
+        iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
+        iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #000000";
+        iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         break;
       case "audio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
         videoButtonRef.current.className = MainPage.ChoiceButton;
         audioButtonRef.current.className = MainPage.ChoiceButtonActive;
-        iconChoiceDivVideoAudioRef.current.style.borderRight = "2px solid #ffffff";
-        iconChoiceDivVideoRef.current.style.borderRight = "2px solid #ffffff";
-        iconChoiceDivAudioRef.current.style.borderRight = "2px solid #000000";
+        iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
+        iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
+        iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #000000";
         break;
       default:
         console.log("Invalid button");
@@ -115,52 +120,61 @@ function UploadFilePage() {
         <div className={MainPage.DetectionTypeChoiceDiv}>
 
           <div ref={videoAudioButtonRef} className={MainPage.ChoiceButton} onClick={(event) => { buttonClicked("videoAudio"); event.stopPropagation(); }}>
-            <div ref={iconChoiceDivVideoAudioRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderRight: "2px solid #ffffff", height: "80px", justifyContent: "center", paddingRight: "30px" }}>
-              <GoVideo style={{ height: "40px", width: "40px" }} />
-              <LuAmpersand style={{ height: "25px", width: "25px" }} />
-              <PiWaveformThin style={{ height: "40px", width: "40px" }} />
-            </div>
-            <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", marginLeft: "30px" }}>
+            <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", marginRight: "20px" }}>
               <h2 style={{ margin: 0, padding: 0 }}>Video</h2>
               <h2 style={{ margin: 0, padding: 0 }}>&</h2>
               <h2 style={{ margin: 0, padding: 0 }}>Audio</h2>
             </div>
+            <div ref={iconChoiceDivVideoAudioRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderLeft: "2px solid #ffffff", height: "80px", justifyContent: "center", paddingLeft: "30px" }}>
+              <GoVideo style={{ height: "40px", width: "40px" }} />
+              <LuAmpersand style={{ height: "25px", width: "25px" }} />
+              <PiWaveformThin style={{ height: "40px", width: "40px" }} />
+            </div>
+
           </div>
           <div ref={videoButtonRef} className={MainPage.ChoiceButton} onClick={(event) => { buttonClicked("video"); event.stopPropagation(); }}>
-            <div ref={iconChoiceDivVideoRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderRight: "2px solid #ffffff", height: "100%", justifyContent: "center", paddingRight: "30px" }}>
+            <h2 style={{ display: "flex", justifyContent: "center", flexDirection: "column", marginRight: "20px" }}>Video</h2>
+
+            <div ref={iconChoiceDivVideoRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderLeft: "2px solid #ffffff", height: "100%", justifyContent: "center", paddingLeft: "30px" }}>
               <GoVideo style={{ height: "40px", width: "40px" }} />
 
             </div>
-            <h2 style={{ display: "flex", justifyContent: "center", flexDirection: "column", marginLeft: "30px" }}>Video</h2>
           </div>
           <div ref={audioButtonRef} className={MainPage.ChoiceButton} onClick={(event) => { buttonClicked("audio"); event.stopPropagation(); }}>
-            <div ref={iconChoiceDivAudioRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderRight: "2px solid #ffffff", height: "100%", justifyContent: "center", paddingRight: "30px" }}>
+            <h2 style={{ display: "flex", justifyContent: "center", flexDirection: "column", marginRight: "20px" }}>Audio</h2>
+
+            <div ref={iconChoiceDivAudioRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderLeft: "2px solid #ffffff", height: "100%", justifyContent: "center", paddingLeft: "30px" }}>
               <PiWaveformThin style={{ height: "40px", width: "40px" }} />
 
             </div>
-            <h2 style={{ display: "flex", justifyContent: "center", flexDirection: "column", marginLeft: "30px" }}>Audio</h2>
           </div>
 
         </div>
 
-        <label action='upload' method="post" encType="multipart/form-data" className={MainPage.dropArea} useRef={labelRef}>
-          <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov,wav" className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} hidden />
-          <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
-            {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} ref={CheckmarkIconRef} />}
-            {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} ref={CheckmarkIconRef} />}
-            {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} ref={cloudIconRef} />}
+        <form action='upload' method="post" encType="multipart/form-data">
+          <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov" className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} />
+          <button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button>
+        </form>
+        <label className={MainPage.dropArea} useRef={labelRef}>
+          <form action='upload' method="post" encType="multipart/form-data" >
+            <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov,wav" className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} hidden />
+            <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
+              {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} ref={CheckmarkIconRef} />}
+              {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} ref={CheckmarkIconRef} />}
+              {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} ref={cloudIconRef} />}
 
 
 
-            <div>
-              <p ref={upload_p_ref}>Click or drop a file here.</p>
+              <div>
+                <p ref={upload_p_ref}>Click or drop a file here.</p>
+              </div>
+              <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
+
             </div>
-            <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
 
-          </div>
+            {showCheckmark && <Link to="/upload"><button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button></Link>}
 
-          {showCheckmark && <Link to="/upload"><button className={MainPage.uploadButton} onClick={fileUpload}>Upload</button></Link>}
-
+          </form>
         </label>
 
 
