@@ -1,12 +1,5 @@
 .DetectionTypeChoiceDiv {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 60px;
-    background-color: rgb(48, 48, 48);
-    height: 30px;
-    width: 100%;
-
+    height: auto;
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -17,7 +10,7 @@
 
 .ChoiceButton {
     height: 60px;
-    width: 280px;
+    width: auto;
     background-color: rgb(32, 32, 32);
     margin: 20px;
     padding: 20px;
@@ -29,29 +22,78 @@
     flex-direction: row;
 
     border-radius: 10px;
-    box-shadow: 2px 2px 10px 2px rgb(0, 0, 0);
+    box-shadow: 2px 2px 10px 2px rgb(0, 0, 0, 0.342);
+    border: 3px solid transparent;
 
     color: white;
+}
 
+.ChoiceButtonActive {
+    height: 60px;
+    width: auto;
+    background-color: rgb(255, 255, 255);
+    margin: 20px;
+    padding: 20px;
+    text-align: center;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px 2px rgb(0, 0, 0, 0.342);
+
+    color: rgb(0, 0, 0);
+
+    border: 3px solid rgb(0, 0, 0);
+}
+
+.ChoiceButtonActive h2 {
+    user-select: none;
+}
+
+
+
+.ChoiceButton h2 {
+    user-select: none;
+}
+
+.ChoiceButton:hover {
+    background-color: rgb(48, 48, 48);
+}
+
+.ChoiceButton:active {
+    background-color: rgb(124, 124, 124);
 }
 
 .dropArea {
-    width: 350px;
+    width: 90%;
     height: 350px;
     padding: 30px;
-    margin-top: 20px;
     border-radius: 20px;
     text-align: center;
     box-shadow: 2px 2px 10px 2px rgba(0, 0, 0, 0.342);
     background-color: #f7f8ff;
+    margin-top: 20px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .uploadImageDiv {
-    width: 350px;
-    height: 350px;
+    width: 95%;
+    height: 98%;
     border-radius: 20px;
     outline: 2px dashed #bbb5ff;
     background: #f7f8ff;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .uploadImageDiv:hover {
@@ -66,6 +108,12 @@
 
 .uploadImageDiv p {
     font-size: 20px;
+    flex-wrap: wrap;
+    max-width: 350px;
+    white-space: wrap;
+    overflow-wrap: break-word;
+    padding-left: 20px;
+    padding-right: 20px;
 
 }
 
@@ -90,7 +138,14 @@
     background-color: #f7f8ff;
     border: 2px solid #bbb5ff;
     border-radius: 10px;
-    margin-top: 20px;
+    margin-top: 40px;
     font-size: 20px;
     color: #bbb5ff;
 }
+
+.uploadButton:hover {
+    background-color: #2c3180;
+    cursor: pointer;
+    
+}
+

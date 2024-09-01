@@ -23,15 +23,15 @@ def upload():
     if video.filename == '':
         return "No selected file"
     if video and allowed_file(video.filename):
-        video_path = "./static/videos/" + video.filename.split('.')[0] + ".mp4"
-        audio_path = "./static/audio/" + video.filename.split('.')[0]
+        video_path = "./static/videos/" + video.filename.split('.')[0][0:40] + ".mp4"
+        audio_path = "./static/audio/" + video.filename.split('.')[0][0:40]
         video.save(video_path)
-        video_path, audio_path = utils.extract_audio(video_path, audio_path)
+        _, audio_path = utils.extract_audio(video_path, audio_path)
         print(video_path, audio_path)
         # return render_template("frontend/src/test.js", video_name=video.filename)
         return "Uploaded succesfuly"
     return "Invalid file type"
-    
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
