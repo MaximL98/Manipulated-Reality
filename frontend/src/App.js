@@ -88,7 +88,7 @@ function App() {
 
         <p>Below is a working upload of a video. Above is a work in progress.</p>
         <form action='upload' method="post" encType="multipart/form-data">
-          <input type="file" name='video' accept="mp4,mkv,avi" />
+          <input type="file" name='uploaded_file' accept="mp4,mkv,avi" />
           <button>Upload</button>
         </form>
 
