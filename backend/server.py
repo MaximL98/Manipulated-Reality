@@ -1,8 +1,11 @@
 from flask import Flask, request, render_template
 from utils import utils, registration, login
+import json
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="./frontend/src", template_folder="./frontend/src", static_url_path="/")
+
+print("App:", app.send_static, "Name:", __name__)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_FILETYPES
@@ -14,7 +17,7 @@ def App():
         render_template("App.js")
     }
 
-@app.route("/upload", methods=["POST"])
+@app.route("/api/upload", methods=["POST"])
 def upload():
     if 'uploaded_file' not in request.files:
         print(request.files)
@@ -29,7 +32,10 @@ def upload():
         _, audio_path = utils.extract_audio(video_path, audio_path)
         print(video_path, audio_path)
         # return render_template("frontend/src/test.js", video_name=video.filename)
-        return "Uploaded succesfuly"
+        import os
+        print(os.getcwd())
+        print(os.listdir())
+        return app.send_static_file("test.js")
     return "Invalid file type"
 
 @app.route('/register', methods=['GET', 'POST'])
