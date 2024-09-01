@@ -86,11 +86,11 @@ function App() {
         {showCheckmark && <button className={MainPage.uploadButton} onClick={fileUpload}>Upload</button>}
 
 
-      <p>Below is a working upload of a video. Above is a work in progress.</p>
-      <form action='upload' method="post" encType="multipart/form-data">
-        <input type="file" name='video' accept="mp4,mkv,avi" />
-        <button>Upload</button>
-      </form>
+        <p>Below is a working upload of a video. Above is a work in progress.</p>
+        <form action='upload' method="post" encType="multipart/form-data">
+          <input type="file" name='video' accept="mp4,mkv,avi" />
+          <button>Upload</button>
+        </form>
 
         <div className={MainPage.DetectionTypeChoiceDiv}>
           <div className={MainPage.ChoiceButton}>
@@ -119,7 +119,7 @@ function App() {
         </div>
       </div>
     </div>
-        );
+  );
 }
 
-        export default App;
+export default App;
