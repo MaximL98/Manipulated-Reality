@@ -118,7 +118,37 @@ function App() {
 
         </div>
       </div>
+      <div>
+        <h1>Register</h1>
+        <form method="POST" action="/register">
+          <label for="username">Username:</label>
+          <input type="text" name="username"  required/>
+
+          <label for="password">Password:</label>
+          <input type="password" name="password" required/>
+
+          <label for="email">Email:</label>
+          <input type="email" name="email" required/>
+
+
+          <button type="submit">Register</button>
+        </form>
+      </div>
+      <body>
+      <h1>Login</h1>
+      <form method="POST" action="/loginUser">
+        <label for="username">Username:</label>
+        <input type="text" name="username"  required/>
+
+        <label for="password">Password:</label>  
+
+        <input type="password" name="password" required/>
+
+        <button type="submit">Login</button>
+      </form>
+    </body>
     </div>
+
         );
 }
 

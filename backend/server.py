@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template
-from utils import utils
-
+from utils import utils, registration, login
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
 app = Flask(__name__)
@@ -33,5 +32,34 @@ def upload():
         return "Uploaded succesfuly"
     return "Invalid file type"
     
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+
+        print(username)
+        if registration.register_user(username, password, email):
+            return   # Redirect to login page after successful registration
+        else:
+            # Handle registration failure (e.g., user already exists)
+            return render_template('register.html', error="Username already exists")
+
+
+@app.route('/loginUser', methods=['GET', 'POST'])
+def loginUser():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if login.authenticate_user(username, password):
+            # Redirect to protected area or home page
+            return "USER FOUND"
+        else:
+            # Handle login failure (e.g., incorrect credentials)
+            return "USER NOT FOUND"
+
+   
 if __name__ == "__main__":
     app.run(debug=True)
