@@ -13,8 +13,8 @@ import { Link } from 'react-router-dom';
 const ACCEPTED_FILE_TYPES = ["mp4", "mkv", "avi", "mov", "wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
 
 function UploadFilePage() {
+  const [data, setData] = useState([{}]);
 
-  let currentButton = "videoAudio";
   const labelRef = useRef(null);
   const imageDivRef = useRef(null);
   const upload_span_ref = useRef(null);
@@ -30,37 +30,132 @@ function UploadFilePage() {
   const iconChoiceDivAudioRef = useRef(null);
 
 
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploadStatus, setUploadStatus] = useState(null);
   const [showCheckmark, setShowCheckmark] = useState(false);
   const [showError, setShowError] = useState(false);
 
-  const handleFileUpload = (event) => {
-    console.log(event.target.files[0]);
-    console.log(imageDivRef);
+  // const handleFileUpload = (event) => {
 
-    let filename = event.target.files[0].name;
+  //   console.log(event.target.files[0]);
+  //   console.log(imageDivRef);
 
-    if (ACCEPTED_FILE_TYPES.includes(filename.split('.').pop())) {
-      console.log("Accepted file type " + filename);
+  //   let filename = event.target.files[0].name;
+
+  //   if (file && ACCEPTED_FILE_TYPES.includes(file.name.split('.').pop())) {
+  //     setSelectedFile(file);
+  //     setShowCheckmark(true);
+  //     setShowError(false);
+
+  //   } else {
+  //     setSelectedFile(null);
+  //     setShowError(true);
+  //     setShowCheckmark(false);
+  //     // imageDivRef.current.children[1].innerText = "Error: Invalid file type.";
+  //     // imageDivRef.current.children[2].innerText = "Please select a valid file type.";
+  //   }
+
+  //   // if (ACCEPTED_FILE_TYPES.includes(filename.split('.').pop())) {
+  //   //   console.log("Accepted file type " + filename);
+  //   //   setShowCheckmark(true);
+  //   //   setShowError(false);
+  //   // imageDivRef.current.children[1].innerText = filename.slice(0, 40) + "..."; // Truncate filename
+  //   // imageDivRef.current.children[2].innerText = "File selected.";
+
+  //   // }
+  //   // else {
+  //   //   setShowError(true);
+  //   //   setShowCheckmark(false);
+
+  //   // }
+
+  //   if (data['message'] === "Upload successful") {
+  //     console.log("Upload successful");
+  //   }
+  // }
+
+  // const fileUpload = (event) => {
+  //   //console.log("File upload function called ", inputFileRef.current.files[0]);
+  //   const formData = new FormData();
+  //   //formData.append('uploaded_file', inputFileRef.current.files[0]);
+  //   formData.append('file_type', 'video'); // Add this based on the selected option
+
+  //   fetch('/Results', {
+  //     method: 'POST',
+  //     body: formData,
+  //   })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //       setData(data.message || 'Upload successful');
+  //       // Update UI based on the response
+  //       if (data.success) {
+  //         setShowCheckmark(true);
+  //         setShowError(false);
+  //       } else {
+  //         setShowError(true);
+  //         setShowCheckmark(false);
+  //       }
+  //     })
+  //     .catch(error => {
+  //       console.error('Error:', error);
+  //       setData('Upload failed');
+  //       setShowError(true);
+  //       setShowCheckmark(false);
+  //     });
+  // };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file && ACCEPTED_FILE_TYPES.includes(file.name.split('.').pop())) {
+      setSelectedFile(file);
       setShowCheckmark(true);
       setShowError(false);
-      imageDivRef.current.children[1].innerText = filename.slice(0, 40) + "..."; // Truncate filename
-      imageDivRef.current.children[2].innerText = "File selected.";
-    }
-    else {
+      // Update UI with selected file info
+    } else {
+      setSelectedFile(null);
       setShowError(true);
       setShowCheckmark(false);
-      imageDivRef.current.children[1].innerText = "Error: Invalid file type.";
-      imageDivRef.current.children[2].innerText = "Please select a valid file type.";
     }
-  }
+  };
 
-  const fileUpload = () => {
-    console.log("File uploaded!!!");
-    if (inputFileRef.current) {
-      upload_p_ref.current.innerText = inputFileRef.current.files[0].name;
-      upload_span_ref.current.innerText = "File selected.";
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    if (!selectedFile) {
+      setShowError(true);
+      setUploadStatus('Please select a valid file');
+      return;
     }
-  }
+
+    const formData = new FormData();
+    formData.append('uploaded_file', selectedFile);
+    formData.append('file_type', 'video'); // Adjust based on your needs
+
+    fetch('/Results', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        setUploadStatus(data.message);
+        console.log(data);
+        if (data.success) {
+          setShowCheckmark(true);
+          setShowError(false);
+        } else {
+          setShowError(true);
+          setShowCheckmark(false);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        setUploadStatus('Upload failed');
+        setShowError(true);
+        setShowCheckmark(false);
+      });
+  };
+
 
 
 
@@ -97,11 +192,40 @@ function UploadFilePage() {
     }
   }
 
+  const [testComminicationData, setTestCommunicationData] = useState([{}]);
+
+  function testClientServerCommunication(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append('text_file', event.target.text_file.value);
+
+    fetch('/test', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(response => response.json())
+      .then(data => {
+        setTestCommunicationData(data.message);
+        console.log(data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  }
+
   return (
     <div>
       <NavbarComponent />
       <div className={PageDesign.mainDiv}>
         <h1 style={{ fontSize: "50px" }}>Upload a file</h1>
+
+        <form onSubmit={testClientServerCommunication}>Example client-server communication
+          <input type="text" name='text_file' />
+          <button type="submit">Upload</button>
+          
+        </form>
+
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
 
         <div className={MainPage.DetectionTypeChoiceDiv}>
@@ -138,16 +262,20 @@ function UploadFilePage() {
 
         </div>
 
-        <form action='/api/upload' method="post" encType="multipart/form-data">
-          <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov" className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} />
-          <button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button>
+
+
+        <form onSubmit={handleSubmit} encType="multipart/form-data">
+          <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov,wav,mp3" className={MainPage.inputFile} ref={inputFileRef} onChange={handleFileChange} />
+          <button type="submit" className={MainPage.uploadButton}>Upload</button>
         </form>
-        <form action='upload' method="post" encType="multipart/form-data" className={MainPage.dropArea} useRef={labelRef}>
-          <input type="file" name='uploaded_file' className={MainPage.inputFile} useRef={inputFileRef} onChange={handleFileUpload} hidden />
+        {uploadStatus && <p>{uploadStatus}</p>}
+
+        <form onSubmit={handleSubmit} encType="multipart/form-data" className={MainPage.dropArea} ref={labelRef}>
+          <input type="file" name='uploaded_file' className={MainPage.inputFile} ref={inputFileRef} onChange={handleFileChange} hidden />
           <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
-            {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} ref={CheckmarkIconRef} />}
-            {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} ref={CheckmarkIconRef} />}
-            {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} ref={cloudIconRef} />}
+            {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} />}
+            {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} />}
+            {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} />}
 
 
 
@@ -158,7 +286,7 @@ function UploadFilePage() {
 
           </div>
 
-          {showCheckmark && <Link to="/Components/Results.js"> <button className={MainPage.uploadButton} onClick={fileUpload()}>Upload</button></Link>}
+          <button type="submit" className={MainPage.uploadButton}>Upload</button>
 
         </form>
 
@@ -168,13 +296,13 @@ function UploadFilePage() {
       <div>
         <h1>Register</h1>
         <form method="POST" action="/register">
-          <label for="username">Username:</label>
+          <label htmlFor="username">Username:</label>
           <input type="text" name="username" required />
 
-          <label for="password">Password:</label>
+          <label htmlFor="password">Password:</label>
           <input type="password" name="password" required />
 
-          <label for="email">Email:</label>
+          <label htmlFor="email">Email:</label>
           <input type="email" name="email" required />
 
 
@@ -184,10 +312,10 @@ function UploadFilePage() {
       <div>
         <h1>Login</h1>
         <form method="POST" action="/loginUser">
-          <label for="username">Username:</label>
+          <label htmlFor="username">Username:</label>
           <input type="text" name="username" required />
 
-          <label for="password">Password:</label>
+          <label htmlFor="password">Password:</label>
 
           <input type="password" name="password" required />
 

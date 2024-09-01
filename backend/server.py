@@ -1,11 +1,9 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 from utils import utils, registration, login
 import json
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
-app = Flask(__name__, static_folder="./frontend/src", template_folder="./frontend/src", static_url_path="/")
-
-print("App:", app.send_static, "Name:", __name__)
+app = Flask(__name__, template_folder='../frontend/src/templates')
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_FILETYPES
@@ -16,12 +14,18 @@ def App():
     return {
         render_template("App.js")
     }
+   
+# Test Route 
+@app.route("/test", methods=["GET", "POST"])
+def test():
+    return jsonify("Server responded with message: " + request.form['text_file'] + " "+ request.form['text_file']), 200 
+    
 
-@app.route("/api/upload", methods=["POST"])
+@app.route("/Results", methods=["GET", "POST"])
 def upload():
     if 'uploaded_file' not in request.files:
         print(request.files)
-        return "No video file found"
+        return {'message': "No video file found"}
     video = request.files['uploaded_file']
     if video.filename == '':
         return "No selected file"
@@ -35,8 +39,10 @@ def upload():
         import os
         print(os.getcwd())
         print(os.listdir())
-        return app.send_static_file("test.js")
-    return "Invalid file type"
+        data = "Successfuly uploaded dadada"
+        return jsonify(data), 200 
+    
+    return {'message': "Invalid file type"}
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

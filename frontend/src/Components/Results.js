@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 
 function Results() {
-    const [data, setData] = useState("");
+    const [data, setData] = useState([{}]);
 
     useEffect(() => {
         fetch("/api/upload")
