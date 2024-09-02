@@ -1,6 +1,11 @@
 from flask import Flask, request, render_template, jsonify
-from utils import utils, registration, login
+from backend.utils import utils, registration, login
 import json
+import numpy as np
+
+from video_analysis import prediction_pipeline
+from AudioTraining import predictSingleAudioFile
+
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
 app = Flask(__name__, template_folder='../frontend/src/templates')
@@ -30,16 +35,31 @@ def upload():
     if video.filename == '':
         return "No selected file"
     if video and allowed_file(video.filename):
-        video_path = "./static/videos/" + video.filename.split('.')[0][0:40] + ".mp4"
-        audio_path = "./static/audio/" + video.filename.split('.')[0][0:40]
+        video_path = "backend/static/videos/" + video.filename.split('.')[0][0:40] + ".mp4"
+        audio_path = "backend/static/audio/" + video.filename.split('.')[0][0:40] + ".mp3"
         video.save(video_path)
         _, audio_path = utils.extract_audio(video_path, audio_path)
+
+
+        '''
+        return (videoPath, audioPath)
+
+        def results(videoPath, audioPath):
+              # return render_template("frontend/src/test.js", video_name=video.filename)
+                video_result = prediction_pipeline.predict(video_path)
+                audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
+                audio_result_list = audio_result.tolist()
+                data = [video_result, audio_result_list[-1]]
+                results = video_result * audio_result
+                return results
+        '''
+
         print(video_path, audio_path)
         # return render_template("frontend/src/test.js", video_name=video.filename)
-        import os
-        print(os.getcwd())
-        print(os.listdir())
-        data = "Successfuly uploaded dadada"
+        video_result = prediction_pipeline.predict(video_path)
+        audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
+
+        data = [video_result, audio_result]
         return jsonify(data), 200 
     
     return {'message': "Invalid file type"}
