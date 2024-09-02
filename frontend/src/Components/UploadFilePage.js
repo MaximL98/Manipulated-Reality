@@ -8,12 +8,16 @@ import NavbarComponent from './Navbar.js';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { VscError } from "react-icons/vsc";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+
 
 const ACCEPTED_FILE_TYPES = ["mp4", "mkv", "avi", "mov", "wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
 
 function UploadFilePage() {
   const [data, setData] = useState([{}]);
+  const navigate = useNavigate();
+
+
 
   const labelRef = useRef(null);
   const imageDivRef = useRef(null);
@@ -128,32 +132,32 @@ function UploadFilePage() {
       return;
     }
 
+
     const formData = new FormData();
     formData.append('uploaded_file', selectedFile);
-    formData.append('file_type', 'video'); // Adjust based on your needs
 
-    fetch('/Results', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(data => {
-        setUploadStatus(data.message);
-        console.log(data);
-        if (data.success) {
-          setShowCheckmark(true);
-          setShowError(false);
-        } else {
-          setShowError(true);
-          setShowCheckmark(false);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        setUploadStatus('Upload failed');
-        setShowError(true);
-        setShowCheckmark(false);
-      });
+    const fetchResults = async () => {
+      try {
+        const response = await fetch('/Uploaded', {
+          method: 'POST',
+          body: formData // Make sure formData is properly defined
+        });
+        console.log('Error:1');
+
+        const responseData = await response.json();
+        console.log('Error:2');
+
+        setData(responseData.message);
+        console.log(responseData);
+        navigate(`/Result?data=${encodeURIComponent(JSON.stringify(data))}`, { state: { data } });
+      } catch (error) {
+        console.log('Error:3');
+        console.log('Error:4', error);
+        setData('Upload failed');
+      }
+    };
+    fetchResults();
+
   };
 
 
@@ -198,7 +202,7 @@ function UploadFilePage() {
     event.preventDefault();
 
     const formData = new FormData();
-    formData.append('text_file', event.target.text_file.value);
+    formData.append('text_file', event.target.text_file.value); // Key-value pair
 
     fetch('/test', {
       method: 'POST',
@@ -216,14 +220,12 @@ function UploadFilePage() {
 
   return (
     <div>
-      <NavbarComponent />
       <div className={PageDesign.mainDiv}>
         <h1 style={{ fontSize: "50px" }}>Upload a file</h1>
 
         <form onSubmit={testClientServerCommunication}>Example client-server communication
           <input type="text" name='text_file' />
           <button type="submit">Upload</button>
-          
         </form>
 
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
@@ -256,7 +258,6 @@ function UploadFilePage() {
 
             <div ref={iconChoiceDivAudioRef} style={{ display: "flex", flexDirection: "column", alignItems: "center", margin: "10px", borderLeft: "2px solid #ffffff", height: "100%", justifyContent: "center", paddingLeft: "30px" }}>
               <PiWaveformThin style={{ height: "40px", width: "40px" }} />
-
             </div>
           </div>
 

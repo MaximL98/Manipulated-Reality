@@ -166,3 +166,31 @@
     border-radius: 5px;
     cursor: pointer;
 }
+
+.profileIconDiv {
+    height: 40px;
+    width: 40px;
+    right: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    border-radius: 100%;
+    border: 1px solid gold;
+    cursor: pointer;
+}
+
+.profileIcon {
+    width: 30px;
+    height: 30px;
+    border-radius: 100%;
+    overflow: hidden;
+    position: absolute;
+}
+
+.navbarButton:before {
+    height:80px;
+    width: 80px;
+    background-color: #04b0ee;
+    z-index: 10;
+}
