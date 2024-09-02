@@ -1,8 +1,8 @@
 from keras.models import load_model
 from pathlib import Path
 
-from video_preprocessing.single_video_preprocessing import extract_video_frame
-from video_model.feature_extractor import feature_extraction
+from video_analysis.video_preprocessing.single_video_preprocessing import extract_video_frame
+from video_analysis.video_model.feature_extractor import feature_extraction
 
 # This main function runs the prediction pipeline, 
 # given the path to where the video is save,
@@ -32,7 +32,6 @@ def predict(video_path):
     # The model returns the probability of the video been REAL
     # Meaning if the prediction is higher then 50% (0.5) we label as REAL else FAKE
     print(prediction)
-    print("Real") if prediction > 0.5 else print("Fake")
-    return prediction
-
-predict("DeepFake_video_and_audio.mp4")
+    prediction = prediction.tolist()
+    ## print("Real") if prediction > 0.5 else print("Fake")
+    return prediction[0][0]
