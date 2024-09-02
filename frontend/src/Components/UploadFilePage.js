@@ -136,19 +136,23 @@ function UploadFilePage() {
     const formData = new FormData();
     formData.append('uploaded_file', selectedFile);
 
-    const responseData = "null";
     const fetchResults = async () => {
       try {
-        const response = await fetch('/Results', {
+        const response = await fetch('/Uploaded', {
           method: 'POST',
           body: formData // Make sure formData is properly defined
         });
+        console.log('Error:1');
+
         const responseData = await response.json();
+        console.log('Error:2');
+
         setData(responseData.message);
         console.log(responseData);
-        navigate('/Results', { state:  {data} } );
+        navigate(`/Result?data=${encodeURIComponent(JSON.stringify(data))}`, { state: { data } });
       } catch (error) {
-        console.error('Error:', error);
+        console.log('Error:3');
+        console.log('Error:4', error);
         setData('Upload failed');
       }
     };

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState} from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { useLocation } from "react-router-dom";
 import formData from './UploadFilePage.js';
 import Navbar from './Navbar.js';
@@ -10,8 +10,30 @@ import { Link } from 'react-router-dom';
 function Results() {
     const [data, setData] = useState([{}]);
     const [isLoading, setIsLoading] = useState(true);
-    const { formData } = useLocation().state;
+
+
+    const [responseData, setResponseData] = useState(null);
+    const location = useLocation();
+
+
     let i = 0;
+
+    useEffect(() => {
+        const fetchData = () => {
+            const params = new URLSearchParams(location.search);
+            const dataString = params.get('data');
+            if (dataString) {
+                try {
+                    const data = JSON.parse(decodeURIComponent(dataString));
+                    setResponseData(data);
+                } catch (error) {
+                    console.error('Error parsing data:', error);
+                }
+            }
+        };
+
+        fetchData();
+    }, [location]);
 
     useEffect(() => {
 
@@ -38,21 +60,20 @@ function Results() {
         // return () => {
         //     clearInterval(intervalId);
         //   };
-        
 
-    // fetch('/Results', {
-    //   method: 'POST',
-    //   body: formData,
-    // })
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     setUploadStatus(data.message);
-    //     console.log(data);
-    //   })
-    //   .catch(error => {
-    //     console.error('Error:', error);
-    //     setUploadStatus('Upload failed');
-    //   });
+        fetch('/Results', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => response.json())
+            .then(data => {
+                setData(data.message);
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setData('Upload failed');
+            });
     }, []);
 
 
@@ -79,9 +100,14 @@ function Results() {
 
                         <Link to="/"><button>Upload another file</button></Link>
                         <div>                        <button>Expand information</button>
+
+                            <div>
+                                {/* Display your data */}
+                                {JSON.stringify(responseData)}
+                            </div>
                         </div>
                     </div>
-                    
+
                 )}
             </div>
         </>

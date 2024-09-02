@@ -25,7 +25,6 @@ def predict_single_audio_file(audio_file_path):
     #predicted = (prediction >= threshold).astype("int32")
     #return predicted
     prediction = prediction.tolist()
-    print(prediction[0])
     numberOfSamples = len(prediction)
     totalSum = 0
     for i in range(numberOfSamples):

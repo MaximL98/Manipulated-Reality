@@ -26,8 +26,9 @@ def test():
     return jsonify("Server responded with message: " + request.form['text_file'] + " "+ request.form['text_file']), 200 
     
 
-@app.route("/Results", methods=["GET", "POST"])
+@app.route("/Uploaded", methods=["GET", "POST"])
 def upload():
+    print("here")
     if 'uploaded_file' not in request.files:
         print(request.files)
         return {'message': "No video file found"}
@@ -39,6 +40,8 @@ def upload():
         audio_path = "backend/static/audio/" + video.filename.split('.')[0][0:40] + ".mp3"
         video.save(video_path)
         _, audio_path = utils.extract_audio(video_path, audio_path)
+        
+        return jsonify([video_path, audio_path]), 200
 
 
         '''
@@ -53,16 +56,22 @@ def upload():
                 results = video_result * audio_result
                 return results
         '''
-
-        print(video_path, audio_path)
-        # return render_template("frontend/src/test.js", video_name=video.filename)
-        video_result = prediction_pipeline.predict(video_path)
-        audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
-
-        data = [video_result, audio_result]
-        return jsonify(data), 200 
-    
     return {'message': "Invalid file type"}
+
+@app.route("/Result", methods=["GET", "POST"])
+def result(): 
+    audio_path = request.form['audio_path']
+    video_path = request.form['video_path']
+    print(video_path, audio_path)
+    # return render_template("frontend/src/test.js", video_name=video.filename)
+    video_result = prediction_pipeline.predict(video_path)
+    audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
+
+    data = [video_result, audio_result]
+    return jsonify(data), 200 
+
+
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

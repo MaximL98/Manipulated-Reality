@@ -19,3 +19,4 @@ video_analysis/video_preprocessing/images
 video_analysis/video_preprocessing/images_extraction.py
 video_analysis/__pycache__
 __pycache__
+*.whl
