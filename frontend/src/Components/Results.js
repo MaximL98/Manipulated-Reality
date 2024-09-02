@@ -1,100 +1,59 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { useLocation } from "react-router-dom";
 import formData from './UploadFilePage.js';
-import Navbar from './Navbar.js';
 import PageDesign from '../Styles/PageDesign.module.css';
 import CircleLoader from './LoadingComponents/CircleLoader.js'
 import { Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+
+import { useLocation } from "react-router-dom";
+
+
 
 
 function Results() {
-    const [data, setData] = useState([{}]);
     const [isLoading, setIsLoading] = useState(true);
-
-
-    const [responseData, setResponseData] = useState(null);
+    const [results, setResults] = useState([]);
+    const [displayData, setDisplayData] = useState(false);
     const location = useLocation();
+    console.log(location);
+    const audioURL = location.state.audioURL;
+    const videoURL = location.state.videoURL;
+    console.log(audioURL);
+    console.log(videoURL);
+    let count = 0;
 
+    const form = new FormData();
+    form.append('audioURL', audioURL);
+    form.append('videoURL', videoURL);
+    form.append('count', count);
+    count = count + 1;
 
-    let i = 0;
-
-    useEffect(() => {
-        const fetchData = () => {
-            const params = new URLSearchParams(location.search);
-            const dataString = params.get('data');
-            if (dataString) {
-                try {
-                    const data = JSON.parse(decodeURIComponent(dataString));
-                    setResponseData(data);
-                } catch (error) {
-                    console.error('Error parsing data:', error);
-                }
-            }
-        };
-
-        fetchData();
-    }, [location]);
-
-    useEffect(() => {
-
-        // let intervalId;
-        // const fetchResults = async () => {
-        //     setIsLoading(true);
-        //     try {
-        //         const response = await fetch('/Results', {
-        //             method: 'POST',
-        //             body: formData // Make sure formData is properly defined
-        //         });
-        //         const responseData = await response.json();
-        //         setData(responseData.message);
-        //         setIsLoading(false);
-        //     } catch (error) {
-        //         console.error('Error:', error);
-        //         setData('Upload failed');
-        //         setIsLoading(false);
-        //     }
-        // };
-        // if (data.message !== 'Succssfuly uploaded dadada') {
-        //     intervalId = setInterval(fetchResults, 5000);
-        // }
-        // return () => {
-        //     clearInterval(intervalId);
-        //   };
-
+    useEffect((event) => {
         fetch('/Results', {
             method: 'POST',
-            body: formData,
+            body: form
         })
             .then(response => response.json())
             .then(data => {
-                setData(data.message);
-                console.log(data);
+                setResults(data);
+                setIsLoading(false);
+                setDisplayData(true);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error('Error:', error);
-                setData('Upload failed');
             });
     }, []);
 
-
-
     return (
-        <>
-            {/* <Navbar /> */}
+        <>            
             <div className={PageDesign.mainDiv}>
-                {!isLoading ? (
+                {isLoading ? (
                     <CircleLoader />
                 ) : (
                     <div>
-                        {data === null ? (
-                            <p>No data received</p>
-                        ) : (
-                            <p>{formData}</p>
-                        )}
                         <h1>Results for {/*data.name*/}</h1>
-                        <h2>Video certainty: {/*data.video*/}% fake</h2>
-                        <h2>Audio certainty: {/*data.audio*/}% fake</h2>
-                        <h2>Total certainty: {/*data.image*/}% fake</h2>
+                        <h2>Video certainty: {displayData && results[0]}% real</h2>
+                        <h2>Audio certainty: {displayData && results[1]}% real</h2>
 
                         <p>The results are saved in <Link to="/profile">My profile</Link> and could be viewed later.</p>
 
@@ -103,7 +62,6 @@ function Results() {
 
                             <div>
                                 {/* Display your data */}
-                                {JSON.stringify(responseData)}
                             </div>
                         </div>
                     </div>

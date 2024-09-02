@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
 import MainPage from '../Styles/MainPage.module.css';
 import { GoVideo } from "react-icons/go";
@@ -11,10 +11,12 @@ import { VscError } from "react-icons/vsc";
 import { Link, useNavigate } from 'react-router-dom';
 
 
+
 const ACCEPTED_FILE_TYPES = ["mp4", "mkv", "avi", "mov", "wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
 
 function UploadFilePage() {
   const [data, setData] = useState([{}]);
+  const [linkToResults, setLinkToResults] = useState(false);
   const navigate = useNavigate();
 
 
@@ -146,10 +148,11 @@ function UploadFilePage() {
 
         const responseData = await response.json();
         console.log('Error:2');
-
         setData(responseData.message);
-        console.log(responseData);
-        navigate(`/Result?data=${encodeURIComponent(JSON.stringify(data))}`, { state: { data } });
+
+        setLinkToResults(true);
+        navigate('/Results', {state: {videoURL: responseData[0], audioURL: responseData[1]}});
+
       } catch (error) {
         console.log('Error:3');
         console.log('Error:4', error);
@@ -270,6 +273,7 @@ function UploadFilePage() {
           <button type="submit" className={MainPage.uploadButton}>Upload</button>
         </form>
         {uploadStatus && <p>{uploadStatus}</p>}
+        {linkToResults && <Link to={`/Results?data=${data}`}>Go to results</Link>}
 
         <form onSubmit={handleSubmit} encType="multipart/form-data" className={MainPage.dropArea} ref={labelRef}>
           <input type="file" name='uploaded_file' className={MainPage.inputFile} ref={inputFileRef} onChange={handleFileChange} hidden />
