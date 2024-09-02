@@ -24,8 +24,13 @@ def predict_single_audio_file(audio_file_path):
     #predicted = (prediction >= threshold).astype("int32")
     #return predicted
     
+    print(prediction)
+    print(prediction.shape)
+    
     return prediction
 
+
+predict_single_audio_file('Dima_recording_real.mp3')
 
 
 
