@@ -42,26 +42,15 @@ def upload():
         _, audio_path = utils.extract_audio(video_path, audio_path)
         
         return jsonify([video_path, audio_path]), 200
-
-
-        '''
-        return (videoPath, audioPath)
-
-        def results(videoPath, audioPath):
-              # return render_template("frontend/src/test.js", video_name=video.filename)
-                video_result = prediction_pipeline.predict(video_path)
-                audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
-                audio_result_list = audio_result.tolist()
-                data = [video_result, audio_result_list[-1]]
-                results = video_result * audio_result
-                return results
-        '''
     return {'message': "Invalid file type"}
 
-@app.route("/Result", methods=["GET", "POST"])
+
+@app.route("/Results", methods=["GET", "POST"])
 def result(): 
-    audio_path = request.form['audio_path']
-    video_path = request.form['video_path']
+    if request.form['count'] == 1:
+        return jsonify("Already done"), 200
+    audio_path = request.form['audioURL']
+    video_path = request.form['videoURL']
     print(video_path, audio_path)
     # return render_template("frontend/src/test.js", video_name=video.filename)
     video_result = prediction_pipeline.predict(video_path)
