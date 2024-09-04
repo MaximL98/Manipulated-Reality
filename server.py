@@ -3,6 +3,8 @@ from backend.utils import utils, registration, login
 import json
 import numpy as np
 
+import os
+
 from video_analysis import prediction_pipeline
 from AudioTraining import predictSingleAudioFile
 
@@ -57,6 +59,13 @@ def result():
     audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
 
     data = [video_result, audio_result]
+
+    if os.path.exists(audio_path) and os.path.exists(video_path):
+        os.remove(audio_path)
+        os.remove(video_path)
+    else:
+        print("One of the files does not exists.") 
+
     return jsonify(data), 200 
 
 
