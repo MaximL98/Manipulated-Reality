@@ -71,10 +71,10 @@ def register():
 
         print(username)
         if registration.register_user(username, password, email):
-            return   # Redirect to login page after successful registration
+            return "USER REGISTERED" # Redirect to login page after successful registration
         else:
             # Handle registration failure (e.g., user already exists)
-            return render_template('register.html', error="Username already exists")
+            return "ERROR USER NOT REGISTERED"
 
 
 @app.route('/loginUser', methods=['GET', 'POST'])

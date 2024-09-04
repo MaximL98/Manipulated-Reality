@@ -1,7 +1,7 @@
 import sqlite3
 import hashlib
 
-DB_PATH = "database.db"
+DB_PATH = "backend/database.db"
 
 
 def get_user_by_username(username):
