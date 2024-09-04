@@ -42,12 +42,12 @@ def register_user(username, password, email):
 
     # Hash the password for security
     hashed_password = hash_func(password)
-    detection_type = json.dumps([])
-    tested_videos = json.dumps([])
-    results = json.dumps([])
+    detection_type = ''
+    tested_videos = ''
+    results = ''
 
     # Store user information in the database
     insert_data(username, hashed_password, email, detection_type, tested_videos, results)
 
-    #return True
+    return True
 
