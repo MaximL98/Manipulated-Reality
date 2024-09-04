@@ -7,6 +7,7 @@ import os
 
 from video_analysis import prediction_pipeline
 from AudioTraining import predictSingleAudioFile
+from backend.utils.db_control import append_data
 
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
@@ -53,12 +54,20 @@ def result():
         return jsonify("Already done"), 200
     audio_path = request.form['audioURL']
     video_path = request.form['videoURL']
+    #detection_type = request.form['detection_type']
     print(video_path, audio_path)
     # return render_template("frontend/src/test.js", video_name=video.filename)
-    video_result = prediction_pipeline.predict(video_path)
+    # video_result = prediction_pipeline.predict(video_path)
+    video_result = 0.77
     audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
 
     data = [video_result, audio_result]
+    
+    USERNAME = 'c1'
+    DETECTION_TYPE = 'V&A'
+
+    video_path_insert = video_path.replace('/', '.')
+    append_data(USERNAME, DETECTION_TYPE, video_path_insert.split('.')[-2], (video_result + audio_result)/2)
 
     if os.path.exists(audio_path) and os.path.exists(video_path):
         os.remove(audio_path)
