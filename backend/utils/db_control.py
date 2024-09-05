@@ -1,5 +1,7 @@
 import sqlite3
 from sqlite3 import Error, Connection
+import json
+
 DB_PATH = "backend/database.db"
 
 # Function to create a database connection
@@ -44,6 +46,38 @@ def append_data(username, detection_type, tested_videos, results):
           WHERE Username = ?;
             """, (detection_type, tested_videos, results, username))
     conn.commit()
+
+
+def extract_user_data(username):
+    """Extracts user data based on the given username."""
+
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT Detection_Type, Video_Tested, Results FROM user_data WHERE Username = ?", (username,))
+        data = cursor.fetchall()
+
+         # Convert the fetched data into a dictionary with the username as a key
+        result = {
+            "username": username,
+            "data": [dict(zip([col[0] for col in cursor.description], row)) for row in data]
+        }
+        return result
+
+    except sqlite3.Error as e:
+        print("Error:", e)
+    finally:
+        conn.close()
+
+
+# Example usage:
+username = "c1" 
+user_data = extract_user_data(username)
+
+# Save the data to a JSON file
+with open("user_data.json", "w") as f:
+    json.dump(user_data, f, indent=4)
 
 
 # Apply the code below only for total reset of the database.

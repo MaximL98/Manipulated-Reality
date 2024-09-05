@@ -87,12 +87,11 @@ def register():
         password = request.form['password']
         email = request.form['email']
 
-        print(username)
         if registration.register_user(username, password, email):
             return "USER REGISTERED" # Redirect to login page after successful registration
         else:
             # Handle registration failure (e.g., user already exists)
-            return "ERROR USER NOT REGISTERED"
+            return "ERROR, username or email already used."
 
 
 @app.route('/loginUser', methods=['GET', 'POST'])
@@ -100,6 +99,7 @@ def loginUser():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
 
         if login.authenticate_user(username, password):
             # Redirect to protected area or home page
