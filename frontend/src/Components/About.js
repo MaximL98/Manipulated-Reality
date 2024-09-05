@@ -16,7 +16,7 @@ function About() {
                    while also considering cases involving solely video or audio formats.
                    To ensure widespread accessibility,
                    we have developed a user-friendly web application that allows users to upload suspected deepfake content
-                  and receive a probability score indicating its authenticity.
+                and receive a probability score indicating its authenticity.
                  This framework aims to contribute to the ongoing efforts to combat the generation of deepfakes and empower individuals and developers to enhance detection capabilities and protect against their harmful consequences.
 </p>
             </div>

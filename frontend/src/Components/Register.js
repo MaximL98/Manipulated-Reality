@@ -2,27 +2,30 @@ import React from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
 import Navbar from './Navbar';
 
-function Login() {
+function Register() {
     return (
         <>
             <div className={PageDesign.mainDiv}>
-      <div>
-        <h1>Login</h1>
-        <form method="POST" action="/loginUser">
+            <div>
+        <h1>Register</h1>
+        <form method="POST" action="/register">
           <label htmlFor="username">Username:</label>
           <input type="text" name="username" required />
 
           <label htmlFor="password">Password:</label>
-
           <input type="password" name="password" required />
 
-          <button type="submit">Login</button>
+          <label htmlFor="email">Email:</label>
+          <input type="email" name="email" required />
+
+
+          <button type="submit">Register</button>
         </form>
-        <p>Don't have an account? <a href="/register">Register here</a></p>
+        <p>Already have an account? <a href="/login">Login here</a></p>
       </div>
-            </div>
+        </div>
         </>
     )
 }
 
-export default Login;
+export default Register;
