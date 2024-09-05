@@ -61,7 +61,6 @@ def extract_user_data(username):
 
          # Convert the fetched data into a dictionary with the username as a key
         result = {
-            "username": username,
             "data": [dict(zip([col[0] for col in cursor.description], row)) for row in data]
         }
         return result
@@ -72,18 +71,18 @@ def extract_user_data(username):
         conn.close()
 
 
-# # Example usage:
-# username = "c1" 
-# user_data = extract_user_data(username)
+# Example usage:
+username = "c1" 
+user_data = extract_user_data(username)
 
-# # Save the data to a JSON file
-# with open("user_data.json", "w") as f:
-#     json.dump(user_data, f, indent=4)
+# Save the data to a JSON file
+with open("user_data.json", "w") as f:
+    json.dump(user_data, f, indent=4)
 
 
 # Apply the code below only for total reset of the database.
-conn = create_connection()
-cur = conn.cursor()
-cur.execute("DROP TABLE IF EXISTS user_data")
-create_table(conn)
-conn.close()
+# conn = create_connection()
+# cur = conn.cursor()
+# cur.execute("DROP TABLE IF EXISTS user_data")
+# create_table(conn)
+# conn.close()

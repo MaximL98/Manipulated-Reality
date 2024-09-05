@@ -8,6 +8,8 @@ import Contact from './Components/Contact.js';
 import Navbar from './Components/Navbar.js';
 import Login from './Components/Login.js';
 import Register from './Components/Register.js';
+import Profile from './Components/Profile.js';
+
 
 
 function App() {
@@ -26,6 +28,7 @@ function App() {
         <Route path="Contact" element={<Contact />} />
         <Route path="Login" element={<Login />} />
         <Route path="Register" element={<Register />} />
+        <Route path="Profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
 
