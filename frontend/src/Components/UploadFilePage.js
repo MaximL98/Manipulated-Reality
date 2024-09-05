@@ -173,6 +173,10 @@ function UploadFilePage() {
     <div>
       <div className={PageDesign.mainDiv}>
         <h1 style={{ fontSize: "50px" }}>Upload a file</h1>
+        <Link to="/profile"><button>Profile</button></Link>
+        <Link to="/login"><button>login</button></Link>
+        <Link to="/register"><button>register</button></Link>
+
 
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
 
