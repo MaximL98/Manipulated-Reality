@@ -13,7 +13,7 @@ import Profile from './Components/Profile.js';
 
 
 function App() {
-  const [data, setData] = useState([{}]);
+  
 
   return (
 
@@ -22,7 +22,7 @@ function App() {
 
       <Routes>
         <Route path="/" element={<UploadFilePage />} />
-        <Route path="/Results" element={<Results />} />
+        <Route path="/Results" element={<Results /> } />
         <Route path="/UploadFilePage" element={<UploadFilePage />} />
         <Route path="About" element={<About />} />
         <Route path="Contact" element={<Contact />} />
