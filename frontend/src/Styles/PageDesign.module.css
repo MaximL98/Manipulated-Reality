@@ -9,3 +9,49 @@
     min-height: calc(100vh - 75px); ;
     margin-top: 75px;
 }
+
+.resultsListDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-height: 200px;
+    min-height: 50px;
+    width: auto;
+    background-color: #298db8;
+    overflow-x: hidden;
+    margin-top: 50px;
+    border: 2px solid black;
+    margin: 10px;
+}
+
+.listItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #298db8;
+    overflow-x: hidden;
+    margin-top: 5px;
+}
+
+.ListLoadingDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    background-color: #298db8;
+    overflow-x: hidden;
+    margin-top: 50px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 80vw;
+    height: auto;
+    background-color: #298db8;
+    margin-top: 50px;
+}

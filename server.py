@@ -7,7 +7,8 @@ import os
 
 from video_analysis import prediction_pipeline
 from AudioTraining import predictSingleAudioFile
-from backend.utils.db_control import append_data
+from backend.utils.db_control import append_data, extract_user_data
+
 
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
@@ -106,6 +107,13 @@ def loginUser():
             # Handle login failure (e.g., incorrect credentials)
             return "USER NOT FOUND"
 
-   
+@app.route('/user_data', methods=['GET','POST'])
+def get_user_data():
+    if request.method == 'POST':
+        username = request.form['username']
+        user_data = extract_user_data(username)
+        return jsonify(user_data), 200
+
 if __name__ == "__main__":
     app.run(debug=True)
+    
