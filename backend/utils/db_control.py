@@ -50,7 +50,6 @@ def append_data(username, detection_type, tested_videos, results):
 
 def extract_user_data(username):
     """Extracts user data based on the given username."""
-
     try:
         conn = create_connection()
         cursor = conn.cursor()
