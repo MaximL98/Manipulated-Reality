@@ -1,7 +1,6 @@
 video_analysis/video_preprocessing/Processed_data_fake/
 video_analysis/video_preprocessing/Processed_data_real/
 video_analysis/video_preprocessing/__pycache__/
-*.png
 video_analysis/video_preprocessing/tester.py
 video_analysis/video_preprocessing/data.py
 video_analysis/video_preprocessing/normalized_data

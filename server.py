@@ -3,8 +3,11 @@ from backend.utils import utils, registration, login
 import json
 import numpy as np
 
+import os
+
 from video_analysis import prediction_pipeline
 from AudioTraining import predictSingleAudioFile
+from backend.utils.db_control import append_data
 
 ALLOWED_FILETYPES = ['mp4', 'avi', 'mkv', 'mov']
 
@@ -49,12 +52,27 @@ def upload():
 def result(): 
     audio_path = request.form['audioURL']
     video_path = request.form['videoURL']
+    #detection_type = request.form['detection_type']
     print(video_path, audio_path)
     # return render_template("frontend/src/test.js", video_name=video.filename)
     video_result = prediction_pipeline.predict(video_path)
+    # video_result = 0.77
     audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
 
     data = [video_result, audio_result]
+    
+    USERNAME = 'c1'
+    DETECTION_TYPE = 'V&A'
+
+    video_path_insert = video_path.replace('/', '.')
+    append_data(USERNAME, DETECTION_TYPE, video_path_insert.split('.')[-2], (video_result + audio_result)/2)
+
+    if os.path.exists(audio_path) and os.path.exists(video_path):
+        os.remove(audio_path)
+        os.remove(video_path)
+    else:
+        print("One of the files does not exists.") 
+
     return jsonify(data), 200 
 
 
@@ -67,12 +85,11 @@ def register():
         password = request.form['password']
         email = request.form['email']
 
-        print(username)
         if registration.register_user(username, password, email):
-            return   # Redirect to login page after successful registration
+            return "USER REGISTERED" # Redirect to login page after successful registration
         else:
             # Handle registration failure (e.g., user already exists)
-            return render_template('register.html', error="Username already exists")
+            return "ERROR, username or email already used."
 
 
 @app.route('/loginUser', methods=['GET', 'POST'])
@@ -80,6 +97,7 @@ def loginUser():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+
 
         if login.authenticate_user(username, password):
             # Redirect to protected area or home page

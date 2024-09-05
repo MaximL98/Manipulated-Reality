@@ -278,52 +278,14 @@ function UploadFilePage() {
             {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} />}
             {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} />}
             {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} />}
-
-
-
             <div>
               <p ref={upload_p_ref}>Click or drop a file here.</p>
             </div>
             <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
-
           </div>
-
           <button type="submit" className={MainPage.uploadButton}>Upload</button>
-
         </form>
-
-
-
       </div >
-      <div>
-        <h1>Register</h1>
-        <form method="POST" action="/register">
-          <label htmlFor="username">Username:</label>
-          <input type="text" name="username" required />
-
-          <label htmlFor="password">Password:</label>
-          <input type="password" name="password" required />
-
-          <label htmlFor="email">Email:</label>
-          <input type="email" name="email" required />
-
-
-          <button type="submit">Register</button>
-        </form>
-      </div>
-      <div>
-        <h1>Login</h1>
-        <form method="POST" action="/loginUser">
-          <label htmlFor="username">Username:</label>
-          <input type="text" name="username" required />
-
-          <label htmlFor="password">Password:</label>
-
-          <input type="password" name="password" required />
-
-          <button type="submit">Login</button>
-        </form>
-      </div>
     </div >
   );
 }

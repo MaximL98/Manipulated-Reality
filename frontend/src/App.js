@@ -6,7 +6,7 @@ import Results from './Components/Results.js';
 import About from './Components/About.js';
 import Contact from './Components/Contact.js';
 import Navbar from './Components/Navbar.js';
-
+import Login from './Components/Login.js';
 
 function App() {
   
@@ -22,7 +22,7 @@ function App() {
         <Route path="/UploadFilePage" element={<UploadFilePage />} />
         <Route path="About" element={<About />} />
         <Route path="Contact" element={<Contact />} />
-
+        <Route path="Login" element={<Login />} />
       </Routes>
     </BrowserRouter>
 
