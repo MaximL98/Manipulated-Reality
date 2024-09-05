@@ -10,12 +10,12 @@ def hash_func(password):
     return hashlib.sha256(str(password).encode()).digest()
 
 
-def user_exists(email):
+def user_exists(username, email):
     """Checks if a user exists based on their email address."""
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT COUNT(*) FROM user_data WHERE Email = ?", (email,))
+    cursor.execute("SELECT COUNT(*) FROM user_data WHERE Email = ? OR Username = ?", (email, username))
     count = cursor.fetchone()[0]
 
     conn.close()
@@ -37,7 +37,7 @@ def insert_data(username, hashed_password, email, detection_type, tested_videos,
 # Replace with your actual database operations
 def register_user(username, password, email):
     # Check if user already exists
-    if user_exists(email):
+    if user_exists(username, email):
         return False
 
     # Hash the password for security
