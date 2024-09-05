@@ -15,18 +15,15 @@ function Results() {
     const [results, setResults] = useState([]);
     const [displayData, setDisplayData] = useState(false);
     const location = useLocation();
+
     console.log(location);
     const audioURL = location.state.audioURL;
     const videoURL = location.state.videoURL;
-    console.log(audioURL);
-    console.log(videoURL);
-    let count = 0;
+
 
     const form = new FormData();
     form.append('audioURL', audioURL);
     form.append('videoURL', videoURL);
-    form.append('count', count);
-    count = count + 1;
 
     useEffect((event) => {
         fetch('/Results', {
@@ -42,7 +39,7 @@ function Results() {
             .catch((error) => {
                 console.error('Error:', error);
             });
-    }, []);
+    }, [location]);
 
     return (
         <>            

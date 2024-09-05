@@ -111,7 +111,8 @@ function UploadFilePage() {
   // };
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const file = event.target;
+    console.log(file.files[0]);
 
     if (file && ACCEPTED_FILE_TYPES.includes(file.name.split('.').pop())) {
       setSelectedFile(file);
@@ -144,18 +145,14 @@ function UploadFilePage() {
           method: 'POST',
           body: formData // Make sure formData is properly defined
         });
-        console.log('Error:1');
 
         const responseData = await response.json();
-        console.log('Error:2');
         setData(responseData.message);
 
         setLinkToResults(true);
         navigate('/Results', {state: {videoURL: responseData[0], audioURL: responseData[1]}});
 
       } catch (error) {
-        console.log('Error:3');
-        console.log('Error:4', error);
         setData('Upload failed');
       }
     };

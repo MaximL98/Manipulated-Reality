@@ -47,8 +47,6 @@ def upload():
 
 @app.route("/Results", methods=["GET", "POST"])
 def result(): 
-    if request.form['count'] == 1:
-        return jsonify("Already done"), 200
     audio_path = request.form['audioURL']
     video_path = request.form['videoURL']
     print(video_path, audio_path)
