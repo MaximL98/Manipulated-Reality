@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef  } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
 import MainPage from '../Styles/MainPage.module.css';
 import { GoVideo } from "react-icons/go";
@@ -9,15 +9,23 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { VscError } from "react-icons/vsc";
 import { Link, useNavigate } from 'react-router-dom';
+import { useDropzone } from 'react-dropzone';
+import { MdOutlineFileDownload } from "react-icons/md";
 
 
-
-const ACCEPTED_FILE_TYPES = ["mp4", "mkv", "avi", "mov", "wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
+const ACCEPTED_VIDEO_TYPES = ["mp4", "mkv", "avi", "mov"];
+const ACCEPTED_AUDIO_TYPES = ["wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
 
 function UploadFilePage() {
   const [data, setData] = useState([{}]);
   const [linkToResults, setLinkToResults] = useState(false);
+  const [fileType, setFileType] = useState("videoAudio");
   const navigate = useNavigate();
+
+
+  const [dataURL, setDataURL] = useState(null);
+  const [uploadedURL, setUploadedURL] = useState(null);
+
 
 
 
@@ -41,84 +49,51 @@ function UploadFilePage() {
   const [showCheckmark, setShowCheckmark] = useState(false);
   const [showError, setShowError] = useState(false);
 
-  // const handleFileUpload = (event) => {
+  const onDrop = useCallback(acceptedFiles => {
+    acceptedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onabort = () => console.log('file reading was aborted');
+      reader.onerror = () => console.log('file reading has failed');
+      reader.onload = () => {
+        const binaryStr = reader.result;
+        setDataURL(binaryStr);
+      };
+      reader.readAsDataURL(file);
+      handleFileChange({ target: { files: [file] } });
+    });
+  }, []);
 
-  //   console.log(event.target.files[0]);
-  //   console.log(imageDivRef);
+  const {
+    getRootProps,
+    acceptedFiles,
+    isDragActive,
+    getInputProps,
 
-  //   let filename = event.target.files[0].name;
+  } = useDropzone({ onDrop });
 
-  //   if (file && ACCEPTED_FILE_TYPES.includes(file.name.split('.').pop())) {
-  //     setSelectedFile(file);
-  //     setShowCheckmark(true);
-  //     setShowError(false);
 
-  //   } else {
-  //     setSelectedFile(null);
-  //     setShowError(true);
-  //     setShowCheckmark(false);
-  //     // imageDivRef.current.children[1].innerText = "Error: Invalid file type.";
-  //     // imageDivRef.current.children[2].innerText = "Please select a valid file type.";
-  //   }
-
-  //   // if (ACCEPTED_FILE_TYPES.includes(filename.split('.').pop())) {
-  //   //   console.log("Accepted file type " + filename);
-  //   //   setShowCheckmark(true);
-  //   //   setShowError(false);
-  //   // imageDivRef.current.children[1].innerText = filename.slice(0, 40) + "..."; // Truncate filename
-  //   // imageDivRef.current.children[2].innerText = "File selected.";
-
-  //   // }
-  //   // else {
-  //   //   setShowError(true);
-  //   //   setShowCheckmark(false);
-
-  //   // }
-
-  //   if (data['message'] === "Upload successful") {
-  //     console.log("Upload successful");
-  //   }
-  // }
-
-  // const fileUpload = (event) => {
-  //   //console.log("File upload function called ", inputFileRef.current.files[0]);
-  //   const formData = new FormData();
-  //   //formData.append('uploaded_file', inputFileRef.current.files[0]);
-  //   formData.append('file_type', 'video'); // Add this based on the selected option
-
-  //   fetch('/Results', {
-  //     method: 'POST',
-  //     body: formData,
-  //   })
-  //     .then(response => response.json())
-  //     .then(data => {
-  //       setData(data.message || 'Upload successful');
-  //       // Update UI based on the response
-  //       if (data.success) {
-  //         setShowCheckmark(true);
-  //         setShowError(false);
-  //       } else {
-  //         setShowError(true);
-  //         setShowCheckmark(false);
-  //       }
-  //     })
-  //     .catch(error => {
-  //       console.error('Error:', error);
-  //       setData('Upload failed');
-  //       setShowError(true);
-  //       setShowCheckmark(false);
-  //     });
-  // };
-
-  const handleFileChange = (event) => {
+  function handleFileChange(event) {
     const file = event.target.files[0];
+    let filename = file.name;
+    if (filename.length > 40) {
+      filename = filename.substring(0, 40) + "...";
+    }
 
+    const ACCEPTED_FILE_TYPES = (fileType === "audio" ? ACCEPTED_AUDIO_TYPES : ACCEPTED_VIDEO_TYPES);
+
+    console.log("Filetype uploaded: " + file.name.split('.').pop());
+    console.log("Accepted file types: " + ACCEPTED_FILE_TYPES);
+        
     if (file && ACCEPTED_FILE_TYPES.includes(file.name.split('.').pop())) {
       setSelectedFile(file);
       setShowCheckmark(true);
       setShowError(false);
+      upload_p_ref.current.innerHTML = "Uploaded " + filename + " successfully!";
+      upload_span_ref.current.innerHTML = "Click to change to another file.";
       // Update UI with selected file info
     } else {
+      upload_p_ref.current.innerHTML = "File not supported!";
+      upload_span_ref.current.innerHTML = "Please select a file of format: mp4, mkv, avi, mov, wav, mp3, m4a, flac, ogg, aac, wma";
       setSelectedFile(null);
       setShowError(true);
       setShowCheckmark(false);
@@ -144,28 +119,20 @@ function UploadFilePage() {
           method: 'POST',
           body: formData // Make sure formData is properly defined
         });
-        console.log('Error:1');
 
         const responseData = await response.json();
-        console.log('Error:2');
         setData(responseData.message);
 
         setLinkToResults(true);
-        navigate('/Results', {state: {videoURL: responseData[0], audioURL: responseData[1]}});
+        navigate('/Results', { state: { videoURL: responseData[0], audioURL: responseData[1] , fileType: fileType} });
 
       } catch (error) {
-        console.log('Error:3');
-        console.log('Error:4', error);
         setData('Upload failed');
       }
     };
     fetchResults();
 
   };
-
-
-
-
 
 
   function buttonClicked(type) {
@@ -177,6 +144,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
+        setFileType("videoAudio");
         break;
       case "video":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -185,6 +153,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
+        setFileType("video");
         break;
       case "audio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -193,43 +162,17 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #000000";
+        setFileType("audio");
         break;
       default:
         console.log("Invalid button");
     }
   }
 
-  const [testComminicationData, setTestCommunicationData] = useState([{}]);
-
-  function testClientServerCommunication(event) {
-    event.preventDefault();
-
-    const formData = new FormData();
-    formData.append('text_file', event.target.text_file.value); // Key-value pair
-
-    fetch('/test', {
-      method: 'POST',
-      body: formData,
-    })
-      .then(response => response.json())
-      .then(data => {
-        setTestCommunicationData(data.message);
-        console.log(data);
-      })
-      .catch(error => {
-        console.error('Error:', error);
-      });
-  }
-
   return (
     <div>
       <div className={PageDesign.mainDiv}>
         <h1 style={{ fontSize: "50px" }}>Upload a file</h1>
-
-        <form onSubmit={testClientServerCommunication}>Example client-server communication
-          <input type="text" name='text_file' />
-          <button type="submit">Upload</button>
-        </form>
 
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
 
@@ -267,27 +210,42 @@ function UploadFilePage() {
         </div>
 
 
-
-        <form onSubmit={handleSubmit} encType="multipart/form-data">
+{/* 
+        <form onSubmit={handleSubmit} htmlFor="input-file" encType="multipart/form-data">
           <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov,wav,mp3" className={MainPage.inputFile} ref={inputFileRef} onChange={handleFileChange} />
           <button type="submit" className={MainPage.uploadButton}>Upload</button>
         </form>
         {uploadStatus && <p>{uploadStatus}</p>}
         {linkToResults && <Link to={`/Results?data=${data}`}>Go to results</Link>}
 
-        <form onSubmit={handleSubmit} encType="multipart/form-data" className={MainPage.dropArea} ref={labelRef}>
-          <input type="file" name='uploaded_file' className={MainPage.inputFile} ref={inputFileRef} onChange={handleFileChange} hidden />
-          <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
-            {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} />}
-            {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} />}
-            {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} />}
-            <div>
-              <p ref={upload_p_ref}>Click or drop a file here.</p>
-            </div>
-            <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
+ */}
+
+
+
+
+        <div className={MainPage.Dropzone}>
+          <div className={MainPage.dropArea}  {...getRootProps()} onInput={handleFileChange} >
+            <input {...getInputProps()} onChange={handleFileChange} ref={inputFileRef} />
+            {isDragActive ? (
+              <div className={MainPage.uploadImageDivDraggable} ref={imageDivRef}>
+                <MdOutlineFileDownload className={MainPage.uploadImage} />
+
+                <p>Drop the file here ...</p>
+
+              </div>
+            ) : (
+              <div className={MainPage.uploadImageDiv} ref={imageDivRef}>
+                {showCheckmark && <FaRegCheckCircle className={MainPage.uploadImage} id={MainPage.Checkmark} />}
+                {showError && <VscError className={MainPage.uploadImage} id={MainPage.Error} />}
+                {!showError && !showCheckmark && <FaCloudUploadAlt className={MainPage.uploadImage} />}
+                <p ref={upload_p_ref}>Click or drop a file here.</p>
+                <span ref={upload_span_ref}>Upload a video or audio file for detection.</span>
+
+              </div>
+            )}
           </div>
-          <button type="submit" className={MainPage.uploadButton}>Upload</button>
-        </form>
+          {showCheckmark && <button onClick={handleSubmit} className={MainPage.uploadButton}>Detect</button>}
+        </div>
       </div >
     </div >
   );
