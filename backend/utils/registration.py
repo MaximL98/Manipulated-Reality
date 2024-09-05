@@ -23,14 +23,14 @@ def user_exists(username, email):
 
 
 # Function to insert data into the table
-def insert_data(username, hashed_password, email, detection_type, tested_videos, results):
+def insert_data(username, hashed_password, email, detection_type, tested_videos, video_paths, results):
     """Inserts multiple rows of data into the user_data table using a prepared statement."""
-    sql = """ INSERT INTO user_data (Username, Password, Email, Detection_Type , Video_Tested, Results)
-                VALUES (?,?,?,?,?,?)"""
+    sql = """ INSERT INTO user_data (Username, Password, Email, Detection_Type , Video_Tested, Video_Path, Results)
+                VALUES (?,?,?,?,?,?,?)"""
     
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
-    data = [username, hashed_password, email, detection_type, tested_videos, results]
+    data = [username, hashed_password, email, detection_type, tested_videos, video_paths, results]
     cur.execute(sql, data)
     conn.commit()
 
@@ -44,10 +44,11 @@ def register_user(username, password, email):
     hashed_password = hash_func(password)
     detection_type = ''
     tested_videos = ''
+    video_paths = ''
     results = ''
 
     # Store user information in the database
-    insert_data(username, hashed_password, email, detection_type, tested_videos, results)
+    insert_data(username, hashed_password, email, detection_type, tested_videos, video_paths, results)
 
     return True
 

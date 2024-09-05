@@ -25,6 +25,7 @@ def create_table(conn):
                 Email TEXT,
                 Detection_Type TEXT,
                 Video_Tested TEXT,
+                Video_Path TEXT,
                 Results TEXT,
                 UNIQUE(Username, Email)
             ); """
@@ -34,7 +35,7 @@ def create_table(conn):
 
 
 # Function to insert data into the table
-def append_data(username, detection_type, tested_videos, results):
+def append_data(username, detection_type, tested_videos, video_path, results):
     """Inserts multiple rows of data into the user_data table using a prepared statement."""
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
@@ -42,9 +43,10 @@ def append_data(username, detection_type, tested_videos, results):
           UPDATE user_data
           SET Detection_Type = CONCAT(Detection_Type, ?, ','),
               Video_Tested = CONCAT(Video_Tested, ?, ','),
+              Video_Path = CONCAT(Video_Path, ?, ','),
               Results = CONCAT(Results, ?, ',')
           WHERE Username = ?;
-            """, (detection_type, tested_videos, results, username))
+            """, (detection_type, tested_videos, video_path, results, username))
     conn.commit()
 
 
@@ -54,7 +56,7 @@ def extract_user_data(username):
         conn = create_connection()
         cursor = conn.cursor()
 
-        cursor.execute("SELECT Detection_Type, Video_Tested, Results FROM user_data WHERE Username = ?", (username,))
+        cursor.execute("SELECT Detection_Type, Video_Tested, Video_Path, Results FROM user_data WHERE Username = ?", (username,))
         data = cursor.fetchall()
 
          # Convert the fetched data into a dictionary with the username as a key
@@ -70,18 +72,18 @@ def extract_user_data(username):
         conn.close()
 
 
-# Example usage:
-username = "c1" 
-user_data = extract_user_data(username)
+# # Example usage:
+# username = "c1" 
+# user_data = extract_user_data(username)
 
-# Save the data to a JSON file
-with open("user_data.json", "w") as f:
-    json.dump(user_data, f, indent=4)
+# # Save the data to a JSON file
+# with open("user_data.json", "w") as f:
+#     json.dump(user_data, f, indent=4)
 
 
 # Apply the code below only for total reset of the database.
-# conn = create_connection()
-# cur = conn.cursor()
-# cur.execute("DROP TABLE IF EXISTS user_data")
-# create_table(conn)
-# conn.close()
+conn = create_connection()
+cur = conn.cursor()
+cur.execute("DROP TABLE IF EXISTS user_data")
+create_table(conn)
+conn.close()
