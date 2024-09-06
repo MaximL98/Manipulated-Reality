@@ -87,10 +87,10 @@ def register():
         email = request.form['email']
 
         if registration.register_user(username, password, email):
-            return "USER REGISTERED" # Redirect to login page after successful registration
+            return jsonify("USER REGISTERED"), 200 # Redirect to login page after successful registration
         else:
             # Handle registration failure (e.g., user already exists)
-            return "ERROR, username or email already used."
+            return jsonify("ERROR, username or email already used."), 200
 
 
 @app.route('/loginUser', methods=['GET', 'POST'])
@@ -102,10 +102,10 @@ def loginUser():
 
         if login.authenticate_user(username, password):
             # Redirect to protected area or home page
-            return "USER FOUND"
+            return jsonify("USER FOUND"), 200
         else:
             # Handle login failure (e.g., incorrect credentials)
-            return "USER NOT FOUND"
+            return  jsonify("USER NOT FOUND"), 200
 
 @app.route('/user_data', methods=['GET','POST'])
 def get_user_data():

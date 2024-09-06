@@ -1,28 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
-import Navbar from './Navbar';
+import { useContext } from 'react';
+import { AuthContext } from './AuthProvider.js';
+import { Link } from 'react-router-dom';
+import LoginDesign from '../Styles/LoginDesign.module.css';
+import LoginBlock from './LoginBlock.js';
 
 function Login() {
-    return (
-        <>
-            <div className={PageDesign.mainDiv}>
-      <div>
-        <h1>Login</h1>
-        <form method="POST" action="/loginUser">
-          <label htmlFor="username">Username:</label>
-          <input type="text" name="username" required />
+  const { username, setUsername, token, setToken } = useContext(AuthContext);
 
-          <label htmlFor="password">Password:</label>
+  useEffect(() => {
+    console.log(username);
+  }, [username]);
 
-          <input type="password" name="password" required />
+  return (
+    <>
+    
+      <div className={PageDesign.mainDiv}>
+        <div className={LoginDesign.mainDiv}>
+        <LoginBlock/>
 
-          <button type="submit">Login</button>
-        </form>
-        <p>Don't have an account? <a href="/register">Register here</a></p>
+          {/* <div className={LoginDesign.middleBox}>
+            <h1>Login</h1>
+            <form onSubmit={handleSubmit}>
+              <label htmlFor="username">Username:</label>
+              <input type="text" name="username" required />
+
+              <label htmlFor="password">Password:</label>
+
+              <input type="password" name="password" required />
+
+              <button type="submit">Login</button>
+            </form>
+            <p>Don't have an account? <a href="/register">Register here</a></p>
+            <Link to="/profile">Profile</Link>
+          </div> */}
+        </div>
       </div>
-            </div>
-        </>
-    )
+    </>
+  )
 }
 
 export default Login;
