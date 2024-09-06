@@ -32,9 +32,7 @@ def test():
 
 @app.route("/Uploaded", methods=["GET", "POST"])
 def upload():
-    print("here")
     if 'uploaded_file' not in request.files:
-        print(request.files)
         return {'message': "No video file found"}
     video = request.files['uploaded_file']
     if video.filename == '':
@@ -43,6 +41,7 @@ def upload():
         video_path = "backend/static/videos/" + video.filename.split('.')[0][0:40] + ".mp4"
         audio_path = "backend/static/audio/" + video.filename.split('.')[0][0:40] + ".mp3"
         video.save(video_path)
+        video.save("frontend/public/" + video.filename.split('.')[0][0:40] + ".mp4")
         _, audio_path = utils.extract_audio(video_path, audio_path)
         
         return jsonify([video_path, audio_path]), 200
@@ -72,7 +71,14 @@ def result():
         os.remove(audio_path)
         os.remove(video_path)
     else:
-        print("One of the files does not exists.") 
+        print("One of the files does not exists.")
+
+    folder_path = "frontend/public"
+    for root, _, files in os.walk(folder_path):
+        for file in files:
+            if file.endswith(('.mp4', '.avi', '.mov', '.mkv', '.flv', '.wmv')):
+                video_path = os.path.join(root, file)
+                os.remove(video_path)
 
     return jsonify(data), 200 
 
