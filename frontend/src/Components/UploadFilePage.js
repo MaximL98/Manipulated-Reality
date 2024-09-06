@@ -11,6 +11,7 @@ import { VscError } from "react-icons/vsc";
 import { Link, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineFileDownload } from "react-icons/md";
+import ReactPlayer from 'react-player';
 
 
 const ACCEPTED_VIDEO_TYPES = ["mp4", "mkv", "avi", "mov"];
@@ -177,6 +178,14 @@ function UploadFilePage() {
         <Link to="/login"><button>login</button></Link>
         <Link to="/register"><button>register</button></Link>
 
+        <div>
+          <ReactPlayer
+            url="20240902_144602.mp4"
+            width="100%"
+            height="300px"
+            controls={true}
+          />
+        </div>
 
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
 
