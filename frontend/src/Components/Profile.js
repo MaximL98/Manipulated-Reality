@@ -1,19 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
 import Navbar from './Navbar';
+import { AuthContext } from './AuthProvider';
+import { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Profile() {
-  const [data, setData] = useState({
-    username: 'c1',
-    detectionData: [],
-  });
+  const { username, setUsername } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [receivedData, setReceivedData] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [updateResults, setUpdateResults] = useState(false);
 
   useEffect(() => {
+    if (username === '') {
+      navigate('/Login');
+    }
     const form = new FormData();
-    form.append('username', data.username);
+    form.append('username', username);
+    console.log(username);
 
     fetch('/user_data', { method: 'POST', body: form })
       .then((response) => response.json())

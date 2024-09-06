@@ -22,6 +22,7 @@ function UploadFilePage() {
   const [linkToResults, setLinkToResults] = useState(false);
   const [fileType, setFileType] = useState("videoAudio");
   const navigate = useNavigate();
+  const [acceptedTypes, setAcceptedTypes] = useState("");
 
 
   const [dataURL, setDataURL] = useState(null);
@@ -80,6 +81,7 @@ function UploadFilePage() {
       filename = filename.substring(0, 40) + "...";
     }
 
+    
     const ACCEPTED_FILE_TYPES = (fileType === "audio" ? ACCEPTED_AUDIO_TYPES : ACCEPTED_VIDEO_TYPES);
 
     console.log("Filetype uploaded: " + file.name.split('.').pop());
@@ -94,7 +96,7 @@ function UploadFilePage() {
       // Update UI with selected file info
     } else {
       upload_p_ref.current.innerHTML = "File not supported!";
-      upload_span_ref.current.innerHTML = "Please select a file of format: mp4, mkv, avi, mov, wav, mp3, m4a, flac, ogg, aac, wma";
+      upload_span_ref.current.innerHTML = "Please select a file of format: " + acceptedTypes;
       setSelectedFile(null);
       setShowError(true);
       setShowCheckmark(false);
@@ -146,6 +148,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         setFileType("videoAudio");
+        setAcceptedTypes(ACCEPTED_VIDEO_TYPES.join(", "));
         break;
       case "video":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -155,6 +158,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         setFileType("video");
+        setAcceptedTypes(ACCEPTED_VIDEO_TYPES.join(", "));
         break;
       case "audio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -164,6 +168,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #000000";
         setFileType("audio");
+        setAcceptedTypes(ACCEPTED_AUDIO_TYPES.join(", "));
         break;
       default:
         console.log("Invalid button");
@@ -222,6 +227,8 @@ function UploadFilePage() {
 
         </div>
 
+        <label>Upload a file of type: {acceptedTypes}</label>
+
 
 {/* 
         <form onSubmit={handleSubmit} htmlFor="input-file" encType="multipart/form-data">
@@ -239,6 +246,7 @@ function UploadFilePage() {
         <div className={MainPage.Dropzone}>
           <div className={MainPage.dropArea}  {...getRootProps()} onInput={handleFileChange} >
             <input {...getInputProps()} onChange={handleFileChange} ref={inputFileRef} />
+            <input type="file" name='uploaded_file' accept="mp4,mkv,avi,mov,wav,mp3,m4a,flac,ogg,aac,wma" className={MainPage.inputFile} ref={inputFileRef} onChange={handleFileChange} value=""/>
             {isDragActive ? (
               <div className={MainPage.uploadImageDivDraggable} ref={imageDivRef}>
                 <MdOutlineFileDownload className={MainPage.uploadImage} />

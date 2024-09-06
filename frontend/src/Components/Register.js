@@ -1,10 +1,12 @@
 import React from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
 import Navbar from './Navbar';
+import RegisterBlock from './RegisterBlock.js';
 
 function Register() {
     return (
         <>
+        <RegisterBlock/>
             <div className={PageDesign.mainDiv}>
             <div>
         <h1>Register</h1>
