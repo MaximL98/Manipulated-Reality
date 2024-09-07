@@ -1,0 +1,334 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap');
+
+.loginBlock {
+    --mainBackgroundColor: rgb(124, 217, 240);
+    font-family: 'Noto Sans', sans-serif;
+    border-radius: 10px;
+    border: 3px solid rgb(166, 166, 248);
+    overflow: hidden;
+    position: absolute;
+    box-shadow: 0px 0px 5px 1px rgb(61, 53, 53);
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    display: flex;
+    max-width: 300px;
+    max-height: 500px;
+    min-width: 270px;
+    min-height: 500px;
+    background-color: var(--mainBackgroundColor);
+}
+
+.loginBlock > * {
+    z-index: 1;
+}
+
+.loginLabel {
+    font-size: 40px;
+    overflow: hidden;
+}
+
+.buttonDiv {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+}
+
+.incorrectCredentialsLabel {
+    display: none;
+}
+
+.incorrectCredentialsLabelShow {
+    color: red;
+}
+
+.loginButtonLoading {
+    animation: rotate 1s linear infinite;
+}
+
+.loginButtonIconIdle {
+    display: none;
+    opacity: 0;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loginButton {
+    height: 50px;
+    width: 80%;
+    background-color: transparent;
+    border: 2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 2px;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.5s, color 0.5s, transform 0.5s, box-shadow 0.5s;
+}
+
+.loginButtonIncorrectCredentials {
+    height: 50px;
+    width: 80%;
+    background-color: transparent;
+    border: 2px solid red;
+    border-radius: 2px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.5s, color 0.5s, transform 0.5s, box-shadow 0.5s;
+    animation: shake 0.1s 5 linear;
+}
+
+@keyframes shake {
+    0% {
+        transform: translate(0px, 0px);
+    }
+    25% {
+        transform: translate(3px, 0px);
+    }
+    50% {
+        transform: translate(0px, 0px);
+    }
+    75% {
+        transform: translate(-3px, 0px);
+    }
+    100% {
+        transform: translate(0px, 0px);
+    }
+}
+
+.loginButtonIncorrectCredentials:hover {
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    box-shadow: 2px 2px 5px 1px rgba(255, 255, 255, 0.3);
+    transform: scale(1.03);
+}
+
+
+.loginButton:hover {
+    background-color: rgb(37, 131, 175);
+    color: rgb(255, 255, 255);
+    box-shadow: 2px 2px 5px 1px rgba(255, 255, 255, 0.3);
+    transform: scale(1.03);
+}
+
+.loginButton:focus {
+    outline: none;
+}
+
+.registerButton {
+    height: 50px;
+    width: 80%;
+    background-color: transparent;
+    border: 2px solid rgb(80, 80, 250);
+    border-radius: 2px;
+    color: rgb(80, 80, 250);
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.5s, color 0.5s, border 0.5s, transform 0.5s, box-shadow 0.5s;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.registerButton:hover {
+    background-color: rgb(80, 80, 250);
+    border: 2px solid white;
+    color: black;
+    transform: scale(1.03);
+}
+
+.registerButton:focus {
+    outline: none;
+}
+
+/*This section is for the username block containing the input box and the username label*/
+.usernameBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-top: 20px;
+    background-color: transparent;
+}
+
+.usernameBlock label{
+    position: absolute;
+    transition: 0.5s ease all;
+}
+
+.usernameBlock input {
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.usernameBlock input:focus + label,
+.usernameBlock input:valid + label {
+    content: "";
+    color: rgb(255, 255, 255);
+    background-color: var(--mainBackgroundColor);
+    transform: translateX(-10px) translateY(-28px);
+    font-size: 1em;
+}
+
+.usernameLabel {
+    pointer-events: none;
+    left: 20%;
+    position: absolute;
+    font-size: 20px;
+    color: rgb(102, 102, 102);
+    margin-right: 10px;
+    background-color: var(--mainBackgroundColor);
+
+    z-index: 7;   
+}
+
+.usernameInput {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 10px; 
+    height: 50px;
+    width: 70%;
+    background-color: black;    
+    border-bottom: 2px solid white;
+    font-size: 20px;
+    transition: border-color 0.5s;
+    transition: border-radius 0.3s;
+}
+
+.usernameInput:focus {
+    border-color: rgb(80, 80, 250);
+    border-bottom-width: 3px;
+    border-radius: 5px;
+    outline: none;
+}
+
+
+/*This section is for the password block containing the input box and the password label*/
+
+.passwordBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.passwordBlock label{
+    background-color: var(--mainBackgroundColor); 
+    position: absolute;
+    transition: 0.5s ease all;
+}
+
+.passwordBlock input {
+    background-color: transparent;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+}
+
+.passwordBlock input:focus + label,
+.passwordBlock input:valid + label {
+    content: "";
+    color: rgb(255, 255, 255);
+    background-color: var(--mainBackgroundColor);
+    transform: translateX(-10px) translateY(-28px);
+    font-size: 1em;
+}
+
+.passwordLabel {
+    pointer-events: none;
+    left: 20%;
+    position: absolute;
+    font-size: 20px;
+    color: rgb(102, 102, 102);
+    margin-right: 10px;
+    background-color: var(--mainBackgroundColor);
+
+    z-index: 7;   
+}
+
+.passwordInput {
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-right: 10px; 
+    height: 50px;
+    width: 70%;
+    background-color: transparent;
+    border-bottom: 2px solid white;
+    font-size: 20px;
+    transition: border-color 0.5s;
+    transition: border-radius 0.3s;
+}
+
+.passwordInput:focus {
+    border-color: rgb(80, 80, 250);
+    border-bottom-width: 3px;
+    border-radius: 5px;
+    outline: none;
+}
+
+.userIcon {
+    font-size: 30px;
+    padding-right: 10px;
+}
+
+.passwordIcon {
+    font-size: 30px;
+    padding-right: 10px;
+}
+
+.forgotPassword:hover {
+    text-decoration: underline;
+}
+
+.guide {
+    background-color: #423f3f;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 200px;
+    padding: 20px;
+}
+
+.guideH2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.guideP {
+    margin-top: 0;
+}
+
+.guideUl {
+    list-style-type: disc;
+    margin-left: 20px;
+}
+
+.logoutButton:hover {
+    background-color: rgb(134, 32, 32);
+    color: black;
+    box-shadow: 2px 2px 5px 1px rgba(255, 255, 255, 0.3);
+    transform: scale(1.03);
+}

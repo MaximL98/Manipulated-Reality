@@ -1,0 +1,20 @@
+.explenationDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    width: 50%;
+    height: auto;
+}
+
+.explenationDiv h1 {
+    font-size: 40px;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+.explenationDiv p {
+    font-size: 25px;
+    margin-top: 20px;
+}
