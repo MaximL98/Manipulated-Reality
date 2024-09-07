@@ -57,7 +57,8 @@ function UploadFilePage() {
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    fileUploadedButtonClicked();
+    if (chosenButton)
+      fileUploadedButtonClicked();
   }, [chosenButton]);
 
   const onDrop = useCallback(acceptedFiles => {
@@ -214,14 +215,15 @@ function UploadFilePage() {
         <Link to="/login"><button>login</button></Link>
         <Link to="/register"><button>register</button></Link>
 
-        <div>
+        {showCheckmark && <div>
           <ReactPlayer
-            url="20240902_144602.mp4"
+            url={fileName}
             width="100%"
             height="300px"
             controls={true}
           />
-        </div>
+          {console.log("File name: " + fileName)}
+        </div>}
 
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
 

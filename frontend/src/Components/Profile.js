@@ -44,26 +44,33 @@ function Profile() {
   return (
     <>
       <div className={PageDesign.mainDiv}>
-        <h1>My Previous  Tests</h1>
+        <h1>Hi {username}, this is your profile.</h1>
+
 
         <div className={PageDesign.ListLoadingDiv}>
-            {isLoading ? (
-              <p>Loading...</p>
-            ) : (
-              <>
-                {updateResults && receivedData.map((file, index) => (
-                  <div key={index} className={PageDesign.resultsListDiv}>
-                    <li className={PageDesign.list}>
-                      <strong className={PageDesign.listItem}>Detection Type:</strong> {file.Detection_Type}
-                      <strong className={PageDesign.listItem}>Video Tested:</strong> {file.Video_Tested}
-                      <strong className={PageDesign.listItem}>Video Path:</strong> {file.Video_Path}
-                      <strong className={PageDesign.listItem}>Results:</strong> {file.Results}
-                    </li>
-                  </div>
+          {isLoading ? (
+            <p>Loading...</p>
+          ) : (
+            <>
+              <div>
+                <h2 style={{ left: "13%" }}>This table lists your previous detection processes.</h2>
+                <div style={{ }}>
+                  {updateResults && receivedData.map((file, index) => (
+                    <div key={index} className={PageDesign.resultsListDiv}>
+                      <li className={PageDesign.list}>
+                        <strong className={PageDesign.listItem}>Detection Type:</strong> {file.Detection_Type}
+                        <strong className={PageDesign.listItem}>Video Tested:</strong> {file.Video_Tested}
+                        <strong className={PageDesign.listItem}>Video Path:</strong> {file.Video_Path}
+                        <strong className={PageDesign.listItem}>Results:</strong> {file.Results}
+                      </li>
+                    </div>
 
-                ))}
-              </>
-            )}
+
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
         </div>
       </div>
