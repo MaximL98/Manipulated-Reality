@@ -46,6 +46,8 @@
 
 .mrLogo:before {
     content: "";
+    top: 13px;
+
     background-image: conic-gradient(rgba(255, 255, 255, 0.144) 20deg,
             rgba(249, 249, 255, 0.438) 360deg);
     height: 105px;

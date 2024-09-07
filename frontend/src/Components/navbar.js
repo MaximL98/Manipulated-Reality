@@ -47,6 +47,8 @@ const Navbar = () => {
                 <Link to="/"><button className={NavbarStyle.navbarButton}>Home</button></Link>
                 <Link to="/About"><button className={NavbarStyle.navbarButton}>About</button></Link>
                 <Link to="/Contact"><button className={NavbarStyle.navbarButton}>Contact</button></Link>
+                <Link to="/Upload_file"><button className={NavbarStyle.navbarButton}>Upload file</button></Link>
+
             </div>
 
 

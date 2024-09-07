@@ -55,16 +55,19 @@ def result():
     #detection_type = request.form['detection_type']
     print(video_path, audio_path)
     # return render_template("frontend/src/test.js", video_name=video.filename)
-    #video_result = prediction_pipeline.predict(video_path)
-    video_result = 0.77
+    video_result = prediction_pipeline.predict(video_path)
+    #video_result = 0.77
     audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
 
     data = [video_result, audio_result]
     
-    USERNAME = 'c1'
+    USERNAME = 'c5'
     DETECTION_TYPE = 'V&A'
-
+    
+    print(video_path)
     video_path_insert = video_path.replace('/', '.')
+    print(video_path)
+
     append_data(USERNAME, DETECTION_TYPE, video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
 
     if os.path.exists(audio_path) and os.path.exists(video_path):

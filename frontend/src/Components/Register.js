@@ -1,6 +1,6 @@
 import React from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
-import Navbar from './Navbar';
+import Navbar from './Navbar.js';
 import RegisterBlock from './RegisterBlock.js';
 
 function Register() {
