@@ -13,6 +13,12 @@ function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [updateResults, setUpdateResults] = useState(false);
 
+  const [detectionType, setDetectionType] = useState([]);
+  const [results, setResults] = useState([]);
+  const [videoPath, setVideoPath] = useState([]);
+  const [videosTested, setVideosTested] = useState([]);
+
+
   useEffect(() => {
     if (username === '') {
       navigate('/Login');
@@ -24,17 +30,28 @@ function Profile() {
     fetch('/user_data', { method: 'POST', body: form })
       .then((response) => response.json())
       .then(jsonData => {
-        setReceivedData(jsonData.data);
+        setReceivedData(jsonData.data[0]);
         setIsLoading(false);
         setUpdateResults(true);
-        console.log(jsonData);
+        console.log(jsonData.data[0]);
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
       });
 
-    console.log(receivedData[0]);
   }, []);
+
+  useEffect(() => {
+    console.log("ref " + receivedData.Results.split(','));
+    // for (let i = 0; i < receivedData.Detection_Type.split(',').length; i++) {
+      console.log(detectionType.push(receivedData.Detection_Type.split(',')[1]));
+      console.log(results.push(receivedData.Results.split(',')[1]));
+      console.log(videoPath.push(receivedData.Video_Path.split(',')[1]));
+      console.log(videosTested.push(receivedData.Video_Tested.split(',')[1]));
+    // }
+  }, [receivedData])
+
+
 
   // useEffect(() => {
   //   fetch('/user_data', { method: 'POST', body: new FormData().append('username', data.username) })
@@ -55,7 +72,7 @@ function Profile() {
               <div>
                 <h2 style={{ left: "13%" }}>This table lists your previous detection processes.</h2>
                 <div style={{ }}>
-                  {updateResults && receivedData.map((file, index) => (
+                  {updateResults && videosTested.map((file, index) => (
                     <div key={index} className={PageDesign.resultsListDiv}>
                       <li className={PageDesign.list}>
                         <strong className={PageDesign.listItem}>Detection Type:</strong> {file.Detection_Type}
