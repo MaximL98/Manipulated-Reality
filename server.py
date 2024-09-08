@@ -151,11 +151,14 @@ def register():
         password = request.form['password']
         email = request.form['email']
 
+    if username and password and email:
         if registration.register_user(username, password, email):
             return jsonify("USER REGISTERED"), 200 # Redirect to login page after successful registration
         else:
             # Handle registration failure (e.g., user already exists)
             return jsonify("ERROR, username or email already used."), 200
+    else:
+        return jsonify("ERROR, please fill up all fields!"), 200
 
 
 @app.route('/loginUser', methods=['GET', 'POST'])
@@ -164,20 +167,25 @@ def loginUser():
         username = request.form['username']
         password = request.form['password']
 
-
+    if username and password:
         if login.authenticate_user(username, password):
             # Redirect to protected area or home page
             return jsonify("USER FOUND"), 200
         else:
             # Handle login failure (e.g., incorrect credentials)
             return  jsonify("USER NOT FOUND"), 200
+    else:
+        return jsonify("ERROR, please fill up all fields!"), 200
 
 @app.route('/user_data', methods=['GET','POST'])
 def get_user_data():
     if request.method == 'POST':
         username = request.form['username']
         user_data = extract_user_data(username)
-        return jsonify(user_data), 200
+        if user_data:
+            return jsonify(user_data), 200
+        else:
+            return jsonify("ERROR, user not found!")
 
 if __name__ == "__main__":
     app.run(debug=True)
