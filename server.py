@@ -24,10 +24,24 @@ def App():
         render_template("App.js")
     }
    
-# Test Route 
-@app.route("/test", methods=["GET", "POST"])
-def test():
-    return jsonify("Server responded with message: " + request.form['text_file'] + " "+ request.form['text_file']), 200 
+# # Test Route 
+# @app.route("/test", methods=["GET", "POST"])
+# def test():
+#     if 'uploaded_file' not in request.files:
+#         return {'message': "No video file found"}
+#     video = request.files['uploaded_file']
+#     if video.filename == '':
+#         print("No selected file")
+#         return "No selected file"
+#     if video and allowed_file(video.filename):
+#         video_path = "backend/static/videos/" + video.filename.split('.')[0][0:40] + ".mp4"
+#         audio_path = "backend/static/audio/" + video.filename.split('.')[0][0:40] + ".mp3"
+#         video.save(video_path)
+#         _, audio_path = utils.extract_audio(video_path, audio_path)
+#         print("response now")
+#     return jsonify(["/backend", "backend/static/sss"] ), 200 
+#     return {'message': "Invalid file type"}
+#     return jsonify(["/backend", "backend/static/sss"] ), 200 
     
 
 @app.route("/Uploaded", methods=["GET", "POST"])
@@ -41,9 +55,7 @@ def upload():
         video_path = "backend/static/videos/" + video.filename.split('.')[0][0:40] + ".mp4"
         audio_path = "backend/static/audio/" + video.filename.split('.')[0][0:40] + ".mp3"
         video.save(video_path)
-        video.save("frontend/public/" + video.filename.split('.')[0][0:40] + ".mp4")
         _, audio_path = utils.extract_audio(video_path, audio_path)
-        
         return jsonify([video_path, audio_path]), 200
     return {'message': "Invalid file type"}
 
@@ -52,23 +64,23 @@ def upload():
 def result(): 
     audio_path = request.form['audioURL']
     video_path = request.form['videoURL']
+    detection_type = request.form['detectionType']
+    username = request.form['username']
+    print("detection type: " ,detection_type)
     #detection_type = request.form['detection_type']
     print(video_path, audio_path)
     # return render_template("frontend/src/test.js", video_name=video.filename)
-    video_result = prediction_pipeline.predict(video_path)
-    #video_result = 0.77
+    # video_result = prediction_pipeline.predict(video_path)
+    video_result = 0.77
     audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
 
     data = [video_result, audio_result]
-    
-    USERNAME = 'c5'
-    DETECTION_TYPE = 'V&A'
-    
+        
     print(video_path)
     video_path_insert = video_path.replace('/', '.')
     print(video_path)
 
-    append_data(USERNAME, DETECTION_TYPE, video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
+    append_data(username, detection_type, video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
 
     if os.path.exists(audio_path) and os.path.exists(video_path):
         os.remove(audio_path)
