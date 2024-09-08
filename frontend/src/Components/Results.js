@@ -6,7 +6,8 @@ import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 
 import { useLocation } from "react-router-dom";
-
+import { AuthContext } from "./AuthProvider.js";
+import { useContext } from "react";
 
 
 
@@ -19,11 +20,16 @@ function Results() {
     console.log(location);
     const audioURL = location.state.audioURL;
     const videoURL = location.state.videoURL;
+    const detectionType = location.state.detectionType;
+
+    const { username } = useContext(AuthContext);
 
 
     const form = new FormData();
     form.append('audioURL', audioURL);
     form.append('videoURL', videoURL);
+    form.append('detectionType', detectionType);
+    form.append('username', username);
 
     useEffect((event) => {
         fetch('/Results', {

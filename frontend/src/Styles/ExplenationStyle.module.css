@@ -4,8 +4,12 @@
     align-items: center;
     flex-direction: column;
 
-    width: 50%;
-    height: auto;
+    width: 70%;
+    background-color: #a6cfe069;
+    position: absolute;
+    height: calc(100% - 75px);
+    border-left: 1px solid #000;
+    border-right: 1px solid #000;
 }
 
 .explenationDiv h1 {
@@ -16,5 +20,5 @@
 
 .explenationDiv p {
     font-size: 25px;
-    margin-top: 20px;
+    margin: 20px;
 }
