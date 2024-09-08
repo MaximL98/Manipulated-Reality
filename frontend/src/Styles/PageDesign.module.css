@@ -16,26 +16,11 @@
 }
 
 .resultsListDiv {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    max-height: 200px;
-    min-height: 50px;
-    width: auto;
-    background-color: #298db8;
-    overflow-x: hidden;
-    border: 2px solid black;
-}
-
-.listItem {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #298db8;
-    overflow-x: hidden;
-    margin-top: 5px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .ListLoadingDiv {
@@ -50,12 +35,20 @@
 }
 
 .list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 80vw;
-    height: auto;
-    background-color: #298db8;
-    position: relative;
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+}
+
+.listItem {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.listItem:before {
+    content: "\25B6";
+    margin-right: 5px;
+    color: #007bff;
 }

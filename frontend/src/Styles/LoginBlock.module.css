@@ -16,7 +16,7 @@
     max-height: 500px;
     min-width: 270px;
     min-height: 500px;
-    background-color: var(--mainBackgroundColor);
+    background: linear-gradient(180deg, rgb(206, 14, 14) 0%, rgba(11, 111, 136, 0.5) 100%);
 }
 
 .loginBlock > * {
@@ -79,6 +79,7 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.5s, color 0.5s, transform 0.5s, box-shadow 0.5s;
+    
 }
 
 .loginButtonIncorrectCredentials {
@@ -189,7 +190,6 @@
 .usernameBlock input:valid + label {
     content: "";
     color: rgb(255, 255, 255);
-    background-color: var(--mainBackgroundColor);
     transform: translateX(-10px) translateY(-28px);
     font-size: 1em;
 }
@@ -201,7 +201,6 @@
     font-size: 20px;
     color: rgb(102, 102, 102);
     margin-right: 10px;
-    background-color: var(--mainBackgroundColor);
 
     z-index: 7;   
 }
