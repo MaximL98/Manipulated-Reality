@@ -47,7 +47,7 @@ const Navbar = () => {
                 <Link to="/"><button className={NavbarStyle.navbarButton}>Home</button></Link>
                 <Link to="/About"><button className={NavbarStyle.navbarButton}>About</button></Link>
                 <Link to="/Contact"><button className={NavbarStyle.navbarButton}>Contact</button></Link>
-                <Link to="/Upload_file"><button className={NavbarStyle.navbarButton}>Upload file</button></Link>
+                <Link to="/UploadFilePage"><button className={NavbarStyle.navbarButton}>Upload file</button></Link>
 
             </div>
 
@@ -55,7 +55,6 @@ const Navbar = () => {
 
             <div className={NavbarStyle.profileIconDiv} onClick={() => handleMenuClick()}>
                 <FaUserAlt className={NavbarStyle.profileIcon} />
-
             </div>
 
             <div ref={profileMenuRef} className={NavbarStyle.profileIconMenu} >
