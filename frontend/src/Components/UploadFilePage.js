@@ -53,7 +53,6 @@ function UploadFilePage() {
 
 
 
-  let detectionType = "va";
 
 
 
@@ -77,7 +76,7 @@ function UploadFilePage() {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [showCheckmark, setShowCheckmark] = useState(false);
   const [showError, setShowError] = useState(false);
-
+  const [detectionType, setDetectionType] = useState("");
 
   useEffect(() => {
     if (chosenButton)
@@ -198,7 +197,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
-        detectionType = "va";
+        setDetectionType("va");
         break;
       case "video":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -207,7 +206,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
-        detectionType = "v";
+        setDetectionType("v");
         break;
       case "audio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -216,7 +215,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #000000";
-        detectionType = "a";
+        setDetectionType("a");
         break;
       default:
         console.log("Invalid button");

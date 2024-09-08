@@ -41,10 +41,10 @@ def append_data(username, detection_type, tested_videos, video_path, results):
     cur = conn.cursor()
     cur.execute("""
           UPDATE user_data
-          SET Detection_Type = Detection_Type || "," || ?,
-              Video_Tested = Video_Tested || "," || ?,
-              Video_Path = Video_Path || "," || ?,
-              Results = Results || "," || ?
+          SET Detection_Type = Detection_Type  || ? || ",",
+              Video_Tested = Video_Tested  || ? || ",",
+              Video_Path = Video_Path  || ? || ",",
+              Results = Results  || ? || ","
           WHERE Username = ?;
             """, (detection_type, tested_videos, video_path, results, username))
     conn.commit()
@@ -81,8 +81,8 @@ def extract_user_data(username):
 
 
 # Apply the code below only for total reset of the database.
-# conn = create_connection()
-# cur = conn.cursor()
-# cur.execute("DROP TABLE IF EXISTS user_data")
-# create_table(conn)
-# conn.close()
+conn = create_connection()
+cur = conn.cursor()
+cur.execute("DROP TABLE IF EXISTS user_data")
+create_table(conn)
+conn.close()
