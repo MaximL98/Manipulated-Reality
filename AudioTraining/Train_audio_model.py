@@ -22,12 +22,11 @@ array_of_feature_set_names = ["All_data_1000ms_22050hz\\0-8_(REAL)_0-56_(FAKE)_1
                               "All_data_1000ms_22050hz\\0-31779_samples_1000ms_for_sample_22050hz_frequency_InTheWild_dataset_feature_set.npy",
                               "All_data_1000ms_22050hz\\0-30043_(REAL)_0-0_(FAKE)_1000ms_for_sample_22050hz_frequency_FluentSpeechCorpus_feature_set.npy",
                               "All_data_1000ms_22050hz\\0-3106_(REAL)_0-16283_(FAKE)_1000ms_for_sample_22050hz_frequency_WaveFake_dataset_feature_set.npy"]
-                              "All_data_1000ms_22050hz\\0-3106_(REAL)_0-16283_(FAKE)_1000ms_for_sample_22050hz_frequency_WaveFake_dataset_feature_set.npy"]
+
 
 array_of_labels_set_names = [ "All_data_1000ms_22050hz\\0-8_(REAL)_0-56_(FAKE)_1000ms_for_sample_22050hz_frequency_DeepVoice_dataset_labels_set.npy",
                               "All_data_1000ms_22050hz\\0-31779_samples_1000ms_for_sample_22050hz_frequency_InTheWild_dataset_labels_set.npy",
                               "All_data_1000ms_22050hz\\0-30043_(REAL)_0-0_(FAKE)_1000ms_for_sample_22050hz_frequency_FluentSpeechCorpus_labels_set.npy",
-                              "All_data_1000ms_22050hz\\0-3106_(REAL)_0-16283_(FAKE)_1000ms_for_sample_22050hz_frequency_WaveFake_dataset_labels_set.npy"]
                               "All_data_1000ms_22050hz\\0-3106_(REAL)_0-16283_(FAKE)_1000ms_for_sample_22050hz_frequency_WaveFake_dataset_labels_set.npy"]
 
 # Class names
@@ -68,7 +67,6 @@ scaler_filename = "scaler.save"
 # Save the scaler
 scaler_filename = "scaler.save"
 import pickle
-with open(scaler_filename, 'wb') as file:
 with open(scaler_filename, 'wb') as file:
     pickle.dump(scaler, file)
 
