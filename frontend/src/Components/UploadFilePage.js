@@ -17,7 +17,7 @@ import { useContext } from 'react';
 
 
 const ACCEPTED_VIDEO_TYPES = ["mp4", "mkv", "avi", "mov"];
-const ACCEPTED_AUDIO_TYPES = ["wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
+const ACCEPTED_AUDIO_TYPES = ["wav", "mp3"];
 let currentFileType = null;
 
 function UploadFilePage() {
@@ -157,22 +157,22 @@ function UploadFilePage() {
         setLinkToResults(true);
         // Ensure we have all necessary data before navigating
         if (responseData) {
+          console.log("Response data: " + responseData);
           switch (detectionType) {
             case "va":
               navigate('/Results',
-                { state: { videoURL: responseData[0], audioURL: responseData[1], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType } });
+                { state: { videoURL: responseData[0], audioURL: responseData[1], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType }});
               break;
             case "v":
               navigate('/Results',
-                { state: { videoURL: responseData[0], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType } });
+                { state: { videoURL: responseData[0], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType }});
               break;
             case "a":
               navigate('/Results',
-                { state: { audioURL: responseData[0], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType } });
+                { state: { audioURL: responseData[0], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType }});
               break;
             default:
               console.log("Invalid detection type");
-
           }
         } else {
           console.error('Missing required data for navigation');
