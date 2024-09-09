@@ -148,7 +148,7 @@ function RegisterBlock() {
                         {registerText}
                     </button>
                     <label ref={incorrectCredentialsLabelRef} className={Style.incorrectCredentialsLabel}>
-                        User already exists!
+                        User or Email already in use!
                     </label>
                     <label style={{ fontSize: '20px', color: "rgba(80, 80, 250, 1)" }}>
                         New to Manipulated Reality?

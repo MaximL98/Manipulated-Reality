@@ -5,15 +5,15 @@ import pickle
 
 SAMPLE_FREQUENCY = 22050
 
-def predict_single_audio_file(audio_file_path):
+def predict_single_audio_file(audio_file_path, model_path = 'Audio_detection_model_1024_batches_5_epochs.keras', scaler_path = 'RobustScaler.pkl'):
     print("Starting audio pre-processing...")
     pre_processed = feature_extraction.audio_file_feature_extractor(audio_file_path)
     
     print("Loading audio detection model...")
-    model = models.load_model('AudioTraining/Audio_detection_model_1024_batches_5_epochs.keras')
+    model = models.load_model("AudioTraining\\" + model_path)
 
 
-    with open('AudioTraining/RobustScaler.pkl', 'rb') as file:
+    with open("AudioTraining\\" + scaler_path, 'rb') as file:
         scaler = pickle.load(file)
     
     #threshold = 0.5
