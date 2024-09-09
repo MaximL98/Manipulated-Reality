@@ -1,20 +1,11 @@
-import os
-# from AudioFunctions import function_collection
-
-# Used for bi-coherence analysis
-import scipy.signal as signal
-from scipy import fftpack, fft
-
 # Used for bi-coherence analysis
 import soundfile as sf
 import numpy as np
-
 # Used for MFCC analysis
 import librosa
-
 from sklearn.decomposition import PCA
 from sklearn.preprocessing import StandardScaler
-import pandas as pd
+
 
 def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY = 22050, LENGTH_OF_EACH_SAMPLE = 1):
     """
@@ -33,7 +24,6 @@ def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY
     Output:
     extracted_features: A list of extracted features. Eeach index indicates a file, there can be a list in each index if the audio sample is bigger than LENGTH_OF_EACH_SAMPLE.
     """
-    audio_files = []
     number_of_generated_samples = 0
     # Convert generated samples to mono
     audio, sample_frequency = sf.read(audioFilePath)
@@ -49,9 +39,11 @@ def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY
         chunks.append(audio)
         number_of_generated_samples += len(audio_chunks)    
          
+    # Compute the mfcc features of the audio chunks
     mfcc = [ compute_mfcc(audio, sample_frequency, NUM_MFCC) for audio in chunks]
     mfcc = np.array(mfcc)
     mfcc = mfcc.reshape(len(chunks), NUM_MFCC*len(mfcc[0][0]))
+    
     # Perform delta cepstral and delta^2 analysis on the mfcc_bicoherence array
     delta_mfcc_bicoherence = librosa.feature.delta(mfcc)
     delta2_mfcc_bicoherence = librosa.feature.delta(mfcc, order=2)
@@ -59,36 +51,6 @@ def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY
     
     return feature_set    
     
-
-# This function is used to calculate the bispectrum of the signals
-def compute_bispectrum(samples):
-    bispectrum = []
-    for sample in samples:
-        # Compute the Fourier Transform of the signal
-        F = np.fft.fft(sample)
-        # Compute the Fourier Transform of the conjugate of the signal
-        F_star = np.conj(F)
-        # Compute the bispectrum using the convolution theorem
-        bispectrum.append(F * F_star * np.roll(F,  1))
-    return bispectrum
-        
-# This function is used to calculate the bicoherence of the signals
-def calculate_bicoherence(bispectrums, amplitude_spectrum):
-    bicoherence = []
-    # Normalize the bispectrum
-    for i, bispectrum in enumerate(bispectrums):
-        normalized_bispectrum = bispectrum / (amplitude_spectrum[i]**2 +  1e-10)  # Adding a small constant for numerical stability
-        bicoherence.append(normalized_bispectrum)
-    return bicoherence
-
-# This function is used to calculate the amplitude spectrum of the signals
-# The amplitude spectrum is a square representation of the fourier transform of a signal
-def calculate_amplitude_spectrum(signals):
-    amplitude_spectrum = []
-    for signal in signals:
-        amplitude_spectrum.append(np.abs(fft.fft(signal))**2)
-    return amplitude_spectrum
-
 # This function takes an audio file and returns an array with chunks of 1 second
 # If a file is 5.75 seconds, it returns an array of size 6 with the last index padded with 0's
 def trim_audio(audio, fs, length_of_each_sample = 1):
@@ -102,6 +64,42 @@ def trim_audio(audio, fs, length_of_each_sample = 1):
    
     return chunks
 
-
 def compute_mfcc(audio, sr, num_mfcc):
     return librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=num_mfcc)
+
+
+############################### This code is not currently used but might be used in future for bi-coherence analysis ###############################
+
+# # Used for bi-coherence analysis
+# import scipy.signal as signal
+# from scipy import fftpack, fft
+# import pandas as pd
+
+# # This function is used to calculate the bispectrum of the signals
+# def compute_bispectrum(samples):
+#     bispectrum = []
+#     for sample in samples:
+#         # Compute the Fourier Transform of the signal
+#         F = np.fft.fft(sample)
+#         # Compute the Fourier Transform of the conjugate of the signal
+#         F_star = np.conj(F)
+#         # Compute the bispectrum using the convolution theorem
+#         bispectrum.append(F * F_star * np.roll(F,  1))
+#     return bispectrum
+        
+# # This function is used to calculate the bicoherence of the signals
+# def calculate_bicoherence(bispectrums, amplitude_spectrum):
+#     bicoherence = []
+#     # Normalize the bispectrum
+#     for i, bispectrum in enumerate(bispectrums):
+#         normalized_bispectrum = bispectrum / (amplitude_spectrum[i]**2 +  1e-10)  # Adding a small constant for numerical stability
+#         bicoherence.append(normalized_bispectrum)
+#     return bicoherence
+
+# # This function is used to calculate the amplitude spectrum of the signals
+# # The amplitude spectrum is a square representation of the fourier transform of a signal
+# def calculate_amplitude_spectrum(signals):
+#     amplitude_spectrum = []
+#     for signal in signals:
+#         amplitude_spectrum.append(np.abs(fft.fft(signal))**2)
+#     return amplitude_spectrum

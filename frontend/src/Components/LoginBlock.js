@@ -3,16 +3,12 @@ import { FaUserAlt, FaKey } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import { BiLoader } from 'react-icons/bi';
-
 import { AuthContext } from './AuthProvider';
-import { useContext } from 'react'; 
+import { useContext } from 'react';
 
-// Removed unused sleep function
 
 function LoginBlock() {
-  const { setUsername, setToken, username , token} = useContext(AuthContext);
-
-
+  const { setUsername, setToken, username, token } = useContext(AuthContext);
 
   const [usernameClient, setUsernameClient] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +19,32 @@ function LoginBlock() {
   const loadingIconRef = useRef(null);
   const navigate = useNavigate();
 
-  
+
+  function changeLoginAnimation(status) {
+    switch (status) {
+      case 'login':
+        loadingIconRef.current.className = Style.loginButtonIconIdle;
+        loginButtonRef.current.disabled = true;
+        loginButtonRef.current.className = Style.loginButton;
+        loginButtonRef.current.style.borderColor = 'green';
+        loginButtonRef.current.style.color = 'rgb(144, 238, 144)';
+        incorrectCredentialsLabelRef.current.disabled = true;
+        setLoginText('Success!');
+        break;
+      case 'failed':
+        loginButtonRef.current.className = Style.loginButton;
+        loginButtonRef.current.disabled = false;
+        loadingIconRef.current.className = Style.loginButtonIconIdle;
+        incorrectCredentialsLabelRef.current.disabled = false;
+        incorrectCredentialsLabelRef.current.className = Style.incorrectCredentialsLabelShow;
+        setLoginText('Login');
+        break;
+      default:
+        loginButtonRef.current.disabled = false;
+        loadingIconRef.current.className = Style.loginButtonIconIdle;
+        break;
+    }
+  }
 
   function handleKeyPress(e) {
     if (e.key === 'Enter') {
@@ -32,6 +53,11 @@ function LoginBlock() {
   }
 
   async function handleLogin() {
+    loadingIconRef.current.disabled = true;
+    loadingIconRef.current.className = Style.loginButtonLoading;
+    setLoginText('');
+
+
     const form = new FormData();
     form.append('username', usernameClient);
     form.append('password', password);
@@ -43,18 +69,13 @@ function LoginBlock() {
       .then((response) => response.json())
       .then(jsonData => {
         if (jsonData === "USER FOUND") {
+          changeLoginAnimation('login');
           setUsername(usernameClient);
-
-          console.log("JSON response: " + jsonData)
-          console.log("username: ", username)
-          setIsLoggedIn(jsonData.isLoggedIn);
-          setToken(jsonData.token);
           navigate('/profile');
         }
         else {
-
+          changeLoginAnimation('failed');
         }
-        console.log(jsonData);
       }).catch((error) => {
         console.error('Error logging in:', error);
       });
@@ -62,21 +83,14 @@ function LoginBlock() {
     if (usernameClient === '' || password === '') {
       return;
     }
-    setLoginText('Logging in');
-    loginButtonRef.current.disabled = true;
-    loadingIconRef.current.className = Style.loginButtonIconLoading;
-    // Removed sleep function call
-    setLoginText('Login');
-    loginButtonRef.current.disabled = false;
-    loadingIconRef.current.className = Style.loginButtonIconIdle;
-    incorrectCredentialsLabelRef.current.style.display = 'block';
+
   }
 
   useEffect(() => {
     if (username !== '') {
-        navigate('/profile');
+      navigate('/profile');
     }
-}, [username]);
+  }, [username]);
 
   return (
     <>

@@ -81,8 +81,8 @@ def extract_user_data(username):
 
 
 # Apply the code below only for total reset of the database.
-conn = create_connection()
-cur = conn.cursor()
-cur.execute("DROP TABLE IF EXISTS user_data")
-create_table(conn)
-conn.close()
+# conn = create_connection()
+# cur = conn.cursor()
+# cur.execute("DROP TABLE IF EXISTS user_data")
+# create_table(conn)
+# conn.close()
