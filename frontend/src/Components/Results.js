@@ -8,6 +8,7 @@ import { useParams } from 'react-router-dom';
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthProvider.js";
 import { useContext } from "react";
+import ReactPlayer from 'react-player';
 
 
 
@@ -15,12 +16,17 @@ function Results() {
     const [isLoading, setIsLoading] = useState(true);
     const [results, setResults] = useState([]);
     const [displayData, setDisplayData] = useState(false);
+    const [videoFile, setVideoFile] = useState();
+
     const location = useLocation();
 
     console.log(location);
     const audioURL = location.state.audioURL;
     const videoURL = location.state.videoURL;
     const detectionType = location.state.detectionType;
+    const fileURL = location.state.fileURL;
+
+
 
     const { username } = useContext(AuthContext);
 
@@ -48,8 +54,13 @@ function Results() {
     }, [location]);
 
     return (
-        <>            
+        <>
             <div className={PageDesign.mainDiv}>
+                <div>
+                    {fileURL && (
+                        <ReactPlayer url={fileURL} width="270px" height="480px" controls={true} />
+                    )}
+                </div>
                 {isLoading ? (
                     <CircleLoader />
                 ) : (

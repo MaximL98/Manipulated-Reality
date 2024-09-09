@@ -42,12 +42,12 @@ function Profile() {
   }, []);
 
   useEffect(() => {
-    console.log("ref " + receivedData.Results.split(','));
+    // console.log("ref " + receivedData.Results.split(','));
     // for (let i = 0; i < receivedData.Detection_Type.split(',').length; i++) {
-      console.log(detectionType.push(receivedData.Detection_Type.split(',')[1]));
-      console.log(results.push(receivedData.Results.split(',')[1]));
-      console.log(videoPath.push(receivedData.Video_Path.split(',')[1]));
-      console.log(videosTested.push(receivedData.Video_Tested.split(',')[1]));
+      // console.log(detectionType.push(receivedData.Detection_Type.split(',')[1]));
+      // console.log(results.push(receivedData.Results.split(',')[1]));
+      // console.log(videoPath.push(receivedData.Video_Path.split(',')[1]));
+      // console.log(videosTested.push(receivedData.Video_Tested.split(',')[1]));
     // }
   }, [receivedData])
 

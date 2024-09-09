@@ -148,8 +148,8 @@
 .uploadButton {
     width: 100px;
     height: 40px;
-    background-color: #f7f8ff;
-    border: 2px solid #bbb5ff;
+    background-color: #111111;
+    border: 2px solid rgba(32, 154, 224, 0.788);
     border-radius: 10px;
     margin-top: 40px;
     font-size: 20px;
