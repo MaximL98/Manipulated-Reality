@@ -65,9 +65,10 @@ def extract_video_frame(video_path, video_name):
         cap.release()
 
     # Return the processed frames as npy array
-    if video_name:
+    if frames:
         return frames
-
+    print("Error, could not extract enough facial frames!")
+    return None
 
 # Function that implement face recognition in a frame
 def face_detection(image_array, width, height):

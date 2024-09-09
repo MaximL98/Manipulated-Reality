@@ -105,20 +105,20 @@ def result():
         audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
         data = [video_result, audio_result]
         video_path_insert = video_path.replace('/', '.')
-        append_data(username, detection_type, video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
+        append_data(username, "Video & Audio", video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
 
     elif video_path != "undefined":
         video_result = prediction_pipeline.predict(video_path)
         data = [video_result]
         video_path_insert = video_path.replace('/', '.')
-        append_data(username, detection_type, video_path_insert.split('.')[-2], "some path",(video_result))
+        append_data(username, "Video", video_path_insert.split('.')[-2], "some path",(video_result))
         
     elif audio_path != "undefined":
         audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
         data = [audio_result]
         audio_path_insert = audio_path.replace('/', '.')
         print(audio_path_insert)
-        append_data(username, detection_type, audio_path_insert.split('.')[-2], "some path",(audio_result))
+        append_data(username, "Audio", audio_path_insert.split('.')[-2], "some path",(audio_result))
 
     else:
         return "Error, both of the paths are None!"
