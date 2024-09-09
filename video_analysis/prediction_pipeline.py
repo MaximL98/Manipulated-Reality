@@ -14,6 +14,10 @@ def predict(video_path):
     # video_name = my_cool_video
     video_name = Path(video_path).stem
 
+    if not video_name:
+        print("Could not extract file name, probably bad video path input!")
+        return None
+    
     # Using the frame extraction and face detection algorithm from video_preprocessing.utils
     print(f'Starting to extract {video_name} file...')
     video_frames = extract_video_frame(video_path=video_path, video_name= "video_analysis/test_videos/" + video_name)
@@ -27,11 +31,16 @@ def predict(video_path):
     # Loading already trained model (MAYA)
     print("Loading MAYA")
     maya_model = load_model("video_analysis/models/maya_model.h5")
+    if not maya_model:
+        print("Error loading Maya model, please make sure the model in the right directory!")
+        return None
     # Prediction on the feature extracted frames 
     prediction = maya_model.predict(frames_features)
+    if not prediction:
+        print("Error predicting!")
+        return None
     # The model returns the probability of the video been REAL
     # Meaning if the prediction is higher then 50% (0.5) we label as REAL else FAKE
-    print(prediction)
     prediction = prediction.tolist()
     ## print("Real") if prediction > 0.5 else print("Fake")
     return prediction[0][0]

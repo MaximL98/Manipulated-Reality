@@ -4,7 +4,6 @@ import MainPage from '../Styles/MainPage.module.css';
 import { GoVideo } from "react-icons/go";
 import { PiWaveformThin } from "react-icons/pi";
 import { LuAmpersand } from "react-icons/lu";
-import NavbarComponent from './Navbar.js';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { VscError } from "react-icons/vsc";
@@ -37,8 +36,6 @@ function UploadFilePage() {
 
   const [dataURL, setDataURL] = useState(null);
   const [uploadedURL, setUploadedURL] = useState(null);
-
-
 
   const labelRef = useRef(null);
   const imageDivRef = useRef(null);
@@ -200,6 +197,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         setDetectionType("va");
+        setDetectionType("va");
         break;
       case "video":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -209,6 +207,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         setDetectionType("v");
+        setDetectionType("v");
         break;
       case "audio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -217,6 +216,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #000000";
+        setDetectionType("a");
         setDetectionType("a");
         break;
       default:
