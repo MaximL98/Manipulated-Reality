@@ -75,18 +75,18 @@ def upload():
             if allowed_file_video(file.filename):
                 print("Video only")
                 file.save(video_path)
-                return jsonify([video_path, "None"]), 200
+                return jsonify([video_path]), 200
         else:
             if allowed_file_audio(file.filename):
                 print("Audio only")
                 file.save(audio_path)
-                return jsonify(["None", audio_path]), 200
+                return jsonify([audio_path]), 200
             
             elif allowed_file_video(file.filename):
                 file.save(video_path)
                 utils.extract_audio(video_path, audio_path)
                 os.remove(video_path)
-                return jsonify(["None", audio_path]), 200
+                return jsonify([audio_path]), 200
             
         return {'message': "Invalid file type"}
 
@@ -100,20 +100,20 @@ def result():
     print("detection type: " ,detection_type)
     print(video_path, audio_path)
     
-    if video_path != "None" and audio_path != "None":
+    if video_path != "undefined" and audio_path != "undefined":
         video_result = prediction_pipeline.predict(video_path)
         audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
         data = [video_result, audio_result]
         video_path_insert = video_path.replace('/', '.')
         append_data(username, "Video & Audio", video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
 
-    elif video_path != "None":
+    elif video_path != "undefined":
         video_result = prediction_pipeline.predict(video_path)
         data = [video_result]
         video_path_insert = video_path.replace('/', '.')
         append_data(username, "Video", video_path_insert.split('.')[-2], "some path",(video_result))
-
-    elif audio_path != "None":
+        
+    elif audio_path != "undefined":
         audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
         data = [audio_result]
         audio_path_insert = audio_path.replace('/', '.')

@@ -4,14 +4,12 @@ import MainPage from '../Styles/MainPage.module.css';
 import { GoVideo } from "react-icons/go";
 import { PiWaveformThin } from "react-icons/pi";
 import { LuAmpersand } from "react-icons/lu";
-import NavbarComponent from './Navbar.js';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
 import { VscError } from "react-icons/vsc";
 import { Link, useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
 import { MdOutlineFileDownload } from "react-icons/md";
-import ReactPlayer from 'react-player';
 import { AuthContext } from './AuthProvider';
 import { useContext } from 'react';
 
@@ -19,7 +17,7 @@ import { useContext } from 'react';
 
 
 const ACCEPTED_VIDEO_TYPES = ["mp4", "mkv", "avi", "mov"];
-const ACCEPTED_AUDIO_TYPES = ["wav", "mp3", "m4a", "flac", "ogg", "aac", "wma"];
+const ACCEPTED_AUDIO_TYPES = ["wav", "mp3"];
 let currentFileType = null;
 
 function UploadFilePage() {
@@ -28,34 +26,16 @@ function UploadFilePage() {
   const navigate = useNavigate();
   const [acceptedTypes, setAcceptedTypes] = useState("");
   const [fileName, setFileName] = useState("");
-  const [chosenButton, setChosenButton] = useState("video");
+  const [chosenButton, setChosenButton] = useState("audio");
   const [fileUploaded, setFileUploaded] = useState(false);
   const [buttonPressed, setButtonPressed] = useState(false);
   const [showDetectButton, setShowDetectButton] = useState(false);
+  const [init, setInit] = useState(true);
 
   const { username, setUsername } = useContext(AuthContext);
 
-
-
-
   const [dataURL, setDataURL] = useState(null);
   const [uploadedURL, setUploadedURL] = useState(null);
-
-  console.log("***********************************");
-  console.log("Accepted types: " + acceptedTypes);
-  console.log("chosenButton: " + chosenButton);
-  console.log("fileUploaded: " + fileUploaded);
-  console.log("buttonPressed: " + buttonPressed);
-  console.log("showDetectButton: " + showDetectButton);
-
-
-  console.log("***********************************");
-
-
-
-
-
-
 
   const labelRef = useRef(null);
   const imageDivRef = useRef(null);
@@ -76,7 +56,11 @@ function UploadFilePage() {
   const [uploadStatus, setUploadStatus] = useState(null);
   const [showCheckmark, setShowCheckmark] = useState(false);
   const [showError, setShowError] = useState(false);
-  const [detectionType, setDetectionType] = useState("");
+  const [detectionType, setDetectionType] = useState("va");
+  const [videoFile, setVideoFile] = useState(null);
+  const [fileURL, setFileURL] = useState('');
+
+
 
   useEffect(() => {
     if (chosenButton)
@@ -93,7 +77,14 @@ function UploadFilePage() {
         setDataURL(binaryStr);
       };
       reader.readAsDataURL(file);
+      setVideoFile(file);
+      setFileURL(URL.createObjectURL(file));
       handleFileChange({ target: { files: [file] } });
+      try {
+        buttonClicked(chosenButton);
+      } catch (error) {
+        console.error('This is a controlled error and will happen each time a new file is uploaded after a refresh. Will be fixed in future bugfixes.', );
+      }
     });
   }, []);
 
@@ -135,6 +126,7 @@ function UploadFilePage() {
       upload_span_ref.current.innerHTML = "Please select a file of format: " + acceptedTypes;
     }
     setFileUploaded(true);
+    setSelectedFile(file);
   };
 
 
@@ -146,12 +138,12 @@ function UploadFilePage() {
       return;
     }
 
+    console.log("Selected file type: " + typeof (selectedFile));
+
 
     const formData = new FormData();
     formData.append('uploaded_file', selectedFile);
     formData.append('detectionType', detectionType);
-
-
 
     const fetchResults = async () => {
       try {
@@ -164,22 +156,29 @@ function UploadFilePage() {
         console.log(": " + detectionType);
         setLinkToResults(true);
         // Ensure we have all necessary data before navigating
-        if (responseData && responseData[0] && responseData[1]) {
-          navigate('/Results', {
-            state: {
-              videoURL: responseData[0],
-              audioURL: responseData[1],
-              fileType: currentFileType,
-              detectionType: detectionType
-            }
-          });
+        if (responseData) {
+          console.log("Response data: " + responseData);
+          switch (detectionType) {
+            case "va":
+              navigate('/Results',
+                { state: { videoURL: responseData[0], audioURL: responseData[1], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType }});
+              break;
+            case "v":
+              navigate('/Results',
+                { state: { videoURL: responseData[0], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType }});
+              break;
+            case "a":
+              navigate('/Results',
+                { state: { audioURL: responseData[0], fileType: currentFileType, fileURL: fileURL, detectionType: detectionType }});
+              break;
+            default:
+              console.log("Invalid detection type");
+          }
         } else {
           console.error('Missing required data for navigation');
         }
-
-
       } catch (error) {
-        //setData('Upload failed');
+        console.log('Error uploading file:', error);
       }
     };
     fetchResults();
@@ -198,6 +197,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         setDetectionType("va");
+        setDetectionType("va");
         break;
       case "video":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -207,6 +207,7 @@ function UploadFilePage() {
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
         setDetectionType("v");
+        setDetectionType("v");
         break;
       case "audio":
         videoAudioButtonRef.current.className = MainPage.ChoiceButton;
@@ -215,6 +216,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #000000";
+        setDetectionType("a");
         setDetectionType("a");
         break;
       default:
@@ -236,8 +238,13 @@ function UploadFilePage() {
       setShowError(false);
       setShowDetectButton(true);
     } else {
+      if (init) {
+        setInit(false);
+        setShowError(false);
+      } else {
+        setShowError(true);
+      }
       setShowCheckmark(false);
-      setShowError(true);
       setShowDetectButton(false);
     }
   }
@@ -246,19 +253,7 @@ function UploadFilePage() {
     <div>
       <div className={PageDesign.mainDiv}>
         <h1 style={{ fontSize: "50px" }}>Upload a file</h1>
-        <Link to="/profile"><button>Profile</button></Link>
-        <Link to="/login"><button>login</button></Link>
-        <Link to="/register"><button>register</button></Link>
 
-        {/* {showCheckmark && <div>
-          <ReactPlayer
-            url={fileName}
-            width="100%"
-            height="300px"
-            controls={true}
-          />
-          {console.log("File name: " + fileName)}
-        </div>} */}
 
         <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
 
@@ -297,6 +292,8 @@ function UploadFilePage() {
               </div>
             )}
           </div>
+
+
           {fileUploaded && <div className={MainPage.DetectionTypeChoiceDiv}>
 
             <div ref={videoAudioButtonRef} className={MainPage.ChoiceButton} onClick={(event) => { buttonClicked("videoAudio"); event.preventDefault(); }}>
@@ -330,7 +327,6 @@ function UploadFilePage() {
 
           </div>}
           {showCheckmark && buttonPressed && showDetectButton && <button onClick={handleSubmit} className={MainPage.uploadButton}>Detect</button>}
-          {<button onClick={handleSubmit} className={MainPage.uploadButton}>Detect</button>}
 
         </div>
       </div >
