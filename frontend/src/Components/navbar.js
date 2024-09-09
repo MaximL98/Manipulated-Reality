@@ -13,7 +13,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const profileMenuRef = useRef(null);
     const [loggedInUser, setLoggedInUser] = useState(username);
-    
+
     function handleButtonClick() {
     }
 
@@ -33,21 +33,21 @@ const Navbar = () => {
             setLoggedInUser(true);
         }
     }, [username]);
-    return (
+    return (<>
         <div className={NavbarStyle.navBar}>
-            <div className={NavbarStyle.logoWrapper}>
-                <div className={NavbarStyle.mrLogo}>
+
+            <div className={NavbarStyle.mrlogo}>
+                <div className={NavbarStyle.logoWrapper}>
                     <div className={NavbarStyle.innerLogoDiv}>
                         <img src="ManipulatedRealityLogo_MR.png" alt="Manipulated Reality Logo" className={NavbarStyle.logoImage} />
                     </div>
-
-                </div> </div>
-
+                </div>
+            </div>
             <div className={NavbarStyle.navbarButtonDiv}>
-                <Link to="/"><button className={NavbarStyle.navbarButton}>Home</button></Link>
-                <Link to="/About"><button className={NavbarStyle.navbarButton}>About</button></Link>
-                <Link to="/Contact"><button className={NavbarStyle.navbarButton}>Contact</button></Link>
-                <Link to="/UploadFilePage"><button className={NavbarStyle.navbarButton}>Upload file</button></Link>
+                <Link to="/" style={{ textDecoration: "none" }}><button className={NavbarStyle.navbarButton}>Home</button></Link>
+                <Link to="/About" style={{ textDecoration: "none" }}><button className={NavbarStyle.navbarButton}>About</button></Link>
+                <Link to="/Contact" style={{ textDecoration: "none" }}><button className={NavbarStyle.navbarButton}>Contact</button></Link>
+                {username && <Link to="/UploadFilePage" style={{ textDecoration: "none" }}><button className={NavbarStyle.navbarButton}>Upload</button></Link>}
 
             </div>
 
@@ -57,14 +57,17 @@ const Navbar = () => {
                 <FaUserAlt className={NavbarStyle.profileIcon} />
             </div>
 
-            <div ref={profileMenuRef} className={NavbarStyle.profileIconMenu} >
+            
+
+        </div>
+        <div ref={profileMenuRef} className={NavbarStyle.profileIconMenu} >
 
 
                 <div className={NavbarStyle.profileIconButtonContainer}>
                     {loggedInUser ? (
                         <>
-                            <div style={{ fontSize: "15px", fontWeight: "bold", paddingBottom: "5px", marginTop: "-10px" }}>
-                                {username.charAt(0).toUpperCase() + username.slice(1)}
+                            <div style={{ fontSize: "15px", fontWeight: "bold", paddingBottom: "5px", marginTop: "-10px" }}> 
+                            Welcome back, {username.charAt(0).toUpperCase() + username.slice(1)}.
                             </div>
                             <Link onClick={() => handleButtonClick()} to="/profile" className={NavbarStyle.profileIconButton}>MY PROFILE</Link>
                             <button onClick={handleLogout} className={NavbarStyle.logoutButton} style={{ marginTop: "10px" }}>LOGOUT</button>
@@ -77,8 +80,7 @@ const Navbar = () => {
                     )}
                 </div>
             </div >
-
-        </div>
+    </>
     );
 };
 

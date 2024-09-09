@@ -3,7 +3,7 @@ import Loader from '../../Styles/LoaderStyle.module.css';
 function CircleLoader({}) {
     return (
     <>
-        <div className={Loader.CircleLoader}></div>
+        <div className={Loader.loader}></div>
     </>
     );
 }

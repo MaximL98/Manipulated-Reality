@@ -5,11 +5,16 @@
     flex-direction: column;
 
     width: 70%;
+
     background-color: #a6cfe069;
     position: absolute;
-    height: calc(100% - 75px);
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
+    height: auto;
+    border: 1px solid #000;
+
+    margin: 40px;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637);
 }
 
 .explenationDiv h1 {
