@@ -1,6 +1,5 @@
 import React from 'react';
 import PageDesign from '../Styles/PageDesign.module.css';
-import Navbar from './Navbar';
 import ExplenationPageStyle from '../Styles/ExplenationStyle.module.css';
 
 function About() {
