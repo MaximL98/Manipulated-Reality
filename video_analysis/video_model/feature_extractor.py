@@ -28,8 +28,11 @@ def build_feature_extractor(fine_tuned_model):
 def feature_extraction(video_frames):
     extraction_model_path = 'video_analysis/models/inceptionv3_tuned_model.keras'
     fine_tuned_model = load_model(extraction_model_path)
-
+    if not fine_tuned_model:
+        print("Error loading fine tuned model, please make sure the model in the right directory")
     feature_extractor = build_feature_extractor(fine_tuned_model)
+    if not feature_extractor:
+        print("Error building the feature extractor")
     # Load video frames
     video_frames = np.array(video_frames)
     frames = video_frames[None, ...] # Add batch dimension
