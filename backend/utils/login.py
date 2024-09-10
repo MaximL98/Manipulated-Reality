@@ -1,13 +1,12 @@
-import sqlite3
 import hashlib
 
-DB_PATH = "backend/database.db"
+from db_control import create_connection
 
 
 def get_user_by_username(username):
     """Retrieves a user's username and password based on the provided username."""
 
-    conn = sqlite3.connect(DB_PATH)
+    conn = create_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT password FROM user_data WHERE username = ?", (username,))

@@ -1,8 +1,6 @@
 import hashlib
-import sqlite3
-import json
 
-DB_PATH = "backend/database.db"
+from db_control import create_connection
 
 # Function to hash a password using SHA-256
 def hash_func(password):
@@ -12,7 +10,7 @@ def hash_func(password):
 
 def user_exists(username, email):
     """Checks if a user exists based on their email address."""
-    conn = sqlite3.connect(DB_PATH)
+    conn = create_connection()
     cursor = conn.cursor()
 
     cursor.execute("SELECT COUNT(*) FROM user_data WHERE Email = ? OR Username = ?", (email, username))
@@ -28,7 +26,7 @@ def insert_data(username, hashed_password, email, detection_type, tested_videos,
     sql = """ INSERT INTO user_data (Username, Password, Email, Detection_Type , Video_Tested, Video_Path, Results)
                 VALUES (?,?,?,?,?,?,?)"""
     
-    conn = sqlite3.connect(DB_PATH)
+    conn = create_connection()
     cur = conn.cursor()
     data = [username, hashed_password, email, detection_type, tested_videos, video_paths, results]
     cur.execute(sql, data)
