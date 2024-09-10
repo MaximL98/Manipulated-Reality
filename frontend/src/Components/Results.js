@@ -3,7 +3,7 @@ import formData from './UploadFilePage.js';
 import PageDesign from '../Styles/PageDesign.module.css';
 import CircleLoader from './LoadingComponents/CircleLoader.js'
 import { Link } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthProvider.js";
@@ -23,11 +23,30 @@ function Results() {
     const { username } = useContext(AuthContext);
 
     const location = useLocation();
+    const navigate = useNavigate();
 
-    const audioURL = location.state.audioURL;
-    const videoURL = location.state.videoURL;
-    const detectionType = location.state.detectionType;
-    const fileURL = location.state.fileURL;
+    const [detectionType, setDetectionType] = useState("");
+    const [audioURL, setAudioURL] = useState("");
+    const [videoURL, setVideoURL] = useState("");
+    const [fileURL, setFileURL] = useState("");
+
+
+    useEffect(() => {
+        if (location.state === null) {
+            navigate('/UploadFilePage');
+        }
+        else {
+            setDetectionType(location.state.detectionType);
+            setAudioURL(location.state.audioURL);
+            setVideoURL(location.state.videoURL);
+            setFileURL(location.state.fileURL);
+        }
+    }, []);
+
+
+
+
+
 
     const [textDisplay, setTextDisplay] = useState("");
 
@@ -114,7 +133,9 @@ function Results() {
                 console.error('Error:', error);
             }
         }
-        fetchResults();
+        if (location.state !== null) {
+            fetchResults();
+        }
     }, [location]);
 
     // useEffect((event) => {
@@ -155,12 +176,12 @@ function Results() {
             <div className={PageDesign.mainDiv}>
                 <div className={PageDesign.ReactPlayer}>
                     {fileURL && (
-                        <ReactPlayer url={fileURL} width="270px" height="480px" controls={true} style={{padding: "10px", borderRadius: "5px"}}/>
+                        <ReactPlayer url={fileURL} width="270px" height="480px" controls={true} style={{ padding: "10px", borderRadius: "5px" }} />
                     )}
                 </div>
                 {isLoading ? (<>
                     <CircleLoader />
-                    <div style={{display: "flex", justifyContent: "center", justifyContent: "center", textAlign: "center"}}>
+                    <div style={{ display: "flex", justifyContent: "center", justifyContent: "center", textAlign: "center" }}>
                         <h2>{textDisplay}</h2>
 
                     </div>

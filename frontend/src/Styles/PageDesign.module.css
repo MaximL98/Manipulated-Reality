@@ -8,6 +8,7 @@
     background-color: #c4d9e2;
     overflow-x: hidden;
     min-height: calc(100vh - 75px); ;
+    top: 70px;
 }
 
 .mainDiv h1 {

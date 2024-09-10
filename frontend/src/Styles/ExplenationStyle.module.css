@@ -3,15 +3,17 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
+    
+    height: auto;
     width: 70%;
 
     background-color: #a6cfe069;
     position: absolute;
-    height: auto;
+    
     border: 1px solid #000;
 
     margin: 40px;
+    margin-bottom: 20px;
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637);
