@@ -20,7 +20,7 @@ def extract_audio(video_file_path, audio_file_path = None):
         audio_only.write_audiofile(audio_file_path)
     else:
         print("This video does not contain audio!")
-        return
+        return None
 
     # Close the video and the audio
     audio_only.close()
