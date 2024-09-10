@@ -8,8 +8,11 @@ import random
 
 from sklearn.model_selection import train_test_split
 # Imports paths from data file
-# from data import paths_to_csv
+from data import paths_to_csv
 
+## !!! The code in this file was firstly used when preprocessing was tested on a small dataset !!! ##
+## !!! The code was later on adjusted to be used in Google Colab as the development of the model was taken there !!! ##
+## !!! We decided to keep this code as we might find it useful later. This code NOT used in anyway for now ... !!! ##
 
 # Function to extract video frames, later face frames and save them as npy files.
 def extract_video_frame(video_path, video_name):

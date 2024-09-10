@@ -1,8 +1,8 @@
 import sqlite3
 from sqlite3 import Error, Connection
-import json
 
 DB_PATH = "backend/database.db"
+
 
 # Function to create a database connection
 def create_connection(db_file=DB_PATH) -> Connection:
@@ -15,39 +15,47 @@ def create_connection(db_file=DB_PATH) -> Connection:
 
     return conn
 
+
 # Function to create the user_data table
 def create_table(conn):
     """Creates the user_data table with columns for personal and card information."""
+    try:
+        user_data_table = """ CREATE TABLE IF NOT EXISTS user_data (
+                    Username TEXT,
+                    Password TEXT,
+                    Email TEXT,
+                    Detection_Type TEXT,
+                    Video_Tested TEXT,
+                    Video_Path TEXT,
+                    Results TEXT,
+                    UNIQUE(Username, Email)
+                ); """
 
-    user_data_table = """ CREATE TABLE IF NOT EXISTS user_data (
-                Username TEXT,
-                Password TEXT,
-                Email TEXT,
-                Detection_Type TEXT,
-                Video_Tested TEXT,
-                Video_Path TEXT,
-                Results TEXT,
-                UNIQUE(Username, Email)
-            ); """
-
-    cur = conn.cursor()
-    cur.execute(user_data_table)
+        cur = conn.cursor()
+        cur.execute(user_data_table)
+    except:
+        print("Error: Could not create table user_data")
+    conn.close()
 
 
 # Function to insert data into the table
 def append_data(username, detection_type, tested_videos, video_path, results):
     """Inserts multiple rows of data into the user_data table using a prepared statement."""
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    cur.execute("""
-          UPDATE user_data
-          SET Detection_Type = Detection_Type  || ? || ",",
-              Video_Tested = Video_Tested  || ? || ",",
-              Video_Path = Video_Path  || ? || ",",
-              Results = Results  || ? || ","
-          WHERE Username = ?;
-            """, (detection_type, tested_videos, video_path, results, username))
-    conn.commit()
+    try:
+        conn = create_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            UPDATE user_data
+            SET Detection_Type = Detection_Type  || ? || ",",
+                Video_Tested = Video_Tested  || ? || ",",
+                Video_Path = Video_Path  || ? || ",",
+                Results = Results  || ? || ","
+            WHERE Username = ?;
+                """, (detection_type, tested_videos, video_path, results, username))
+        conn.commit()
+    except:
+        print("Error: Could not append new data into user")
+    conn.close()
 
 
 def extract_user_data(username):
@@ -70,14 +78,6 @@ def extract_user_data(username):
     finally:
         conn.close()
 
-
-# # Example usage:
-# username = "c1" 
-# user_data = extract_user_data(username)
-
-# # Save the data to a JSON file
-# with open("user_data.json", "w") as f:
-#     json.dump(user_data, f, indent=4)
 
 
 # Apply the code below only for total reset of the database.

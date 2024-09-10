@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 import face_recognition
 
-import os
 
 # Function to extract video frames, later face frames and save them as npy files.
 def extract_video_frame(video_path, video_name):
