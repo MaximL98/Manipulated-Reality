@@ -3,6 +3,7 @@ from sqlite3 import Error, Connection
 
 DB_PATH = "backend/database.db"
 
+
 # Function to create a database connection
 def create_connection(db_file=DB_PATH) -> Connection:
     """Creates a database connection to the SQLite database specified by db_file."""
@@ -13,6 +14,7 @@ def create_connection(db_file=DB_PATH) -> Connection:
         print(e)
 
     return conn
+
 
 # Function to create the user_data table
 def create_table(conn):
@@ -54,6 +56,7 @@ def append_data(username, detection_type, tested_videos, video_path, results):
     except:
         print("Error: Could not append new data into user")
     conn.close()
+
 
 def extract_user_data(username):
     """Extracts user data based on the given username."""
