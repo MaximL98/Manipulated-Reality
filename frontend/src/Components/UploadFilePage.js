@@ -153,7 +153,6 @@ function UploadFilePage() {
         });
         const responseData = await response.json();
         setData(responseData.message);
-        console.log(": " + detectionType);
         setLinkToResults(true);
         // Ensure we have all necessary data before navigating
         if (responseData) {

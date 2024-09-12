@@ -1,6 +1,8 @@
 import sqlite3
 from sqlite3 import Error, Connection
 
+import hashlib
+
 DB_PATH = "backend/database.db"
 
 
@@ -81,8 +83,95 @@ def extract_user_data(username):
 
 
 # Apply the code below only for total reset of the database.
-conn = create_connection()
-cur = conn.cursor()
-cur.execute("DROP TABLE IF EXISTS user_data")
-create_table(conn)
-conn.close()
+# conn = create_connection()
+# cur = conn.cursor()
+# cur.execute("DROP TABLE IF EXISTS user_data")
+# create_table(conn)
+# conn.close()
+
+
+def get_user_by_username(username):
+    """Retrieves a user's username and password based on the provided username."""
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT password FROM user_data WHERE username = ?", (username,))
+        result = cursor.fetchone()
+
+        conn.close()
+        return result
+    except:
+        return None
+
+
+# Function to hash a password using SHA-256
+def hash_func(password):
+    """Hashes the provided password using the SHA-256 algorithm."""
+    return hashlib.sha256(str(password).encode()).digest()
+
+
+def check_password(input_pass, db_pass):
+    return hash_func(input_pass) == db_pass[0]
+
+
+def authenticate_user(username, password):
+    # Check if user exists and password matches
+    db_password = get_user_by_username(username)
+    if db_password and check_password(password, db_password):
+        return True
+    return False
+
+
+def user_exists(username, email):
+    try:
+        """Checks if a user exists based on their email address."""
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT COUNT(*) FROM user_data WHERE Email = ? OR Username = ?", (email, username))
+        count = cursor.fetchone()[0]
+
+        conn.close()
+        return count > 0
+    except Exception as e:
+        print("An Error occurred: ", e)
+        return None
+
+
+# Function to insert data into the table
+def insert_data(username, hashed_password, email, detection_type, tested_videos, video_paths, results):
+    try:
+        """Inserts multiple rows of data into the user_data table using a prepared statement."""
+        sql = """ INSERT INTO user_data (Username, Password, Email, Detection_Type , Video_Tested, Video_Path, Results)
+                    VALUES (?,?,?,?,?,?,?)"""
+        
+        conn = create_connection()
+        cur = conn.cursor()
+        data = [username, hashed_password, email, detection_type, tested_videos, video_paths, results]
+        cur.execute(sql, data)
+        conn.commit()
+    except:
+        print("Error: Could not insert new data into user")
+
+
+# Replace with your actual database operations
+def register_user(username, password, email):
+    try:
+        # Check if user already exists
+        if user_exists(username, email):
+            return False
+
+        # Hash the password for security
+        hashed_password = hash_func(password)
+        detection_type = ''
+        tested_videos = ''
+        video_paths = ''
+        results = ''
+
+        # Store user information in the database
+        insert_data(username, hashed_password, email, detection_type, tested_videos, video_paths, results)
+
+        return True
+    except:
+        return None

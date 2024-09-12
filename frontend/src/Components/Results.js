@@ -44,10 +44,6 @@ function Results() {
     }, []);
 
 
-
-
-
-
     const [textDisplay, setTextDisplay] = useState("");
 
 
@@ -101,15 +97,18 @@ function Results() {
 
     }
 
-    const form = new FormData();
-    form.append('audioURL', audioURL);
-    form.append('videoURL', videoURL);
-    form.append('detectionType', detectionType);
-    form.append('username', username);
+    
 
     useEffect(() => {
         const fetchResults = async () => {
+            console.log("detection type: " + detectionType + typeof(detectionType))
             try {
+                const form = new FormData();
+                form.append('audioURL', audioURL);
+                form.append('videoURL', videoURL);
+                form.append('detectionType', detectionType);
+                form.append('username', username);
+                
                 const response = await fetch('/Results', { method: 'POST', body: form });
                 const data = await response.json();
                 switch (detectionType) {
@@ -133,10 +132,10 @@ function Results() {
                 console.error('Error:', error);
             }
         }
-        if (location.state !== null) {
+        if (location.state !== null || detectionType !== "") {
             fetchResults();
         }
-    }, [location]);
+    }, [detectionType]);
 
     // useEffect((event) => {
     //     fetch('/Results', {
