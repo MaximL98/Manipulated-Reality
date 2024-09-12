@@ -28,7 +28,7 @@ def predict_single_audio_file(audio_file_path, model_path = 'Audio_detection_mod
     scaled_audio = scaler.transform(pre_processed)
     print("Starting audio prediction...")
     prediction = model.predict(scaled_audio)
-    if prediction:
+    if prediction.all():
         #predicted = (prediction >= threshold).astype("int32")
         #return predicted
         prediction = prediction.tolist()
