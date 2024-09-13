@@ -81,14 +81,6 @@ def extract_user_data(username):
         conn.close()
 
 
-# # Example usage:
-# username = "c1" 
-# user_data = extract_user_data(username)
-
-# # Save the data to a JSON file
-# with open("user_data.json", "w") as f:
-#     json.dump(user_data, f, indent=4)
-
 
 # Apply the code below only for total reset of the database.
 # conn = create_connection()
