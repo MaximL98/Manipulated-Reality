@@ -251,10 +251,10 @@ function UploadFilePage() {
   return (
     <div>
       <div className={PageDesign.mainDiv}>
-        <h1 style={{ fontSize: "50px" }}>Upload a file</h1>
+        <h1 style={{ fontSize: "50px" }}>Upload</h1>
 
 
-        <p>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. supported audio formats: wav, mp3. </p>
+        <h3 style={{paddingLeft: "25px", paddingRight: "25px"}}>Upload a video or audio file for detection. Supported video formats: mp4, mvk, avi, mov. Supported audio formats: wav, mp3. </h3>
 
 
 
