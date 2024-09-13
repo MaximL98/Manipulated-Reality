@@ -1,20 +1,20 @@
-import sqlite3
 import hashlib
-
-DB_PATH = "backend/database.db"
+from db_control import create_connection
 
 
 def get_user_by_username(username):
     """Retrieves a user's username and password based on the provided username."""
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
 
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
+        cursor.execute("SELECT password FROM user_data WHERE username = ?", (username,))
+        result = cursor.fetchone()
 
-    cursor.execute("SELECT password FROM user_data WHERE username = ?", (username,))
-    result = cursor.fetchone()
-
-    conn.close()
-    return result
+        conn.close()
+        return result
+    except:
+        return None
 
 
 # Function to hash a password using SHA-256

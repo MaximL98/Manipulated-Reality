@@ -4,16 +4,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
 import { BiLoader } from 'react-icons/bi';
 import { MdOutlineEmail } from "react-icons/md";
-
-
 import { AuthContext } from './AuthProvider';
 import { useContext } from 'react';
 
-// Removed unused sleep function
-
 function RegisterBlock() {
     const { setUsername, setToken, username, token } = useContext(AuthContext);
-
 
     const [email, setEmail] = useState('');
     const [usernameClient, setUsernameClient] = useState('');
@@ -25,6 +20,31 @@ function RegisterBlock() {
     const loadingIconRef = useRef(null);
     const navigate = useNavigate();
 
+    function changeRegisterAnimation(status) {
+        switch (status) {
+            case 'register':
+                loadingIconRef.current.className = Style.loginButtonIconIdle;
+                registerButtonRef.current.disabled = true;
+                registerButtonRef.current.style.className = Style.loginButton;
+                registerButtonRef.current.style.borderColor = 'green';
+                registerButtonRef.current.style.color = 'rgb(144, 238, 144)';
+                incorrectCredentialsLabelRef.current.disabled = true;
+                setRegisterText('Success!');
+                break;
+            case 'failed':
+                registerButtonRef.current.className = Style.loginButton;
+                registerButtonRef.current.disabled = false;
+                loadingIconRef.current.className = Style.loginButtonIconIdle;
+                incorrectCredentialsLabelRef.current.disabled = false;
+                incorrectCredentialsLabelRef.current.className = Style.incorrectCredentialsLabelShow;
+                setRegisterText('Register');
+                break;
+            default:
+                registerButtonRef.current.disabled = false;
+                loadingIconRef.current.className = Style.loginButtonIconIdle;
+                break;
+        }
+    }
 
 
     function handleKeyPress(e) {
@@ -34,6 +54,10 @@ function RegisterBlock() {
     }
 
     async function handleRegister() {
+        loadingIconRef.current.disabled = true;
+        loadingIconRef.current.className = Style.loginButtonIconLoading;
+        setRegisterText('');
+
         const form = new FormData();
         form.append('username', usernameClient);
         form.append('password', password);
@@ -46,34 +70,25 @@ function RegisterBlock() {
             .then((response) => response.json())
             .then(jsonData => {
                 if (jsonData === "USER REGISTERED") {
+                    changeRegisterAnimation('register');
                     setUsername(usernameClient);
-
-                    console.log("JSON response: " + jsonData)
-                    console.log("username: ", username)
-                    setIsLoggedIn(jsonData.isLoggedIn);
-                    setToken(jsonData.token);
                     navigate('/profile');
                 }
                 else {
-
+                    changeRegisterAnimation('failed');
                 }
-                console.log(jsonData);
             }).catch((error) => {
                 console.error('Error logging in:', error);
             });
 
-        if (usernameClient === '' || password === '') {
+        if (usernameClient === '' || password === '' || email === '') {
             return;
         }
-        registerButtonRef.current.disabled = true;
-        loadingIconRef.current.className = Style.loginButtonIconLoading;
-        // Removed sleep function call
 
     }
 
     useEffect(() => {
         if (username !== '') {
-            console.log("Username: ", username);
             navigate('/profile');
         }
     }, [username]);
@@ -82,7 +97,6 @@ function RegisterBlock() {
         <>
             <div className={Style.loginBlock}>
                 <label className={Style.loginLabel}>Register</label>
-
                 <div className={Style.usernameBlock}>
                     <FaUserAlt className={Style.userIcon} />
                     <input
@@ -96,7 +110,6 @@ function RegisterBlock() {
                     />
                     <label className={Style.usernameLabel}>Username</label>
                 </div>
-
                 <div className={Style.passwordBlock}>
                     <FaKey className={Style.passwordIcon} />
                     <input
@@ -109,23 +122,20 @@ function RegisterBlock() {
                         onKeyDown={handleKeyPress}
                     />
                     <label className={Style.passwordLabel}>Password</label>
-
                 </div>
-
-                <div className={Style.usernameBlock}>
-                    <MdOutlineEmail  className={Style.userIcon} />
+                <div className={Style.emailBlock}>
+                    <MdOutlineEmail className={Style.userIcon} />
                     <input
                         required
                         pattern=".*\S.*"
                         type="text"
-                        className={Style.usernameInput}
+                        className={Style.emailInput}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         onKeyDown={handleKeyPress}
                     />
-                    <label className={Style.usernameLabel}>Email</label>
+                    <label className={Style.emailLabel}>Email</label>
                 </div>
-
                 <div className={Style.buttonDiv}>
                     <button
                         ref={registerButtonRef}
@@ -138,7 +148,7 @@ function RegisterBlock() {
                         {registerText}
                     </button>
                     <label ref={incorrectCredentialsLabelRef} className={Style.incorrectCredentialsLabel}>
-                        User already exists!
+                        User or Email already in use!
                     </label>
                     <label style={{ fontSize: '20px', color: "rgba(80, 80, 250, 1)" }}>
                         New to Manipulated Reality?

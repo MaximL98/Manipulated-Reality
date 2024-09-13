@@ -1,6 +1,5 @@
 import React from "react";
 import PageDesign from "../Styles/PageDesign.module.css";
-import Navbar from "./Navbar";
 import ExplenationPageStyle from "../Styles/ExplenationStyle.module.css";
 
 function About() {
@@ -37,7 +36,27 @@ function About() {
             could be beneficial.
           </p>
           <h2>Development Pipeline</h2>
-          <img src="project_pipeline.png" alt="Project Pipeline Image"/>
+          <img src="project_pipeline.png" alt="Project Pipeline Image" />
+
+          <h2>Video Model</h2>
+          <p>
+            The development used a dataset (Celeb-DF-V2) of authentic and deepfake videos to
+            train a deepfake detection model. The videos were preprocessed to
+            extract facial regions and standardize frame rates. A fine-tuned
+            Inception V3 model extracted features from the video frames, which
+            were then used to train an LSTM model for deepfake detection.
+          </p>  
+          <h2>Audio Model</h2>
+          <p>
+            The model was trained on three datasets totaling over 50 hours of
+            audio to maximize its familiarity with various speeches. Each audio
+            sample was preprocessed by extracting 100 MFCC coefficients and
+            calculating delta and delta^2 features, resulting in a vector of
+            13200 values. These vectors were stored in Numpy files for training
+            the audio detection model.
+          </p>
+          <h2>Used Technologies</h2>
+          <p>Put logos of things we used for this project</p>
         </div>
       </div>
     </>

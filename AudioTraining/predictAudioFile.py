@@ -66,7 +66,7 @@ TARGET_SAMPLE_RATE = 22050
 def predictAudioFile(model, list):
     return model.predict(list)
 
-model = models.load_model('Audio_detection_model_1024_batches_5_epochs.keras')
+model = models.load_model('Audio_detection_model_1024_batches_5_epochs_run_2.keras')
 
 import pickle
 
@@ -95,11 +95,11 @@ for i in range(9):
     print(prediction[i], f" label: 0, predicted: {predicted[i]}")
     
 print("****************************************************************")
-print("FAKE 2")
+print("FAKE 3")
 print("****************************************************************")
 
 
-test = scaler.transform(feature_extraction.audio_file_feature_extractor('another_speech_fake.mp3', 100, 22050, 1))
+test = scaler.transform(feature_extraction.audio_file_feature_extractor('ReallyGoodDeepfake.mp3', 100, 22050, 1))
 test1= test
 prediction = predictAudioFile(model, test)
 predicted = (prediction >= threshold).astype("int32")
@@ -110,7 +110,7 @@ for i in range(len(prediction)):
         counter += 1
 print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accuracy: {counter/len(prediction)}" )
 
-for i in range(9):
+for i in range(13):
     print(prediction[i], f" label: 0, predicted: {predicted[i]}")
      
 
@@ -185,6 +185,8 @@ print(f"Data size: , {len(prediction)}, Correct predictions = {counter}, accurac
 
 for i in range(6):
     print(prediction[i], f" label: 1,", f"predicted: {predicted[i]}")
+
+
 
 
 
