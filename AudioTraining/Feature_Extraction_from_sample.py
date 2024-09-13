@@ -3,8 +3,6 @@ import soundfile as sf
 import numpy as np
 # Used for MFCC analysis
 import librosa
-from sklearn.decomposition import PCA
-from sklearn.preprocessing import StandardScaler
 
 
 def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY = 22050, LENGTH_OF_EACH_SAMPLE = 1):
