@@ -1,5 +1,5 @@
 import os
-from scipy import fft
+#from scipy import fft
 # Used for bi-coherence analysis
 import soundfile as sf
 import numpy as np
@@ -136,7 +136,7 @@ for file in sampleNamesGenerated:
     # Split audio into 1 second chunks
     audio_chunk = trim_audio(audio, fs)
     for audio in audio_chunk:
-        ffts.append(abs(fft.fft(audio)))
+        #ffts.append(abs(fft.fft(audio)))
         # Resample each audio file to TARGET_FREQUENCY
         audio = librosa.resample(audio, orig_sr=fs, target_sr=TARGET_FREQUENCY, res_type='soxr_vhq')
         audio_files.append(audio)
@@ -153,7 +153,7 @@ for file in sampleNamesReal:
     # Split audio into 1 second chunks    
     audio_chunk = trim_audio(audio, fs)
     for audio in audio_chunk:
-        ffts.append(abs(fft.fft(audio)))
+        #ffts.append(abs(fft.fft(audio)))
         # Resample each audio file to 44100Hz
         audio = librosa.resample(audio, orig_sr=fs, target_sr=TARGET_FREQUENCY, res_type='soxr_vhq')
         audio_files.append(audio)

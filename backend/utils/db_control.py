@@ -80,9 +80,9 @@ def extract_user_data(username):
 #     json.dump(user_data, f, indent=4)
 
 
-# Apply the code below only for total reset of the database.
-conn = create_connection()
-cur = conn.cursor()
-cur.execute("DROP TABLE IF EXISTS user_data")
-create_table(conn)
-conn.close()
+# # Apply the code below only for total reset of the database.
+# conn = create_connection()
+# cur = conn.cursor()
+# cur.execute("DROP TABLE IF EXISTS user_data")
+# create_table(conn)
+# conn.close()
