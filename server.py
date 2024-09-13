@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, jsonify
-from backend.utils import utils, registration, login
+#from backend.utils import utils, registration, login
+from backend.utils import utils
 import json
 import numpy as np
 
@@ -7,7 +8,7 @@ import os
 
 from video_analysis import prediction_pipeline
 from AudioTraining import predictSingleAudioFile
-from backend.utils.db_control import append_data, extract_user_data
+from backend.utils.db_control import append_data, extract_user_data, register_user, authenticate_user
 
 
 ALLOWED_FILETYPES_VIDEO = ['mp4', 'avi', 'mkv', 'mov']
@@ -105,20 +106,21 @@ def result():
         audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
         data = [video_result, audio_result]
         video_path_insert = video_path.replace('/', '.')
-        append_data(username, detection_type, video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
+        append_data(username, "Video & Audio", video_path_insert.split('.')[-2], "some path",(video_result + audio_result)/2)
 
     elif video_path != "undefined":
         video_result = prediction_pipeline.predict(video_path)
         data = [video_result]
         video_path_insert = video_path.replace('/', '.')
-        append_data(username, detection_type, video_path_insert.split('.')[-2], "some path",(video_result))
+        append_data(username, "Video", video_path_insert.split('.')[-2], "some path",(video_result))
         
     elif audio_path != "undefined":
+        print(f"audio_path={audio_path}")
         audio_result = predictSingleAudioFile.predict_single_audio_file(audio_path)
         data = [audio_result]
         audio_path_insert = audio_path.replace('/', '.')
         print(audio_path_insert)
-        append_data(username, detection_type, audio_path_insert.split('.')[-2], "some path",(audio_result))
+        append_data(username, "Audio", audio_path_insert.split('.')[-2], "some path",(audio_result))
 
     else:
         return "Error, both of the paths are None!"
@@ -152,7 +154,7 @@ def register():
         email = request.form['email']
 
     if username and password and email:
-        if registration.register_user(username, password, email):
+        if register_user(username, password, email):
             return jsonify("USER REGISTERED"), 200 # Redirect to login page after successful registration
         else:
             # Handle registration failure (e.g., user already exists)
@@ -168,7 +170,7 @@ def loginUser():
         password = request.form['password']
 
     if username and password:
-        if login.authenticate_user(username, password):
+        if authenticate_user(username, password):
             # Redirect to protected area or home page
             return jsonify("USER FOUND"), 200
         else:
