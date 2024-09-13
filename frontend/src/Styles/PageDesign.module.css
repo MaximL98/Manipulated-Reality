@@ -5,23 +5,24 @@
     position: relative;
     height: 100%;
     width: 100%;
-    background-color: #c4d9e2;
+    background-image: linear-gradient(to top, #ecffff, #b0e0ff);
+    
     overflow-x: hidden;
-    min-height: calc(100vh - 75px); ;
+    min-height: calc(100vh - 70px); ;
     top: 70px;
 }
 
 .mainDiv h1 {
-    margin-top: 40px;
-    margin-bottom: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .resultsListDiv {
     padding: 10px;
     background-color: #f0f0f0;
     border-radius: 5px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.315);
+    width: 260px;
 }
 
 .ListLoadingDiv {
@@ -30,7 +31,6 @@
     align-items: center;
     justify-content: center;
     width: 90%;
-    background-color: #298db8;
     overflow-x: hidden;
     margin-top: 50px;
 }
@@ -60,4 +60,44 @@
     border: 2px solid #007bff;
     background-color: #1111119c;
     border-radius: 5px;
+    
+}
+
+.listDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+}
+
+.listDivWrapper {
+    width: 80vw;
+    flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.resultsDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    padding: 10px;
+}
+
+.ReactPlayerPlayer {
+    border-radius: 5px;
+    max-height: 500px;
+    max-width: 700px; 
+}
+
+@media(max-width: 750px) {
+    .ReactPlayerPlayer {
+        max-width: 90vw; 
+    }
 }

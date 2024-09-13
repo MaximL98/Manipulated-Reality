@@ -1,7 +1,7 @@
 .DetectionTypeChoiceDiv {
     height: auto;
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
     flex-direction: row;
     flex-wrap: wrap;
@@ -13,7 +13,7 @@
     width: auto;
     background-color: rgb(32, 32, 32);
     margin: 20px;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
 
     display: flex;
@@ -33,7 +33,7 @@
     width: auto;
     background-color: rgb(255, 255, 255);
     margin: 20px;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
 
     display: flex;
@@ -68,7 +68,7 @@
 }
 
 .dropArea {
-    width: 90%;
+    width: 70%;
     height: 200px;
     padding: 30px;
     border-radius: 20px;
@@ -146,7 +146,7 @@
 }
 
 .uploadButton {
-    width: 100px;
+    width: auto;
     height: 40px;
     background-color: #111111;
     border: 2px solid rgba(32, 154, 224, 0.788);

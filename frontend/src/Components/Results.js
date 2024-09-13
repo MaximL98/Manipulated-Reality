@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthProvider.js";
 import { useContext } from "react";
 import ReactPlayer from 'react-player';
+import MainPage from '../Styles/MainPage.module.css';
 
 
 
@@ -97,18 +98,18 @@ function Results() {
 
     }
 
-    
+
 
     useEffect(() => {
         const fetchResults = async () => {
-            console.log("detection type: " + detectionType + typeof(detectionType))
+            console.log("detection type: " + detectionType + typeof (detectionType))
             try {
                 const form = new FormData();
                 form.append('audioURL', audioURL);
                 form.append('videoURL', videoURL);
                 form.append('detectionType', detectionType);
                 form.append('username', username);
-                
+
                 const response = await fetch('/Results', { method: 'POST', body: form });
                 const data = await response.json();
                 switch (detectionType) {
@@ -137,72 +138,38 @@ function Results() {
         }
     }, [detectionType]);
 
-    // useEffect((event) => {
-    //     fetch('/Results', {
-    //         method: 'POST',
-    //         body: form
-    //     })
-    //         .then(response => { response.json() })
-    //         .then(data => {
-    //             console.log(data);
-    //             switch (detectionType) {
-    //                 case "va":
-    //                     setVideoResult(results[0]);
-    //                     setAudioResult(results[1]);
-    //                     break;
-    //                 case 'v':
-    //                     setVideoResult(results);
-    //                     break;
-    //                 case 'a':
-    //                     setAudioResult(results);
-    //                     break;
-    //                 default:
-    //                     break;
-    //             }
-    //             setResults(data);
-    //             setIsLoading(false);
-    //             setDisplayData(true);
-    //         })
-    //         .catch((error) => {
-    //             console.error('Error:', error);
-    //         });
-    // }, [location]);
 
 
 
     return (
         <>
             <div className={PageDesign.mainDiv}>
-                <div className={PageDesign.ReactPlayer}>
-                    {fileURL && (
-                        <ReactPlayer url={fileURL} width="270px" height="480px" controls={true} style={{ padding: "10px", borderRadius: "5px" }} />
+                <div className={PageDesign.resultsDiv}>
+                    <div className={PageDesign.ReactPlayer}>
+                        {fileURL && (
+                            <ReactPlayer url={fileURL} controls={true} className={PageDesign.ReactPlayerPlayer}/>
+                        )}
+                    </div>
+                    {isLoading ? (<>
+                        <CircleLoader />
+                        <div style={{ display: "flex", justifyContent: "center", justifyContent: "center", textAlign: "center" }}>
+                            <h2>{textDisplay}</h2>
+
+                        </div>
+                    </>
+                    ) : (
+                        <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
+                            <h1>{resultTypeString}</h1>
+                            {videoResult && <h2>Video certainty: {videoResult}% real</h2>}
+                            {audioResult && <h2>Audio certainty: {audioResult}% real</h2>}
+
+                            <p>The results are saved in <Link to="/profile">My profile</Link> and could be viewed later.</p>
+
+                            <Link to="/UploadFilePage"><button className={MainPage.uploadButton}>Upload another file</button></Link>
+                        </div>
+
                     )}
                 </div>
-                {isLoading ? (<>
-                    <CircleLoader />
-                    <div style={{ display: "flex", justifyContent: "center", justifyContent: "center", textAlign: "center" }}>
-                        <h2>{textDisplay}</h2>
-
-                    </div>
-                </>
-                ) : (
-                    <div>
-                        <h1>{resultTypeString}</h1>
-                        {videoResult && <h2>Video certainty: {videoResult}% real</h2>}
-                        {audioResult && <h2>Audio certainty: {audioResult}% real</h2>}
-
-                        <p>The results are saved in <Link to="/profile">My profile</Link> and could be viewed later.</p>
-
-                        <Link to="/"><button>Upload another file</button></Link>
-                        <div>                        <button>Expand information</button>
-
-                            <div>
-                                {/* Display your data */}
-                            </div>
-                        </div>
-                    </div>
-
-                )}
             </div>
         </>
     );

@@ -14,8 +14,10 @@ function Profile() {
 
   const [detectionType, setDetectionType] = useState([]);
   const [results, setResults] = useState([]);
-  const [videoPath, setVideoPath] = useState([]);
-  const [videosTested, setVideosTested] = useState([]);
+  const [filesTested, setFilesTested] = useState([]);
+
+
+
 
 
   useEffect(() => {
@@ -46,8 +48,7 @@ function Profile() {
       console.log(typeof (receivedData.Detection_Type));
 
       setResults(receivedData.Results.split(','));
-      setVideoPath(receivedData.Video_Path.split(','));
-      setVideosTested(receivedData.Video_Tested.split(','));
+      setFilesTested(receivedData.Video_Tested.split(','));
 
       let detectionTypeList = receivedData.Detection_Type.split(',');
 
@@ -69,13 +70,7 @@ function Profile() {
       }
       setDetectionType(receivedData.Detection_Type.split(','));
     }
-    // console.log("ref " + receivedData.Results.split(','));
-    // for (let i = 0; i < receivedData.Detection_Type.split(',').length; i++) {
-    // console.log(detectionType.push(receivedData.Detection_Type.split(',')[1]));
-    // console.log(results.push(receivedData.Results.split(',')[1]));
-    // console.log(videoPath.push(receivedData.Video_Path.split(',')[1]));
-    // console.log(videosTested.push(receivedData.Video_Tested.split(',')[1]));
-    // }
+
   }, [receivedData])
 
 
@@ -88,25 +83,26 @@ function Profile() {
   return (
     <>
       <div className={PageDesign.mainDiv}>
-        <h1>Hi {username}, this is your profile.</h1>
-
-
+        <h1>{username}'s profile</h1>
         <div className={PageDesign.ListLoadingDiv}>
           {isLoading ? (
             <p>Loading...</p>
           ) : (
             <>
               <div>
-                <h2 style={{ left: "13%" }}>This table lists your previous detection processes.</h2>
-                <div style={{}}>
-                  {updateResults && videosTested.map((file, index) => (
-                    <div key={index} className={PageDesign.resultsListDiv}>
-                      <li className={PageDesign.list}>
-                        <strong className={PageDesign.listItem}>Detection Type:</strong> {detectionType[index]}
-                        <strong className={PageDesign.listItem}>Video Tested:</strong> {videosTested[index]}
-                        <strong className={PageDesign.listItem}>Video Path:</strong> {videoPath[index]}
-                        <strong className={PageDesign.listItem}>Results:</strong> {results[index]}
-                      </li>
+                <h2 style={{ left: "13%" }}>Previous prediction processes:</h2>
+                <div className={PageDesign.listDivWrapper}>
+                  {updateResults && filesTested.map((file, index) => (
+                    <div>
+                      {detectionType[index] && <div className={PageDesign.listDiv}>
+                        <div key={index} className={PageDesign.resultsListDiv}>
+                          <li className={PageDesign.list}>
+                            <strong className={PageDesign.listItem}>File name: {filesTested[index]}</strong>
+                            <strong className={PageDesign.listItem}>Detection Type: {detectionType[index]}</strong>
+                            <strong className={PageDesign.listItem}>Real probability: {parseFloat(results[index] * 100).toFixed(2)}%</strong>
+                          </li>
+                        </div>
+                      </div>}
                     </div>
                   ))}
                 </div>
