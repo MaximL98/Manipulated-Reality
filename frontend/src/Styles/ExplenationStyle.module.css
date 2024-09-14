@@ -8,7 +8,7 @@
     width: 70%;
 
     background-color: #a6cfe069;
-    position: absolute;
+    position: relative;
     
     border: 1px solid #000;
 
@@ -26,6 +26,21 @@
 }
 
 .explenationDiv p {
-    font-size: 25px;
+    font-size: 20px;
     margin: 20px;
+}
+
+.image {
+    width: 100%;
+    height: auto;
+    margin: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.637);
+    border: 1px solid #383838;
+}
+
+h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 15px;
 }
