@@ -50,8 +50,8 @@ function UploadFilePage() {
   const iconChoiceDivVideoAudioRef = useRef(null);
   const iconChoiceDivVideoRef = useRef(null);
   const iconChoiceDivAudioRef = useRef(null);
-
-
+  const labelNoAudioRef = useRef(null);
+  
   const [selectedFile, setSelectedFile] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(null);
   const [showCheckmark, setShowCheckmark] = useState(false);
@@ -67,7 +67,14 @@ function UploadFilePage() {
       fileUploadedButtonClicked();
   }, [chosenButton]);
 
+  useEffect(() => {
+    if (labelNoAudioRef){
+      labelNoAudioRef.current.disabled = true;
+    }
+  }, [labelNoAudioRef])
+
   const onDrop = useCallback(acceptedFiles => {
+    labelNoAudioRef.current.disabled = true;
     acceptedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onabort = () => console.log('file reading was aborted');
@@ -178,6 +185,7 @@ function UploadFilePage() {
         }
       } catch (error) {
         console.log('Error uploading file:', error);
+        labelNoAudioRef.current.disabled = false;
       }
     };
     fetchResults();
@@ -326,7 +334,7 @@ function UploadFilePage() {
 
           </div>}
           {showCheckmark && buttonPressed && showDetectButton && <button onClick={handleSubmit} className={MainPage.uploadButton}>Detect</button>}
-
+          <label ref = {labelNoAudioRef} style = {{color: "red"}}>Error uploading file: No audio detected!</label>
         </div>
       </div >
     </div >

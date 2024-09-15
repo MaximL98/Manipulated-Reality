@@ -53,23 +53,27 @@ def App():
 def upload():
     if 'uploaded_file' not in request.files:
         return {'message': "No file file found"}
-    
-    file = request.files['uploaded_file']
+    try:
+        file = request.files['uploaded_file']
 
-    if file.filename == '':
-        return "No selected file"
-    
-    detection_type = request.form['detectionType']
-    print(f"detection_type = {detection_type}")
-    video_path = "backend/static/videos/" + file.filename.split('.')[0][0:40] + ".mp4"
-    audio_path = "backend/static/audio/" + file.filename.split('.')[0][0:40] + ".mp3"
+        if file.filename == '':
+            return "No selected file"
+        
+        detection_type = request.form['detectionType']
+        print(f"detection_type = {detection_type}")
+        video_path = "backend/static/videos/" + file.filename.split('.')[0][0:40] + ".mp4"
+        audio_path = "backend/static/audio/" + file.filename.split('.')[0][0:40] + ".mp3"
+    except:
+        return {'message': "File not found or corrupted!"}
 
     if file:
         if detection_type == 'va':
             if allowed_file_video(file.filename):
                 print("Video and audio")
                 file.save(video_path)
-                utils.extract_audio(video_path, audio_path)
+                paths = utils.extract_audio(video_path, audio_path)
+                if not paths:
+                    return jsonify([video_path]), 200
                 return jsonify([video_path, audio_path]), 200
             
         if detection_type == 'v':
@@ -85,11 +89,14 @@ def upload():
             
             elif allowed_file_video(file.filename):
                 file.save(video_path)
-                utils.extract_audio(video_path, audio_path)
+                paths = utils.extract_audio(video_path, audio_path)
                 os.remove(video_path)
+                if not paths:
+                    return jsonify(), 200
                 return jsonify([audio_path]), 200
             
         return {'message': "Invalid file type"}
+    return {'message': "File not found!"}
 
 
 @app.route("/Results", methods=["GET", "POST"])
@@ -123,6 +130,7 @@ def result():
         append_data(username, "Audio", audio_path_insert.split('.')[-2], "some path",(audio_result))
 
     else:
+        print("Error, both of the paths are None!")
         return "Error, both of the paths are None!"
     
     # return render_template("frontend/src/test.js", video_name=video.filename)
