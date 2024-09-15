@@ -161,7 +161,7 @@ function Results() {
                         <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
                             <h1>{resultTypeString}</h1>
                             {videoResult && <h2>Video certainty: {videoResult}% real</h2>}
-                            {audioResult && <h2>Audio certainty: {audioResult}% real</h2>}
+                            {audioResult && <h2>Audio certainty: {(audioResult == "Na") ? "string" : "string2"}% real</h2>}
 
                             <p>The results are saved in <Link to="/profile">My profile</Link> and could be viewed later.</p>
 

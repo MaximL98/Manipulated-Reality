@@ -24,7 +24,6 @@ def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY
     Output:
     extracted_features: A list of extracted features. Eeach index indicates a file, there can be a list in each index if the audio sample is bigger than LENGTH_OF_EACH_SAMPLE.
     """
-    number_of_generated_samples = 0
     # Convert generated samples to mono
     audio, sample_frequency = sf.read(audioFilePath)
     if audio.ndim > 1:
@@ -37,8 +36,7 @@ def audio_file_feature_extractor(audioFilePath, NUM_MFCC = 100, TARGET_FREQUENCY
         # Resample each audio file to TARGET_FREQUENCY
         audio = librosa.resample(audio, orig_sr=sample_frequency, target_sr=TARGET_FREQUENCY, res_type='soxr_vhq')
         chunks.append(audio)
-        number_of_generated_samples += len(audio_chunks)    
-         
+     
     # Compute the mfcc features of the audio chunks
     mfcc = [ compute_mfcc(audio, sample_frequency, NUM_MFCC) for audio in chunks]
     mfcc = np.array(mfcc)

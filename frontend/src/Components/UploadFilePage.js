@@ -123,7 +123,7 @@ function UploadFilePage() {
       setShowCheckmark(false);
       setShowError(true);
       upload_p_ref.current.innerHTML = "File not supported!";
-      upload_span_ref.current.innerHTML = "Please select a file of format: " + acceptedTypes;
+      upload_span_ref.current.innerHTML = "Please select a file of format: " + ACCEPTED_VIDEO_TYPES.concat(ACCEPTED_AUDIO_TYPES).join(", ");
     }
     setFileUploaded(true);
     setSelectedFile(file);
@@ -195,6 +195,7 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
+        iconChoiceDivAudioRef.current.style = "visible";
         setDetectionType("va");
         setDetectionType("va");
         break;
