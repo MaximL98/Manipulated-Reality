@@ -26,7 +26,7 @@ function Results() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    const [detectionType, setDetectionType] = useState("");
+    const [detectionType, setDetectionType] = useState();
     const [audioURL, setAudioURL] = useState("");
     const [videoURL, setVideoURL] = useState("");
     const [fileURL, setFileURL] = useState("");
@@ -126,8 +126,6 @@ function Results() {
                     default:
                         break;
                 }
-                console.log(typeof((parseFloat(data[1]) * 100).toFixed(2)))
-                console.log((parseFloat(data[1]) * 100).toFixed(2))
                 setResults(data);
                 setIsLoading(false);
                 setDisplayData(true);
@@ -135,7 +133,7 @@ function Results() {
                 console.error('Error:', error);
             }
         }
-        if (location.state !== null || detectionType !== "") {
+        if (location.state !== null || detectionType !== undefined) {
             fetchResults();
         }
     }, [detectionType]);
@@ -163,11 +161,8 @@ function Results() {
                         <div style={{ display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }}>
                             <h1>{resultTypeString}</h1>
                             {videoResult && <h2>Video certainty: {videoResult}% real</h2>}
-<<<<<<< HEAD
-                            {audioResult && <h2>Audio certainty: {(audioResult == "Na") ? "string" : "string2"}% real</h2>}
-=======
-                            {audioResult && <h2>Audio certainty: {(audioResult) ? (audioResult + "% real"): "Error: No audio in the uploaded file!"}</h2>}
->>>>>>> fb4bf6b2cad222892c841daf10dbb8be30a505a4
+
+                            {audioResult && <h2>Audio certainty: {(audioResult) ? (audioResult + "% real"): "Error: This video does not contain audio!"}</h2>}
 
                             <p>The results are saved in <Link to="/profile">My profile</Link> and could be viewed later.</p>
 

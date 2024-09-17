@@ -74,7 +74,7 @@ function UploadFilePage() {
   }, [labelNoAudioRef])
 
   const onDrop = useCallback(acceptedFiles => {
-    labelNoAudioRef.current.disabled = true;
+    labelNoAudioRef.current.hidden = true;
     acceptedFiles.forEach(file => {
       const reader = new FileReader();
       reader.onabort = () => console.log('file reading was aborted');
@@ -185,7 +185,7 @@ function UploadFilePage() {
         }
       } catch (error) {
         console.log('Error uploading file:', error);
-        labelNoAudioRef.current.disabled = false;
+        labelNoAudioRef.current.hidden = false;
       }
     };
     fetchResults();
@@ -203,7 +203,6 @@ function UploadFilePage() {
         iconChoiceDivVideoAudioRef.current.style.borderLeft = "2px solid #000000";
         iconChoiceDivVideoRef.current.style.borderLeft = "2px solid #ffffff";
         iconChoiceDivAudioRef.current.style.borderLeft = "2px solid #ffffff";
-        iconChoiceDivAudioRef.current.style = "visible";
         setDetectionType("va");
         setDetectionType("va");
         break;
@@ -335,7 +334,7 @@ function UploadFilePage() {
 
           </div>}
           {showCheckmark && buttonPressed && showDetectButton && <button onClick={handleSubmit} className={MainPage.uploadButton}>Detect</button>}
-          <label ref = {labelNoAudioRef} style = {{color: "red"}}>Error uploading file: No audio detected!</label>
+          <label ref = {labelNoAudioRef} style = {{color: "red"}} hidden>Error: This video does not contain audio!</label>
         </div>
       </div >
     </div >
