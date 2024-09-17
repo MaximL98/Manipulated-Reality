@@ -59,7 +59,7 @@ def append_data(username, detection_type, tested_videos, video_path, results):
         print("Error: Could not append new data into user")
     conn.close()
 
-
+# Function to extract user data by given username
 def extract_user_data(username):
     """Extracts user data based on the given username."""
     try:
@@ -80,16 +80,7 @@ def extract_user_data(username):
     finally:
         conn.close()
 
-
-
-# Apply the code below only for total reset of the database.
-# conn = create_connection()
-# cur = conn.cursor()
-# cur.execute("DROP TABLE IF EXISTS user_data")
-# create_table(conn)
-# conn.close()
-
-
+# Function that returns users password by given username
 def get_user_by_username(username):
     """Retrieves a user's username and password based on the provided username."""
     try:
@@ -110,11 +101,11 @@ def hash_func(password):
     """Hashes the provided password using the SHA-256 algorithm."""
     return hashlib.sha256(str(password).encode()).digest()
 
-
+# Function that uses hash function to compare password from the dataset and the password the user input
 def check_password(input_pass, db_pass):
     return hash_func(input_pass) == db_pass[0]
 
-
+# Function that returns True and False based on if the user input the right credentials 
 def authenticate_user(username, password):
     # Check if user exists and password matches
     db_password = get_user_by_username(username)
@@ -122,7 +113,7 @@ def authenticate_user(username, password):
         return True
     return False
 
-
+# Function that checks if the user already exists
 def user_exists(username, email):
     try:
         """Checks if a user exists based on their email address."""
@@ -155,7 +146,7 @@ def insert_data(username, hashed_password, email, detection_type, tested_videos,
         print("Error: Could not insert new data into user")
 
 
-# Replace with your actual database operations
+# Function that handles registration of the user, by username password and email
 def register_user(username, password, email):
     try:
         # Check if user already exists
@@ -175,3 +166,11 @@ def register_user(username, password, email):
         return True
     except:
         return None
+
+
+# Apply the code below only for total reset of the database.
+# conn = create_connection()
+# cur = conn.cursor()
+# cur.execute("DROP TABLE IF EXISTS user_data")
+# create_table(conn)
+# conn.close()
