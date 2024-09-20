@@ -46,7 +46,7 @@ REAL_AUDIO_DIRECTORY = "Path\To\Your\Real\Audio\Files"
 DATABASE_NAME = "FluentSpeechCorpus" # Name the output file with the database name
 
 useReal = True
-useFalse = False
+useFake = False
 
 # ######################################################################################################
 # ######################################## In-The-Wild dataset #########################################
@@ -58,7 +58,7 @@ useFalse = False
 # GENERATED_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
 # REAL_AUDIO_DIRECTORY = "Manipulated-Reality\\Datasets\\InTheWild_dataset\\release_in_the_wild"
 # useReal = True
-# useFalse = False
+# useFake = False
 
 # # Read CSV fileclear
 # data = pd.read_csv("InTheWild_Labels.csv")
@@ -92,8 +92,8 @@ def compute_mfcc(audio, sr, num_mfcc):
     return librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=num_mfcc)
 
 
-# If useFalse is true, navigate to the generated audio folder and extract the files
-if useFalse:
+# If useFake is true, navigate to the generated audio folder and extract the files
+if useFake:
     folder_path_generated = GENERATED_AUDIO_DIRECTORY
     file_list = os.listdir(folder_path_generated)
     generated_audio_files = [file for file in file_list if file.endswith(".wav") or file.endswith(".mp3")]
@@ -179,12 +179,12 @@ mfcc = mfcc.reshape(len(audio_files), NUM_MFCC*len(mfcc[0][0]))
 print("mfcc_generated shape:", len(mfcc), len(mfcc[0]))
 
 
-# Perform delta cepstral and delta^2 analysis on the mfcc_bicoherence array
-delta_mfcc_bicoherence = librosa.feature.delta(mfcc)
-delta2_mfcc_bicoherence = librosa.feature.delta(mfcc, order=2)
+# Perform delta cepstral and delta^2 analysis on the mfcc array
+delta_mfcc = librosa.feature.delta(mfcc)
+delta2_mfcc = librosa.feature.delta(mfcc, order=2)
 
 # Concatenate the MFCCs, delta cepstral and delta^2 arrays into a single feature set [MFCC, delta, delta^2]
-feature_set = np.concatenate((mfcc,delta_mfcc_bicoherence, delta2_mfcc_bicoherence), axis=1)
+feature_set = np.concatenate((mfcc,delta_mfcc, delta2_mfcc), axis=1)
 
 
 print("Feature_set shape:", len(feature_set), len(feature_set[0]))
