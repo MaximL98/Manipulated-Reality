@@ -1,5 +1,5 @@
 ## Youtube demonstration video
-[![Manipulated Reality demonstration on YouTube]([https://img.youtube.com/vi/watch?v=7F7X8T10rSU/0.jpg](https://www.youtube.com/watch?v=7F7X8T10rSU))](https://www.youtube.com/watch?v=7F7X8T10rSU)
+[![Manipulated Reality demonstration on YouTube](https://img.youtube.com/vi/7F7X8T10rSU/maxresdefault.jpg)](https://www.youtube.com/watch?v=7F7X8T10rSU)
 
 
 ### Abstract
