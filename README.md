@@ -24,7 +24,7 @@ To further enhance the model's performance, a comprehensive hyperparameter optim
 
 ## Usage
 ### Youtube demonstration video
-<p align="center"> [![Manipulated Reality demonstration on YouTube](https://img.youtube.com/vi/7F7X8T10rSU/0.jpg)](https://www.youtube.com/watch?v=7F7X8T10rSU) </p>
+[![Manipulated Reality demonstration on YouTube](https://img.youtube.com/vi/7F7X8T10rSU/0.jpg)](https://www.youtube.com/watch?v=7F7X8T10rSU)
 
 Click on the image above to watch the video.
 
