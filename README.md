@@ -1,4 +1,4 @@
-<p align="center"> <img src="https://github.com/MaximL98/Manipulated-Reality/frontend/public/ManipulatedRealityLogo_MR.png" width="15%" height="15%"> </p>
+<p align="center"> <img src="frontend/public/ManipulatedRealityLogo_MR.png" width="15%" height="15%"> </p>
  
 
 ## Abstract
